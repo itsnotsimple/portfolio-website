@@ -1,0 +1,225 @@
+.section {
+  padding: var(--section-py) 0;
+  background: transparent;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .grid { grid-template-columns: 1fr 1.25fr; gap: 5rem; }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+/* ── Visual card stack ───────────────────────────────── */
+.visual { 
+  display: flex; 
+  justify-content: center; 
+}
+
+.cardStack {
+  position: relative;
+  width: min(18.75rem, 80vw); /* 300px at base 16px root font size */
+  height: min(21.25rem, 90vw); /* 340px */
+  perspective: 1000px; /* ТОВА дава 3D дълбочината на mainCard */
+}
+@media (min-width: 480px) { .cardStack { width: 22.5rem; height: 25rem; } }
+
+/* Фоново сияние зад самата карта за допълнителна дълбочина */
+.cardStack::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 65%);
+  filter: blur(40px);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.cardStack:hover::before {
+  opacity: 0.5;
+}
+
+.mainCard {
+  width: 100%; height: 100%;
+  background: var(--bg-card);
+  border: 1px solid rgba(37, 150, 190, 0.25);
+  border-radius: var(--radius-xl);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 30px rgba(37, 150, 190, 0.1);
+  overflow: hidden; /* Крие ъглите на разпънатата снимка */
+  transform-style: preserve-3d; /* Задържа 3D ефекта */
+  transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  z-index: 1;
+}
+.mainCard:hover {
+  border-color: rgba(13, 211, 240, 0.5);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 40px rgba(13, 211, 240, 0.25);
+}
+
+/* Линията-градиент най-отгоре на картата */
+.mainCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  z-index: 4;
+}
+
+/* ── ИСТИНСКАТА СНИМКА НА ЦЯЛ ЕКРАН ─────────────────── */
+.aboutImage {
+  width: 100%;
+  height: 120%; /* Увеличена за паралакс ефекта */
+  object-fit: cover; /* Разпъва без деформация */
+  object-position: center 0%; /* Центрира лицето му, показвайки прическата напълно */
+  position: absolute;
+  top: -10%; /* Изместена нагоре, за да компенсира паралакса */
+  left: 0;
+  z-index: 1;
+  filter: grayscale(10%) contrast(1.05) brightness(0.92) saturate(1.1);
+  transition: filter 0.5s var(--ease);
+}
+.mainCard:hover .aboutImage {
+  filter: grayscale(0%) contrast(1.1) brightness(1.02) saturate(1.2);
+}
+
+/* Ефектен овърлей с винетка и плавно преливане в тъмно накрая */
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 50% 30%, transparent 20%, rgba(4, 8, 12, 0.3) 70%, rgba(4, 8, 12, 0.8) 100%),
+    linear-gradient(to bottom, transparent 65%, rgba(4, 8, 12, 0.95) 100%);
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.mainCard:hover .imageOverlay {
+  opacity: 0.85; /* Позволява на снимката да изпъкне повече при hover */
+}
+
+/* Блясък ефект, прелитащ през картата */
+.shineEffect {
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.0) 0%,
+    rgba(13, 211, 240, 0.15) 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(13, 211, 240, 0.15) 70%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  z-index: 3;
+  pointer-events: none;
+}
+.mainCard:hover .shineEffect {
+  animation: shineSweep 1.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes shineSweep {
+  0% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* Бадж за опит */
+.expBadge {
+  position: absolute;
+  bottom: 1.5rem; right: 1.5rem;
+  background: linear-gradient(135deg, rgba(37, 150, 190, 0.85), rgba(13, 211, 240, 0.85));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(37, 150, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  z-index: 4; /* Над снимката и овърлея */
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
+}
+.mainCard:hover .expBadge {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(13, 211, 240, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.expNum   { display: block; font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1; overflow: visible; }
+.expLabel { font-family: var(--font-body); font-size: 0.62rem; color: rgba(255,255,255,0.9); font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; }
+
+/* Floating chips */
+.chip {
+  position: absolute;
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.46rem 0.85rem;
+  background: rgba(8,14,22,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  box-shadow: var(--shadow-card);
+  z-index: 4; /* Чиповете летят най-отгоре над всичко */
+  transition: border-color var(--t-fast), background var(--t-fast), box-shadow var(--t-fast), color var(--t-fast);
+}
+.chip:hover {
+  border-color: var(--accent);
+  background: rgba(37, 150, 190, 0.25);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(13, 211, 240, 0.4);
+}
+.chipIcon { color: var(--primary-light); display: flex; align-items: center; }
+.chip1 { top: -0.8rem; left: -0.5rem; animation: chipFloat 4s ease-in-out infinite; }
+.chip2 { top: 38%; right: -1.2rem; animation: chipFloat 4s ease-in-out 1.4s infinite; }
+.chip3 { bottom: 4.5rem; left: -0.8rem; animation: chipFloat 4s ease-in-out 2.8s infinite; }
+@media (max-width: 400px) { .chip2 { right: -0.3rem; } .chip3 { left: -0.3rem; } }
+@keyframes chipFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+
+/* ── Text side ────────────────────────────────────────── */
+.textSide { display: flex; flex-direction: column; }
+.para {
+  font-family: var(--font-body);
+  color: #8fb8cc;
+  font-size: 0.97rem;
+  line-height: 1.82;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+}
+.toolsGrid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+.toolTag {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--primary-subtle);
+  border: 1px solid rgba(37,150,190,0.22);
+  color: var(--primary-light);
+}
+.ctaRow { display: flex; flex-wrap: wrap; gap: 0.85rem; }

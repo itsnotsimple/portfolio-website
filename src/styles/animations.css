@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════════════════════════
+   KEYFRAMES LIBRARY
+═══════════════════════════════════════════════════════════ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(46, 204, 113, 0.7); }
+  50%       { box-shadow: 0 0 14px rgba(46, 204, 113, 0.35); }
+}
+
+@keyframes heroPulse {
+  0%, 100% { opacity: 0.55; transform: translate(-50%,-50%) scale(1); }
+  50%       { opacity: 0.9;  transform: translate(-50%,-50%) scale(1.08); }
+}
+
+@keyframes chipFloat {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-9px); }
+}
+
+@keyframes avatarRing {
+  0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+  50%       { box-shadow: 0 0 42px rgba(37,150,190,0.55); }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(37, 150, 190, 0.15); }
+  50%       { border-color: rgba(37, 150, 190, 0.45); }
+}
+
+@keyframes ripple {
+  to { transform: scale(2.5); opacity: 0; }
+}

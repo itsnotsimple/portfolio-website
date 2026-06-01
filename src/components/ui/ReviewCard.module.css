@@ -1,0 +1,129 @@
+.card {
+  position: sticky;
+  top: calc(var(--stack-top) + var(--index) * var(--stack-gap));
+  transform-origin: top center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.4rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+  overflow: hidden;              /* keep card inside its column */
+  max-width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  /* No translateY hover — it causes right-side overflow on mobile */
+}
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 36px rgba(37,150,190,0.12), var(--shadow-card);
+}
+
+.topLine {
+  position: absolute;
+  top: 0; left: 1.5rem; right: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  border-radius: 0 0 2px 2px;
+}
+
+.quote {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  line-height: 0.7;
+  color: var(--primary);
+  opacity: 0.35;
+  display: block;
+  letter-spacing: 0;
+  margin-bottom: -0.3rem;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+.star { display: block; }
+.starFilled { color: #f5c842; }
+.starEmpty  { color: var(--text-faint); }
+
+.text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.78;
+  color: #9ec5d8;
+  flex: 1;
+  overflow: visible;
+}
+
+/* Author */
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+/* Photo avatar */
+.avatarPhoto {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 2px solid var(--border-hover);
+  flex-shrink: 0;
+}
+
+/* Initials avatar */
+.avatarInitials {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  overflow: hidden;
+}
+.name {
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f0f6fb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.role {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #7aa8be;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.project {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--primary-light);
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

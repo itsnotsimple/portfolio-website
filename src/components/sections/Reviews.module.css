@@ -1,0 +1,33 @@
+.section {
+  padding: var(--section-py) 0;
+  background: transparent;
+  position: relative;
+  /* Prevent cards from overflowing the section on mobile */
+  overflow: hidden;
+}
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2rem;
+  max-width: 680px;
+  margin: 0 auto;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  
+  /* Responsive stacking layout tokens */
+  --stack-top: 85px;
+  --stack-gap: 15px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    gap: 3rem;
+    --stack-top: 115px;
+    --stack-gap: 24px;
+  }
+}

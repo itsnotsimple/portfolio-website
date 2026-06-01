@@ -1,0 +1,119 @@
+/* Full-page fixed Plasma background */
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  z-index: 0;
+  pointer-events: none;
+  touch-action: none;          /* prevent touch events reaching canvas */
+  overflow: hidden;            /* prevent child blobs from causing horizontal scroll on mobile */
+  /* Dark base — plasma renders on top of this */
+  background: #04080c;
+  /* GPU compositing layer — prevents iOS Safari flicker on scroll */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  /* Prevent iOS from discarding the layer */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* The plasma-container and grainient-container fill the root */
+.root :global(.plasma-container),
+.root :global(.grainient-container) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Canvas also on GPU layer */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Multi-layer dark overlay for readability:
+   - Strong dark vignette at edges
+   - Subtle overall darkening so text is always legible
+*/
+.root::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* Dark corners / edges vignette */
+    radial-gradient(
+      ellipse 100% 100% at 50% 50%,
+      rgba(4,8,12,0.20) 0%,
+      rgba(4,8,12,0.45) 55%,
+      rgba(4,8,12,0.78) 100%
+    ),
+    /* Overall dark wash so content is readable */
+    linear-gradient(180deg,
+      rgba(4,8,12,0.25) 0%,
+      rgba(4,8,12,0.15) 50%,
+      rgba(4,8,12,0.30) 100%
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particlesContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 220vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 767px) {
+  .particlesContainer {
+    height: 100%; /* Keep full screen coverage on long mobile screens */
+  }
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Glowing Parallax Nebulas */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.16;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.blob1 {
+  width: min(650px, 85vw);
+  height: min(650px, 85vw);
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  top: 10vh;
+  left: -200px;
+}
+
+.blob2 {
+  width: min(580px, 80vw);
+  height: min(580px, 80vw);
+  background: radial-gradient(circle, #bc2a8d 0%, transparent 70%);
+  top: 105vh;
+  right: -150px;
+}
+
+.blob3 {
+  width: min(780px, 95vw);
+  height: min(780px, 95vw);
+  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+  top: 210vh;
+  left: 5vw;
+}

@@ -1,0 +1,208 @@
+/* ═══════════════════════════════════════════════════════
+   GLOBAL STYLES — Alex & Flow Portfolio
+   RULES: No overflow:hidden on layout wrappers. Use clip.
+═══════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap');
+
+/* ── Design Tokens ───────────────────────────────────── */
+:root {
+  --primary:        #2596be;
+  --primary-dark:   #1a6b8a;
+  --primary-light:  #3ab8e2;
+  --primary-glow:   rgba(37, 150, 190, 0.35);
+  --primary-subtle: rgba(37, 150, 190, 0.10);
+  --accent:         #0dd3f0;
+
+  --bg:           #04080c;
+  --bg-surface:   rgba(6, 11, 17, 0.82);
+  --bg-card:      rgba(10, 18, 28, 0.88);
+  --bg-card-hover:rgba(14, 24, 38, 0.95);
+  --bg-glass:     rgba(8, 15, 22, 0.72);
+
+  --text:         #f0f6fb;
+  --text-muted:   #8aacbf;
+  --text-faint:   #3a5060;
+  --border:       rgba(37, 150, 190, 0.14);
+  --border-hover: rgba(37, 150, 190, 0.40);
+  --border-card:  rgba(255, 255, 255, 0.06);
+
+  --insta-a: #f09433;
+  --insta-b: #e6683c;
+  --insta-c: #bc2a8d;
+  --insta-d: #833ab4;
+
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+
+  --radius:    12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --t-fast:  0.15s ease;
+  --t-base:  0.28s ease;
+  --t-slow:  0.55s ease;
+
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-display: 'Outfit', 'Inter', sans-serif;
+
+  --section-pad: clamp(4rem, 10vw, 7rem);
+}
+
+/* ── Reset ───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  /* overflow-x: clip prevents horizontal scroll WITHOUT creating a scroll container */
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  /* clip: does NOT create a scroll container (unlike hidden) — safe on iOS Safari */
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* Scroll lock — only on body during preloader */
+body.scroll-locked {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+html::-webkit-scrollbar       { width: 5px; }
+html::-webkit-scrollbar-track { background: var(--bg); }
+html::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 3px; }
+
+/* ── Base Elements ───────────────────────────────────── */
+img, video { max-width: 100%; display: block; }
+a          { text-decoration: none; color: inherit; }
+button     { cursor: pointer; border: none; background: none; font-family: inherit; }
+ul, ol     { list-style: none; }
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: all var(--t-base);
+  position: relative;
+  /* overflow:hidden clips the glint sweep — only on button, not a layout wrapper */
+  overflow: hidden;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn > * { position: relative; z-index: 1; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  opacity: 0;
+  transition: opacity var(--t-base);
+}
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary:hover { box-shadow: 0 6px 24px var(--primary-glow); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-hover);
+}
+.btn-secondary:hover {
+  background: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary-light);
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ── Section Shared ──────────────────────────────────── */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  background: var(--primary-subtle);
+  border: 1px solid var(--border);
+  color: var(--primary-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.section-heading-accent {
+  color: var(--primary);
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* ── Accessibility ───────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/* ── Focus ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

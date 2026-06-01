@@ -1,0 +1,32 @@
+.section {
+  padding: var(--section-py) 0;
+  background: rgba(5, 10, 16, 0.60);
+  backdrop-filter: blur(2px);
+}
+.header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.accordionContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ctaWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}

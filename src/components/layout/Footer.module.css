@@ -1,0 +1,51 @@
+.footer {
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--border);
+  background: rgba(4, 8, 12, 0.75);
+  backdrop-filter: blur(12px);
+}
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+}
+.logoHex { color: var(--primary); font-size: 1.1rem; }
+.logoText { color: var(--text); }
+.amp      { color: var(--primary); }
+.copy     { font-family: var(--font-body); color: var(--text-faint); font-size: 0.78rem; }
+.links    { display: flex; gap: 0.6rem; }
+.link {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--t-base);
+}
+.link:hover {
+  color: var(--primary-light);
+  border-color: var(--primary);
+  background: var(--primary-subtle);
+  transform: translateY(-2px);
+}

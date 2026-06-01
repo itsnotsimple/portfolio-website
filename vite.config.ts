@@ -1,0 +1,50 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    // javascriptObfuscator is disabled to prevent 2-3 second startup freeze and massive bundle bloat.
+    // Built-in Terser minification/mangling below is more than enough for production performance and security.
+  ],
+  server: {
+    port: 5173,
+    open: true,
+    host: true,
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,       // no source maps in production
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,       // keep console logs for mobile debugging
+        drop_debugger: true,      // remove debugger statements
+        passes: 3,                // multiple compression passes
+        unsafe: false,
+        unsafe_comps: false,
+        unsafe_math: false,
+        unsafe_proto: false,
+      },
+      mangle: {
+        toplevel: true,           // mangle top-level variable names
+        eval: true,
+        properties: false,        // keep false to avoid runtime errors
+      },
+      format: {
+        comments: false,          // strip all comments
+        ascii_only: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        // Randomize chunk filenames with hash
+        chunkFileNames: 'assets/[hash].js',
+        entryFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash].[ext]',
+        // Split chunks to make reverse-engineering harder
+        manualChunks: undefined,
+      },
+    },
+  },
+});

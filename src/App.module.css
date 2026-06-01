@@ -1,0 +1,8 @@
+/* App wrapper — sits above the fixed background layer.
+   NO overflow:hidden here — it would create a scroll container on iOS Safari
+   (implicit overflow-y:auto) which defers CSS animations for clipped children. */
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
