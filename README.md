@@ -305,10 +305,9 @@ Both gates must pass → Preloader fades → Site is visible.
 
 ## 📬 Contact
 
-**Alex** — Video Editor
+**Kristian Djenev** — Developer & Builder
 
-[![Instagram](https://img.shields.io/badge/@alex.cc077-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/alex.cc077/)
-[![Email](https://img.shields.io/badge/alexperchinkov77@gmail.com-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:alexperchinkov77@gmail.com)
+[![GitHub](https://img.shields.io/badge/@itsnotsimple-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/itsnotsimple)
 
 ---
 
