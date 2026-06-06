@@ -3,19 +3,30 @@
 // This is the single source of truth for all site text/data
 // ═══════════════════════════════════════════════════════════
 
-import type { Video, Review, FAQItem } from '../types';
+import type { Video, Review, FAQItem, VideoTestimonial } from '../types';
 
 // ── Site Config ───────────────────────────────────────────
 export const SITE_CONFIG = {
   brandName: 'Alex & Flow',
   tagline: 'I make your story move.',
-  subTagline: 'Video editor specializing in commercial campaigns, music videos, and viral social media content.',
+  subTagline: 'Video editor specializing in commercial campaigns and viral social media content.',
   instagramUrl: 'https://www.instagram.com/alex.cc077/',
   instagramHandle: '@alex.cc077',
   email: 'alexperchinkov77@gmail.com',
   available: true,
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
+  copyrightSuffix: 'All rights reserved.',
+} as const;
+
+// ── Navigation Links ──────────────────────────────────────
+export const NAV_LINKS = {
+  work: 'Work',
+  about: 'About',
+  reviews: 'Reviews',
+  faq: 'FAQ',
+  contact: 'Contact',
+  cta: "Let's Talk",
 } as const;
 
 // ── Hero Section Texts ─────────────────────────────────────
@@ -25,12 +36,15 @@ export const HERO_SECTION = {
   ctaInsta: 'Instagram',
   ctaEmail: 'Send Email',
   scrollLabel: 'Scroll',
+  visualProjects: 'Projects',
+  visualQuality: 'Quality',
 } as const;
+
 
 // ── Stats (Hero) ──────────────────────────────────────────
 export const STATS = [
-  { value: 150, suffix: '+', label: 'Projects' },
-  { value: 5, suffix: '+', label: 'Years Exp.' },
+  { value: 300, suffix: '+', label: 'Projects' },
+  { value: 3, suffix: '+', label: 'Years Exp.' },
   { value: 98, suffix: '%', label: 'Happy Clients' },
 ] as const;
 
@@ -50,16 +64,15 @@ export const ABOUT = {
   heading: 'I turn raw footage into',
   headingAccent: 'emotion.',
   paragraphs: [
-    'Video editor with 5+ years of experience crafting content that engages, inspires, and converts. I specialize in visual storytelling — from high-budget commercial campaigns to viral social clips.',
-    "I've worked with brands, musicians, influencers, and agencies across Europe. Every project gets my full creative energy and relentless attention to detail.",
+    'Video editor with 3+ years of experience crafting content that engages, inspires, and converts. I specialize in visual storytelling — from high-budget commercial campaigns to viral social clips.',
+    "I've worked with brands, influencers, and agencies across Europe. Every project gets my full creative energy and relentless attention to detail.",
   ],
   tools: [
     'Premiere Pro',
     'After Effects',
     'CapCut Pro',
-    'Audition',
   ],
-  yearsExp: '5+',
+  yearsExp: '3+',
   yearsLabel: 'Years Exp.',
   ctaWork: 'Work with me',
   ctaSocial: 'Instagram',
@@ -79,6 +92,16 @@ export const REVIEWS_SECTION = {
   heading: 'What clients',
   headingAccent: 'say',
   subtitle: "Real words from real people I've worked with.",
+  clientReviewsLabel: 'Client Reviews',
+  avgRating: 'Average rating',
+  happyClients: 'Happy clients',
+  projectsDone: 'Projects done',
+  satisfactionRate: 'Satisfaction rate',
+  availableLabel: 'Available for new projects',
+  ratingFrom: 'from',
+  ratingClients: 'clients',
+  nextReview: 'Next review',
+  dragToShuffle: 'drag to shuffle',
 } as const;
 
 // ── FAQ Section Texts ──────────────────────────────────────
@@ -104,77 +127,154 @@ export const CONTACT_SECTION = {
 
 // ── Portfolio Videos ──────────────────────────────────────
 export const VIDEOS: Video[] = [
+  // After Effects Short Clips
   {
-    id: 'vid-fashion-commercial',
-    title: 'Fashion & Style — Seasonal Campaign',
-    category: 'commercial',
-    categoryLabel: 'Commercial',
-    thumb: '/images/thumb_commercial.png',
-    duration: '1:24',
+    id: 'vid-ae-1',
+    title: 'VFX & Motion Graphics - Project 1',
+    category: 'after-effects',
+    categoryLabel: 'After Effects',
+    thumb: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80',
+    duration: '0:15',
     featured: true,
-    description: 'Full campaign for a fashion brand — teasers, hero video, and social media adaptations.',
+    description: 'Advanced motion graphics, 3D tracking, and visual effects composited in After Effects.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%201.mp4',
   },
   {
-    id: 'vid-music-hiphop',
-    title: 'Official Music Video',
-    category: 'music',
-    categoryLabel: 'Music Video',
-    thumb: '/images/thumb_music.png',
-    duration: '3:45',
-    featured: false,
-    description: 'Cinematic edit with color grading, VFX, and sync-perfect cuts.',
-  },
-  {
-    id: 'vid-reels-series',
-    title: 'Viral Reels Series — 60s Format',
-    category: 'social',
-    categoryLabel: 'Social Media',
-    thumb: '/images/thumb_social.png',
-    duration: '0:58',
-    featured: false,
-    description: '12 viral short-form clips optimized for Instagram and TikTok algorithms.',
-  },
-  {
-    id: 'vid-brand-promo',
-    title: 'Corporate Brand Video',
-    category: 'brand',
-    categoryLabel: 'Branding',
-    thumb: '/images/thumb_brand.png',
-    duration: '2:10',
-    featured: false,
-    description: 'Company showcase with motion graphics, 3D elements, and narrative structure.',
-  },
-  {
-    id: 'vid-travel-doc',
-    title: 'Travel Documentary',
-    category: 'travel',
-    categoryLabel: 'Travel',
-    thumb: '/images/thumb_travel.png',
-    duration: '8:32',
-    featured: false,
-    description: 'Cinematic travel vlog with atmospheric color grading and immersive soundtrack.',
-  },
-  {
-    id: 'vid-product-ads',
-    title: 'E-commerce Product Ads',
-    category: 'commercial',
-    categoryLabel: 'Commercial',
-    thumb: '/images/thumb_commercial.png',
+    id: 'vid-ae-2',
+    title: 'VFX & Motion Graphics - Project 2',
+    category: 'after-effects',
+    categoryLabel: 'After Effects',
+    thumb: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80',
     duration: '0:30',
     featured: false,
-    description: '20 high-converting product clips optimized for Meta and Google Ads.',
+    description: 'Dynamic typography animation and kinetic text effect for promotional use.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%202.mp4',
+  },
+  {
+    id: 'vid-ae-3',
+    title: 'VFX & Motion Graphics - Project 3',
+    category: 'after-effects',
+    categoryLabel: 'After Effects',
+    thumb: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80',
+    duration: '0:45',
+    featured: false,
+    description: 'Complex 3D particle simulation and logo sting animation.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%203.mp4',
+  },
+  // Brand Promoting
+  {
+    id: 'vid-brand-1',
+    title: 'Commercial Brand Campaign - Part 1',
+    category: 'brand-promoting',
+    categoryLabel: 'Brand Promoting',
+    thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+    duration: '1:00',
+    featured: true,
+    description: 'High-end branding video designed to tell the company\'s story and showcase key products.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%201.mp4',
+  },
+  {
+    id: 'vid-brand-2',
+    title: 'Commercial Brand Campaign - Part 2',
+    category: 'brand-promoting',
+    categoryLabel: 'Brand Promoting',
+    thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+    duration: '0:45',
+    featured: false,
+    description: 'Social media teaser cut for maximum engagement and brand awareness.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%202.mp4',
+  },
+  {
+    id: 'vid-brand-3',
+    title: 'Commercial Brand Campaign - Part 3',
+    category: 'brand-promoting',
+    categoryLabel: 'Brand Promoting',
+    thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+    duration: '1:15',
+    featured: false,
+    description: 'Cinematic corporate promo combining live footage and custom lower thirds.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%203.mp4',
+  },
+  // Food Videos
+  {
+    id: 'vid-food-1',
+    title: 'Gourmet Food & Culinary Art',
+    category: 'food-videos',
+    categoryLabel: 'Food Videos',
+    thumb: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80',
+    duration: '0:40',
+    featured: false,
+    description: 'Fast-paced, satisfying food prep and culinary commercial editing with sound design.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Food%20Videos/Ref%201.mp4',
+  },
+  // Simple Editing
+  {
+    id: 'vid-simple-1',
+    title: 'Clean Cut Editorial - Project 1',
+    category: 'simple-editing',
+    categoryLabel: 'Simple Editing',
+    thumb: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80',
+    duration: '1:30',
+    featured: false,
+    description: 'Professional video pacing, color matching, and sound leveling with minimal effects.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%201.mp4',
+  },
+  {
+    id: 'vid-simple-2',
+    title: 'Clean Cut Editorial - Project 2',
+    category: 'simple-editing',
+    categoryLabel: 'Simple Editing',
+    thumb: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80',
+    duration: '1:00',
+    featured: false,
+    description: 'Rhythmic music-to-video editing with seamless transitions and clean cuts.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%202.mp4',
+  },
+  {
+    id: 'vid-simple-3',
+    title: 'Clean Cut Editorial - Project 3',
+    category: 'simple-editing',
+    categoryLabel: 'Simple Editing',
+    thumb: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80',
+    duration: '1:10',
+    featured: false,
+    description: 'Focus on narrative rhythm, dialogue cleanup, and clean color grading.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%203.mp4',
+  },
+  // YouTube Shorts
+  {
+    id: 'vid-shorts-1',
+    title: 'DJ and His Dad',
+    category: 'youtube-shorts',
+    categoryLabel: 'YouTube Shorts',
+    thumb: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=80',
+    duration: '0:50',
+    featured: false,
+    description: 'Fast-paced, engaging short-form content optimized for mobile viewing on TikTok, Reels, and Shorts.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/DJ%20and%20is%20dad.mp4',
+  },
+  {
+    id: 'vid-shorts-2',
+    title: 'Stylebender Tribute',
+    category: 'youtube-shorts',
+    categoryLabel: 'YouTube Shorts',
+    thumb: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=80',
+    duration: '0:35',
+    featured: true,
+    description: 'High-energy edit with sync-cuts, zooms, sound effects, and text overlays.',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/Stylebender.mp4',
   },
 ];
 
 // ── Filter Categories ─────────────────────────────────────
 export const FILTER_CATEGORIES = [
-  { key: 'all', label: 'All' },
-  { key: 'commercial', label: 'Commercial' },
-  { key: 'music', label: 'Music Video' },
-  { key: 'social', label: 'Social Media' },
-  { key: 'brand', label: 'Branding' },
-  { key: 'travel', label: 'Travel' },
+  { key: 'after-effects', label: 'After Effects' },
+  { key: 'brand-promoting', label: 'Brand Promoting' },
+  { key: 'food-videos', label: 'Food Videos' },
+  { key: 'simple-editing', label: 'Simple Editing' },
+  { key: 'youtube-shorts', label: 'YouTube Shorts' },
 ] as const;
+
 
 // ── Reviews ───────────────────────────────────────────────
 // HOW TO ADD A REAL PHOTO:
@@ -182,6 +282,51 @@ export const FILTER_CATEGORIES = [
 //   2. Uncomment the `photo` line and set the path
 //   3. If no photo is set, the initials avatar is shown automatically
 export const REVIEWS: Review[] = [
+  {
+    id: 'review-bobbydiv',
+    name: 'BobbyDiv',
+    initials: 'BD',
+    role: 'Automotive Creator & Vlogger',
+    company: 'YouTube',
+    project: 'YouTube Car Vlogs & Reviews',
+    stars: 5,
+    text: 'Amazing editing speed and absolute creative genius. He elevated my YouTube videos to a whole new level of storytelling. Highly recommended!',
+    avatarGradient: 'linear-gradient(135deg, #2596be, #1dd3f0)',
+    photo: '/images/reviews/bobbydiv.webp',
+    socialLink: 'https://www.youtube.com/@BobbyDiv',
+    socialType: 'youtube',
+    socialStats: '113K+ Subs',
+  },
+  {
+    id: 'review-corbinsylk',
+    name: 'Corbin Sylk',
+    initials: 'CS',
+    role: 'Entrepreneur & Business Coach',
+    company: '@corbinsylk',
+    project: 'Premium Business Promo Reels',
+    stars: 5,
+    text: "Alex is easily the fastest editor I've ever worked with. He replicates any style perfectly and sends back drafts in under an hour. Absolutely phenomenal!",
+    avatarGradient: 'linear-gradient(135deg, #0dd3f0, #3ab8e2)',
+    photo: '/images/reviews/corbinsylk.webp',
+    socialLink: 'https://www.instagram.com/corbinsylk/',
+    socialType: 'instagram',
+    socialStats: '198 Followers',
+  },
+  {
+    id: 'review-coach-westfit',
+    name: 'Westly Harrison',
+    initials: 'WH',
+    role: 'Online Fitness Coach',
+    company: '@coach_westfit',
+    project: 'High-energy Fitness Reels',
+    stars: 5,
+    text: "Alex is exceptional. I send him a video and he gets it back to me extremely quickly. If I want a certain style modeled, he replicates it exactly how I want. He is easily the best editor I've ever worked with.",
+    avatarGradient: 'linear-gradient(135deg, #8350e8, #a97af5)',
+    photo: '/images/reviews/coach_westfit.webp',
+    socialLink: 'https://www.instagram.com/coach_westfit/',
+    socialType: 'instagram',
+    socialStats: '23.4K+ Followers',
+  },
   {
     id: 'review-maria',
     name: 'Maria K.',
@@ -192,19 +337,6 @@ export const REVIEWS: Review[] = [
     stars: 5,
     text: 'Incredible work! Our clips doubled engagement in just one month. He understands social media rhythm perfectly — every cut lands exactly where it needs to.',
     avatarGradient: 'linear-gradient(135deg, #2596be, #1dd3f0)',
-    // photo: '/images/reviews/maria.jpg',
-  },
-  {
-    id: 'review-alex',
-    name: 'Alexander N.',
-    initials: 'AN',
-    role: 'YouTube Creator',
-    company: '180K subscribers',
-    project: 'Video Essay — Documentary Style',
-    stars: 5,
-    text: "Best editor I've ever worked with. He understands your vision from the first conversation and brings it to life better than you imagined.",
-    avatarGradient: 'linear-gradient(135deg, #1a6b8a, #2596be)',
-    // photo: '/images/reviews/alex.jpg',
   },
   {
     id: 'review-sofia-studio',
@@ -216,7 +348,6 @@ export const REVIEWS: Review[] = [
     stars: 5,
     text: "Fast, professional, and the results speak for themselves. Our client was absolutely thrilled. We'll definitely continue working together on future projects.",
     avatarGradient: 'linear-gradient(135deg, #0d7a9e, #3ab8e2)',
-    // photo: '/images/reviews/sofia-studio.jpg',
   },
   {
     id: 'review-todor',
@@ -228,31 +359,6 @@ export const REVIEWS: Review[] = [
     stars: 5,
     text: 'My music video exploded after his edit — 500K views in the first week. The color grading, cuts, transitions — everything is on another level.',
     avatarGradient: 'linear-gradient(135deg, #1c4966, #2596be)',
-    // photo: '/images/reviews/todor.jpg',
-  },
-  {
-    id: 'review-elena',
-    name: 'Elena Travels',
-    initials: 'ET',
-    role: 'Travel Blogger & Influencer',
-    company: '95K Instagram followers',
-    project: 'Travel Vlog Series — 6 Episodes',
-    stars: 5,
-    text: 'Amazing work, delivered on time, communication 10/10. He turned ordinary travel footage into a cinematic masterpiece.',
-    avatarGradient: 'linear-gradient(135deg, #0a4a65, #1e8fb5)',
-    // photo: '/images/reviews/elena.jpg',
-  },
-  {
-    id: 'review-ivan',
-    name: 'Ivan D.',
-    initials: 'ID',
-    role: 'E-commerce Owner',
-    company: 'FashionBG.com',
-    project: 'Product Ads — 20 clips',
-    stars: 5,
-    text: "We've worked together for over a year. His ad clips generated a 340% ROI on our campaigns. Absolutely essential for anyone who wants real results.",
-    avatarGradient: 'linear-gradient(135deg, #164d68, #2596be)',
-    // photo: '/images/reviews/ivan.jpg',
   },
 ];
 
@@ -266,22 +372,17 @@ export const FAQ_ITEMS: FAQItem[] = [
   {
     id: 'faq-2',
     question: 'How long does a typical project take?',
-    answer: "Turnaround time depends on the scope. Short social media clips typically take 2–3 business days. Music videos and commercial campaigns usually take 5–10 days. For larger projects, we'll agree on a timeline upfront. Rush delivery is available for an additional fee.",
+    answer: "Turnaround time depends on the scope. Short social media clips typically take 1–2 business days. For larger projects, we'll agree on a timeline upfront. Rush delivery is available for an additional fee.",
   },
   {
     id: 'faq-3',
     question: 'What software do you use?',
-    answer: 'My primary tools are Adobe Premiere Pro, After Effects, and DaVinci Resolve for color grading. For motion graphics and 3D elements I use Cinema 4D and Photoshop. I work with all major video formats and codecs.',
+    answer: 'My main tools are Adobe Premiere Pro and CapCut. For motion graphics I use After Effects. I also use Photoshop if necessary.',
   },
   {
     id: 'faq-4',
     question: 'How many revisions are included?',
-    answer: 'All projects include 2 rounds of revisions as standard. This covers adjustments to cuts, transitions, music sync, and color. Additional revisions can be arranged. I aim to nail the vision on the first draft, so revisions are rarely needed.',
-  },
-  {
-    id: 'faq-5',
-    question: 'What file formats do you accept and deliver?',
-    answer: "I accept footage in any format — MP4, MOV, MXF, RAW, and more. Final delivery is typically in MP4 (H.264/H.265) at the resolution you need, whether that's 1080p, 4K, or vertical 9:16 formats for mobile.",
+    answer: 'All projects include 3 rounds of revisions as standard. This covers adjustments to cuts, transitions, music sync, and color. Additional revisions can be arranged. I aim to nail the vision on the first draft, so revisions are rarely needed.',
   },
   {
     id: 'faq-6',
@@ -297,5 +398,36 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: 'faq-8',
     question: 'How do I get started?',
     answer: "Simple — drop me a DM on Instagram or send an email describing your project. Include the type of video, approximate length, deadline, and any reference videos you like. I'll get back to you within 24 hours with a quote and timeline.",
+  },
+];
+
+export const VIDEO_TESTIMONIALS: VideoTestimonial[] = [
+  {
+    id: 'vt-westfit',
+    name: 'Westly Harrison',
+    role: 'Online Fitness Coach',
+    thumb: '',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/IMG_8468.mov',
+  },
+  {
+    id: 'vt-corbin',
+    name: 'Corbin Sylk',
+    role: 'Entrepreneur & Business Coach',
+    thumb: '',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/59624b70-d167-4db5-8c06-fb964faf0d67.mp4',
+  },
+  {
+    id: 'vt-client-1',
+    name: 'Muhamed',
+    role: 'Content Creator',
+    thumb: '',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/11e44ced-dc1c-44a9-88c3-4198c23d2189.mp4',
+  },
+  {
+    id: 'vt-client-2',
+    name: 'Edward',
+    role: 'Business Owner',
+    thumb: '',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/IMG_0724.mov',
   },
 ];

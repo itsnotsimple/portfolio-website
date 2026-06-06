@@ -11,6 +11,7 @@ export interface Video {
   duration: string;
   featured: boolean;
   description: string;
+  videoUrl?: string;
 }
 
 export interface Review {
@@ -25,6 +26,9 @@ export interface Review {
   avatarGradient: string;
   /** Optional real photo of the reviewer — put image in /public/images/reviews/ */
   photo?: string;
+  socialLink?: string;
+  socialType?: 'youtube' | 'instagram' | 'tiktok';
+  socialStats?: string;
 }
 
 export interface FAQItem {
@@ -43,4 +47,15 @@ export interface NavLink {
   label: string;
   href: string;
   icon: React.ReactNode;
+}
+
+export interface VideoTestimonial {
+  id: string;
+  name: string;
+  role: string;
+  thumb: string;
+  videoUrl: string;
+  socialLink?: string;
+  socialType?: 'youtube' | 'instagram' | 'tiktok';
+  socialStats?: string;
 }
