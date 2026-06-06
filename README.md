@@ -48,9 +48,8 @@ This is not a template. This is a custom-built creative weapon.
 
 <div align="center">
 
-| 300+ | 3+ | 98% |
-|:---:|:---:|:---:|
-| Projects Delivered | Years Experience | Happy Clients |
+> Designed and built for a professional video editor —
+> from WebGL shaders to 3D card decks, every detail engineered with purpose.
 
 </div>
 
