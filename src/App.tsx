@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainApp from './MainApp';
 import Preloader from './components/ui/Preloader';
 import { LanguageProvider } from './context/LanguageContext';
 
-/**
- * Root shell with True Background Rendering Gating.
- * Both MainApp and Preloader render from frame 0.
- * Preloader sits on top and only fades out when MainApp triggers onLayoutFinished.
- */
 export default function App() {
   const [isLayoutFinished, setIsLayoutFinished] = useState(false);
   const [isPlasmaReady, setIsPlasmaReady] = useState(false);
+  const [isFontsReady, setIsFontsReady] = useState(false);
 
-  const isAppFullyCooked = isLayoutFinished && isPlasmaReady;
+  useEffect(() => {
+    // 3s max — slow network shouldn't trap users behind the preloader forever
+    const fallback = setTimeout(() => setIsFontsReady(true), 3000);
+    document.fonts.ready.then(() => {
+      clearTimeout(fallback);
+      setIsFontsReady(true);
+    });
+    return () => clearTimeout(fallback);
+  }, []);
+
+  const isAppFullyCooked = isLayoutFinished && isPlasmaReady && isFontsReady;
 
   return (
     <LanguageProvider>
