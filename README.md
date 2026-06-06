@@ -36,22 +36,15 @@
 
 <div align="center">
 
-## ✦ What is This?
+## ✦ About the Project
 
 </div>
 
-A **cinematic, high-performance portfolio** for video editor **Alex** ([@alex.cc077](https://www.instagram.com/alex.cc077/)) — engineered from the ground up to convert visitors into paying clients. Every detail — from the WebGL plasma shader to the 3D shuffle card deck — was crafted with intention.
+A fully custom portfolio site I built for a video editor client — no templates, no page builders, no shortcuts.
 
-This is not a template. This is a custom-built creative weapon.
+The goal was simple: make the site feel as premium as the work it showcases. That meant writing a custom WebGL plasma shader, building a 3D draggable card deck for testimonials, animating every section entrance with spring physics, and shipping a bilingual experience (EN/BG) with a live toggle — all while keeping load times fast through code splitting and lazy loading.
 
-<br/>
-
-<div align="center">
-
-> Designed and built for a professional video editor —
-> from WebGL shaders to 3D card decks, every detail engineered with purpose.
-
-</div>
+Every component in this repo was written from scratch and tuned by hand.
 
 ---
 
