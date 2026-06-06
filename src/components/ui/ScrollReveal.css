@@ -1,0 +1,21 @@
+.scroll-reveal {
+  margin: 0;
+  display: block;
+  /* Allow textClassName's text-align + margin: auto to work */
+  text-align: inherit;
+}
+
+/* Inherits all typography from parent / textClassName — no overrides */
+.scroll-reveal-text {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  color: inherit;
+  /* Only reset block margins; preserve horizontal auto-margins from textClassName */
+  margin-block: 0;
+  padding: 0;
+}
+
+.word {
+  display: inline-block;
+}
