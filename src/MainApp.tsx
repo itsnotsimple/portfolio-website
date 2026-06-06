@@ -1,58 +1,111 @@
-import { useState, useEffect } from 'react';
-import { useScroll, motion } from 'framer-motion';
+import { useState, useEffect, Suspense, lazy } from 'react';
+import { useScroll, motion, useMotionValue, useMotionValueEvent } from 'framer-motion';
 import GlobalBackground from './components/ui/GlobalBackground';
 import Navbar   from './components/layout/Navbar';
 import Hero     from './components/sections/Hero';
-import Work     from './components/sections/Work';
-import About    from './components/sections/About';
-import Reviews  from './components/sections/Reviews';
-import FAQ      from './components/sections/FAQ';
-import Contact  from './components/sections/Contact';
+import LazySection from './components/ui/LazySection';
 import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 
-export default function MainApp({ isLoaded }: { isLoaded: boolean }) {
-  const { scrollYProgress } = useScroll();
+import Work from './components/sections/Work';
+import About from './components/sections/About';
 
-  // Background activates 300ms AFTER hero reveal starts.
-  // Hero gets isLoaded immediately — its CSS transitions start first.
-  // GlobalBackground activation (blob rendering, particle init) is deferred
-  // so it doesn't compete with hero's first transition frames.
-  const [bgActive, setBgActive] = useState(false);
+// Dynamic imports for code splitting / lazy loading
+const Reviews = lazy(() => import('./components/sections/Reviews'));
+const FAQ = lazy(() => import('./components/sections/FAQ'));
+const Contact = lazy(() => import('./components/sections/Contact'));
+
+interface MainAppProps {
+  onLayoutFinished: () => void;
+  onPlasmaReady: () => void;
+}
+
+export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProps) {
+  const { scrollYProgress } = useScroll();
+  const progressVal = useMotionValue(0);
+
+  // Synchronize scroll progress value only when not scroll-locked (menu not open)
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const isLocked = document.body.classList.contains('menu-open');
+    if (!isLocked) {
+      progressVal.set(latest);
+    }
+  });
+
+  // Scroll progress bar fades in after mount — purely cosmetic, no layout impact
+  const [showProgress, setShowProgress] = useState(false);
   useEffect(() => {
-    if (!isLoaded) return;
-    const t = setTimeout(() => setBgActive(true), 300);
+    const t = setTimeout(() => setShowProgress(true), 300);
     return () => clearTimeout(t);
-  }, [isLoaded]);
+  }, []);
+
+  useEffect(() => {
+    // Double requestAnimationFrame ensures React mounting AND browser painting are 100% finished
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Add a tiny 200ms extra cushion for mobile thread stabilization
+        setTimeout(() => {
+          onLayoutFinished();
+        }, 200);
+      });
+    });
+  }, [onLayoutFinished]);
 
   return (
     <>
       {/* Scroll progress bar */}
       <motion.div
         style={{
-          scaleX: scrollYProgress,
+          scaleX: progressVal,
           position: 'fixed', top: 0, left: 0, right: 0,
           height: '2px',
           background: 'linear-gradient(90deg, #2596be, #0dd3f0)',
           transformOrigin: '0%',
           zIndex: 99998,
           pointerEvents: 'none',
-          opacity: bgActive ? 1 : 0,
+          opacity: showProgress ? 1 : 0,
         }}
       />
 
-      {/* Fixed background — activates 300ms after hero */}
-      <GlobalBackground isLoaded={bgActive} />
+      {/* Fixed background — Plasma compiles immediately (desktop) or uses CSS (mobile) */}
+      <GlobalBackground isLoaded={true} onPlasmaReady={onPlasmaReady} />
 
       <div className={styles.app}>
+        {/* Invisible sentinel for scroll-free active header state */}
+        <div id="nav-sentinel" style={{ position: 'absolute', top: 0, left: 0, height: '60px', width: '100%', pointerEvents: 'none', zIndex: -1 }} />
+
         <Navbar />
-        <main id="main-content">
-          <Hero isLoaded={isLoaded} />
+        <main
+          id="main-content"
+        >
+          <Hero />
+
           <Work />
           <About />
-          <Reviews />
-          <FAQ />
-          <Contact />
+
+          <LazySection id="reviews" height="70vh">
+            {() => (
+              <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
+                <Reviews />
+              </Suspense>
+            )}
+          </LazySection>
+
+          <LazySection id="faq" height="60vh">
+            {() => (
+              <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                <FAQ />
+              </Suspense>
+            )}
+          </LazySection>
+
+          <LazySection id="contact" height="60vh">
+            {() => (
+              <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                <Contact />
+              </Suspense>
+            )}
+          </LazySection>
         </main>
         <Footer />
       </div>
