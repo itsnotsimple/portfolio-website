@@ -2,25 +2,11 @@
 <html lang="en" style="background:#04080c">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      (function() {
-        var params = new URLSearchParams(window.location.search);
-        if (!params.has('v')) {
-          params.set('v', Date.now());
-          var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + params.toString() + window.location.hash;
-          window.location.replace(newUrl);
-        }
-      })();
-    </script>
     <!-- viewport-fit=cover: proper display on notched iPhones -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <!-- iOS Safari chrome color + prevents white flash on load -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#04080c" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="description" content="Video editor specializing in commercial clips, music videos, and social media content. View the portfolio and get in touch." />
     <meta property="og:title" content="Alex & Flow — Video Editor Portfolio" />
     <meta property="og:description" content="I make your story move. Commercial clips, music videos, social media." />
@@ -28,6 +14,8 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preconnect to GitHub Pages CDN so video metadata requests are faster -->
+    <link rel="preconnect" href="https://itsnotsimple.github.io" crossorigin />
     <!-- Load Google Fonts asynchronously — does NOT block window load event.
          The rel="preload" + onload trick: preload fetches the CSS immediately
          without blocking, then onload switches it to a real stylesheet.
@@ -35,12 +23,12 @@
          active after our preloader has already finished. -->
     <link
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap"
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
     </noscript>
 
     <title>Alex & Flow — Video Editor Portfolio</title>
@@ -51,8 +39,12 @@
     <!-- ERUDA: Mobile DevTools — активира се само с ?debug=1 в URL-а -->
     <script>
       if (window.location.search.includes('debug=1')) {
-        document.write('<script src="https://cdn.jsdelivr.net/npm/eruda"><\/script>');
-        document.write('<script>eruda.init();<\/script>');
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+        script.onload = function() {
+          eruda.init();
+        };
+        document.head.appendChild(script);
       }
     </script>
     <script type="module" src="/src/main.tsx"></script>
