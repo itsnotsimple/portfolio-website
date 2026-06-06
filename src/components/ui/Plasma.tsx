@@ -31,7 +31,7 @@ void main() {
 `;
 
 const fragment = `#version 300 es
-precision highp float;
+precision mediump float;
 uniform vec2 iResolution;
 uniform float iTime;
 uniform vec3 uCustomColor;
@@ -51,25 +51,27 @@ void mainImage(out vec4 o, vec2 C) {
   vec2 mouseOffset = (uMouse - center) * 0.0002;
   C += mouseOffset * length(C - center) * step(0.5, uMouseInteractive);
   
-  float i = 0.0, d = 0.0, z = 0.0, T = iTime * uSpeed * uDirection;
+  float d = 0.0, z = 0.0, T = iTime * uSpeed * uDirection;
   vec3 O = vec3(0.0), p, S;
+  vec2 r = iResolution.xy;
+  vec2 Q;
 
-  for (vec2 r = iResolution.xy, Q; ++i < 60.; O += o.w/d*o.xyz) {
+  for (int i = 0; i < 60; i++) {
     vec3 dir = normalize(vec3(C-.5*r, r.y));
-    // Tilt the camera upwards (pitch rotation) to push the horizon completely off-screen on tall mobile viewports
-    float theta = -0.62;
-    float cT = cos(theta), sT = sin(theta);
-    dir.yz = mat2(cT, -sT, sT, cT) * dir.yz;
+
     
     p = z*dir; 
-    p.z -= 4.; 
+    p.z -= 4.0; 
     S = p;
     d = p.y-T;
     
-    p.x += .4*(1.+p.y)*sin(d + p.x*0.1)*cos(.34*d + p.x*0.05); 
-    Q = p.xz *= mat2(cos(p.y+vec4(0,11,33,0)-T)); 
-    z+= d = abs(sqrt(length(Q*Q)) - .25*(5.+S.y))/3.+8e-4; 
-    o = 1.+sin(S.y+p.z*.5+S.z-length(S-p)+vec4(2,1,0,8));
+    p.x += 0.4*(1.0+p.y)*sin(d + p.x*0.1)*cos(0.34*d + p.x*0.05); 
+    vec4 cosVal = cos(p.y + vec4(0.0, 11.0, 33.0, 0.0) - T);
+    p.xz = mat2(cosVal.x, cosVal.y, cosVal.z, cosVal.w) * p.xz;
+    Q = p.xz;
+    z+= d = abs(sqrt(length(Q*Q)) - 0.25*(5.0+S.y))/3.0+8e-4; 
+    o = 1.0+sin(S.y+p.z*0.5+S.z-length(S-p)+vec4(2.0,1.0,0.0,8.0));
+    O += o.w/d*o.xyz;
   }
   
   o.xyz = tanh(O/1e4);
@@ -97,6 +99,8 @@ void main() {
   fragColor = vec4(finalColor, alpha);
 }`;
 
+
+
 export const Plasma: React.FC<PlasmaProps> = ({
   color = '#ffffff',
   speed = 1,
@@ -114,6 +118,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
   // Stored so the outer cleanup can remove it even though it's defined inside initWebGL
   const mouseMoveHandlerRef = useRef<((e: MouseEvent) => void) | null>(null);
 
+
   useEffect(() => {
     onReadyRef.current = onReady;
   }, [onReady]);
@@ -130,7 +135,6 @@ export const Plasma: React.FC<PlasmaProps> = ({
     let cancelled = false;
     let raf = 0;
     let ro: ResizeObserver | null = null;
-    let io: IntersectionObserver | null = null;
     let canvas: HTMLCanvasElement | null = null;
 
     // ─── Defer ALL heavy WebGL work to browser idle time ───────────────────
@@ -144,9 +148,8 @@ export const Plasma: React.FC<PlasmaProps> = ({
       const customColorRgb = color ? hexToRgb(color) : [1, 1, 1];
       const directionMultiplier = direction === 'reverse' ? -1.0 : 1.0;
 
-      // Cap mobile DPR at 1 to prevent performance overhead while keeping desktop pixel ratio crisp
-      const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
-      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+      // Hardcode DPR to 1 to reduce resolution overhead and improve rendering speed
+      const dpr = 1;
 
       let renderer: Renderer;
       try {
@@ -154,8 +157,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
           webgl: 2,
           alpha: true,
           antialias: false,
-          dpr,
-          powerPreference: 'low-power'
+          dpr
         });
       } catch {
         return;
@@ -167,13 +169,22 @@ export const Plasma: React.FC<PlasmaProps> = ({
       canvas.style.display = 'block';
       canvas.style.width = '100%';
       canvas.style.height = '100%';
+      canvas.style.setProperty('opacity', '1', 'important');
+      canvas.style.setProperty('visibility', 'visible', 'important');
+      // Stretch the (possibly downscaled) drawing buffer to fill the container.
+      // object-fit:cover ensures no letterboxing on any aspect ratio.
+      canvas.style.objectFit = 'cover';
+      // Hard-block all pointer events on the canvas element itself so that
+      // even during compilation frames the WebGL layer can NEVER intercept
+      // touches or clicks destined for Hero buttons.
+      canvas.style.pointerEvents = 'none';
       containerEl.appendChild(canvas);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const geometry = new Triangle(gl) as any;
 
-      const maxIterations = isMobile ? '24.' : '55.';
-      const finalFragment = fragment.replace('++i < 60.', `++i < ${maxIterations}`);
+      // Use the desktop 3D raymarched shader on all devices to ensure identical high quality and animations.
+      const finalFragment = fragment.replace('i < 60', 'i < 30');
 
       // ── THIS is the synchronous shader compile — safely deferred now ──
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -232,7 +243,11 @@ export const Plasma: React.FC<PlasmaProps> = ({
         prevWidth = width;
         prevHeight = height;
 
-        renderer.setSize(width, height);
+        // Render at full resolution on all devices to prevent blurriness and pixelation.
+        const drawWidth  = width;
+        const drawHeight = height;
+
+        renderer.setSize(drawWidth, drawHeight);
         const res = program.uniforms.iResolution.value as Float32Array;
         res[0] = gl.drawingBufferWidth;
         res[1] = gl.drawingBufferHeight;
@@ -245,7 +260,9 @@ export const Plasma: React.FC<PlasmaProps> = ({
       let contextLost = false;
       let isVisible = true;
       const t0 = performance.now();
-      let hasReportedReady = false;
+      let frameCount = 0;
+      let isFullyFlushed = false;
+      const pixel = new Uint8Array(4);
 
       const loop = (t: number) => {
         if (contextLost || !isVisible) return;
@@ -264,13 +281,13 @@ export const Plasma: React.FC<PlasmaProps> = ({
         }
         renderer.render({ scene: mesh });
 
-        if (!hasReportedReady) {
-          hasReportedReady = true;
+        if (frameCount < 3) {
+          frameCount++;
+          gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+        } else if (!isFullyFlushed) {
+          isFullyFlushed = true;
           if (onReadyRef.current) {
-            // Defer slightly to ensure browser finishes rendering pipeline paint
-            setTimeout(() => {
-              onReadyRef.current?.();
-            }, 80);
+            onReadyRef.current();
           }
         }
 
@@ -292,47 +309,28 @@ export const Plasma: React.FC<PlasmaProps> = ({
       canvas!.addEventListener('webglcontextlost', handleContextLost);
       canvas!.addEventListener('webglcontextrestored', handleContextRestored);
 
-      io = new IntersectionObserver(([entry]) => {
-        const wasVisible = isVisible;
-        isVisible = entry.isIntersecting;
-        if (isVisible && !wasVisible && !contextLost) {
-          cancelAnimationFrame(raf);
-          raf = requestAnimationFrame(loop);
-        }
-      }, { threshold: 0 });
-      io.observe(containerEl);
+      // Removed IntersectionObserver on fixed containerEl as it is buggy on iOS Safari and causes background to stay black
 
       // Start the animation loop
       raf = requestAnimationFrame(loop);
 
       // Fade in the canvas elegantly over 1.5s
       setIsCompiled(true);
-
-      if (onReadyRef.current) onReadyRef.current();
     }; // ─── end initWebGL ───────────────────────────────────────────────────────
 
-    // Schedule WebGL init after a delay when the page is quiet.
-    // 1200ms delay ensures all entrance transitions (Navbar, Hero, etc.) are 100% completed.
-    let ricHandle = 0;
-    let stHandle = 0;
-    let stDelayHandle = window.setTimeout(() => {
-      if (typeof requestIdleCallback !== 'undefined') {
-        ricHandle = requestIdleCallback(initWebGL, { timeout: 200 });
-      } else {
-        stHandle = window.setTimeout(initWebGL, 1);
-      }
-    }, 1200);
+    // ─── Schedule WebGL compilation ─────────────────────────────────────────
+    // Now that the Preloader covers the screen, we compile immediately on ALL
+    // devices. The 50ms just lets React finish its current commit phase before
+    // the synchronous gl.linkProgram call hits the main thread.
+    // onReady fires the moment compilation succeeds, releasing the Preloader.
+    const stDelayHandle = window.setTimeout(initWebGL, 50);
 
     return () => {
       cancelled = true;
-      if (stDelayHandle) clearTimeout(stDelayHandle);
-      // Cancel before idle callback fires (component unmounted early)
-      if (ricHandle) cancelIdleCallback(ricHandle);
-      if (stHandle) clearTimeout(stHandle);
+      clearTimeout(stDelayHandle);
 
       cancelAnimationFrame(raf);
       ro?.disconnect();
-      io?.disconnect();
       if (canvas) {
         canvas.removeEventListener('webglcontextlost', () => {});
         canvas.removeEventListener('webglcontextrestored', () => {});
@@ -348,11 +346,16 @@ export const Plasma: React.FC<PlasmaProps> = ({
   return (
     <div
       ref={containerRef}
-      className="plasma-container"
+      className={`plasma-container ${isCompiled ? 'compiled' : ''}`}
       style={{
-        opacity: isCompiled ? 1 : 0,
-        transition: 'opacity 1.5s ease-in-out',
-        willChange: 'opacity'
+        opacity: 1,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100dvh',
+        zIndex: -1,
+        pointerEvents: 'none',
       }}
     />
   );

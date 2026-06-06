@@ -1,6 +1,62 @@
 .plasma-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%; /* fallback */
+  height: -webkit-fill-available; /* Safari <= 15 */
+  height: 100dvh; /* dynamic — tracks address-bar show/hide */
+  z-index: -1;
   overflow: hidden;
+  pointer-events: none !important;
+  background: radial-gradient(circle at 50% 50%, #06111f 0%, #020508 100%);
+  transform: translateZ(0); /* own GPU layer — prevents iOS repaint on scroll */
+}
+
+.plasma-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  pointer-events: none !important;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.plasma-container.compiled canvas {
+  opacity: 1 !important;
+}
+
+/* ── Mobile CSS plasma ───────────────────────────────────────────────────
+   Static radial gradients — no background-position animation (that causes
+   pixelation / stepping on mobile GPUs). Only opacity breathes, which is
+   a pure GPU-composited property = perfectly smooth on all phones. */
+.plasma-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* fallback */
+  height: -webkit-fill-available; /* Safari <= 15 */
+  height: 100dvh; /* dynamic — tracks address-bar show/hide */
+  z-index: 0;
+  pointer-events: none !important;
+  transform: translateZ(0); /* own GPU layer */
+  background:
+    radial-gradient(ellipse 90% 70% at 12% 22%, rgba(37,150,190,0.50) 0%, transparent 55%),
+    radial-gradient(ellipse 75% 60% at 88% 80%, rgba(13,211,240,0.38) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 90% at 50% 55%, rgba(26,107,138,0.42) 0%, transparent 65%),
+    linear-gradient(160deg, #03070b 0%, #060f1a 45%, #030810 100%);
+  /* Gentle opacity pulse — only opacity, no background-size or position anim */
+  animation: plasmaBreathe 8s ease-in-out infinite;
+}
+
+@keyframes plasmaBreathe {
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 1;    }
 }
