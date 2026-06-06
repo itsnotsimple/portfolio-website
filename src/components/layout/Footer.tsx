@@ -1,5 +1,14 @@
-import { SITE_CONFIG } from '../../data/content';
-import styles from './Footer.module.css';
+import { motion } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
+
+const NAV_LINKS_TEMPLATES = [
+  { href: '#work',    key: 'work' },
+  { href: '#about',   key: 'about' },
+  { href: '#reviews', key: 'reviews' },
+  { href: '#faq',     key: 'faq' },
+  { href: '#contact', key: 'contact' },
+] as const;
+
 
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
@@ -15,38 +24,186 @@ const EmailIcon = () => (
 );
 
 export default function Footer() {
+  const { content } = useLanguage();
+  const { SITE_CONFIG } = content;
+
+  const navLinks = NAV_LINKS_TEMPLATES.map(l => ({
+    ...l,
+    label: content.NAV_LINKS[l.key],
+  }));
+
   return (
-    <footer className={styles.footer} role="contentinfo">
-      <div className="container">
-        <div className={styles.inner}>
-          <div className={styles.brand}>
-            <span className={styles.logoHex} aria-hidden="true">⬡</span>
-            <span className={styles.logoText}>
-              ALEX<span className={styles.amp}>&</span>FLOW
+    <footer
+      role="contentinfo"
+      style={{
+        padding: '2.5rem 0 1.75rem',
+        background: 'rgba(4,8,12,0.93)',
+        backdropFilter: 'blur(14px)',
+        textAlign: 'center',
+        position: 'relative',
+        overflowX: 'clip',
+      }}
+    >
+      {/* Top gradient border — stronger */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(37,150,190,0.5) 30%, rgba(13,211,240,0.6) 55%, rgba(37,150,190,0.3) 80%, transparent 100%)',
+        }}
+      />
+
+      {/* Depth grid texture */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: `
+            linear-gradient(rgba(37,150,190,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(37,150,190,0.04) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          WebkitMaskImage: 'radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 80%)',
+          maskImage: 'radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 80%)',
+        }}
+      />
+
+      {/* Ambient glow behind brand */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', top: '0%', left: '50%',
+          transform: 'translate(-50%, -30%)',
+          width: '400px', height: '200px', borderRadius: '50%',
+          background: 'radial-gradient(ellipse, rgba(37,150,190,0.07) 0%, transparent 70%)',
+          filter: 'blur(30px)', pointerEvents: 'none',
+        }}
+      />
+
+      <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+
+        {/* Brand */}
+        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.25rem' }}>
+          <motion.div
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+              fontFamily: 'var(--font-display)', fontSize: '1.15rem',
+              fontWeight: 400, letterSpacing: '0.07em', position: 'relative', zIndex: 1,
+            }}
+          >
+            {/* Hex icon */}
+            <motion.span
+              aria-hidden="true"
+              style={{ color: 'var(--primary)', fontSize: '0.95rem', filter: 'drop-shadow(0 0 6px var(--primary-glow))' }}
+              animate={{ opacity: [0.75, 1, 0.75] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+            >⬡</motion.span>
+            <span style={{
+              background: 'linear-gradient(135deg, #f0f6fb 20%, #3ab8e2 60%, #0dd3f0 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              ALEX
+              <span style={{ WebkitTextFillColor: 'var(--primary)', color: 'var(--primary)', margin: '0 1px' }}>&</span>
+              FLOW
             </span>
-          </div>
-          <p className={styles.copy}>© {new Date().getFullYear()} Alex & Flow. All rights reserved.</p>
-          <div className={styles.links}>
-            <a
-              href={SITE_CONFIG.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.link}
-              id="footer-instagram"
-              aria-label="Instagram"
-            >
-              <InstagramIcon />
-            </a>
-            <a
-              href={`mailto:${SITE_CONFIG.email}`}
-              className={styles.link}
-              id="footer-email"
-              aria-label="Email"
-            >
-              <EmailIcon />
-            </a>
-          </div>
+          </motion.div>
         </div>
+
+        {/* Nav links */}
+        <nav
+          aria-label="Footer navigation"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexWrap: 'wrap', gap: 0, marginBottom: '1.1rem',
+          }}
+        >
+          {navLinks.map(l => (
+            <a
+              key={l.href}
+              href={l.href}
+              style={{
+                fontFamily: 'var(--font-body)', fontSize: '0.78rem',
+                color: 'var(--text-faint)', padding: '0.22rem 0.6rem',
+                borderRadius: 'var(--radius-sm)',
+                transition: 'color 0.15s ease, background 0.15s ease',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.color = 'var(--primary-light)';
+                (e.currentTarget as HTMLElement).style.background = 'var(--primary-subtle)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.color = 'var(--text-faint)';
+                (e.currentTarget as HTMLElement).style.background = 'transparent';
+              }}
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Social icons */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.1rem' }}>
+          <motion.a
+            href={SITE_CONFIG.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            style={{
+              width: '36px', height: '36px', borderRadius: 'var(--radius-sm)',
+              background: 'var(--bg-card)', border: '1px solid var(--border)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+            whileHover={{
+              color: '#e1306c',
+              borderColor: 'rgba(188,42,141,0.55)',
+              background: 'rgba(188,42,141,0.10)',
+              boxShadow: '0 0 16px rgba(188,42,141,0.25)',
+              y: -2,
+            }}
+            transition={{ duration: 0.22 }}
+          >
+            <InstagramIcon />
+          </motion.a>
+
+          <motion.a
+            href={`mailto:${SITE_CONFIG.email}`}
+            aria-label="Email"
+            style={{
+              width: '36px', height: '36px', borderRadius: 'var(--radius-sm)',
+              background: 'var(--bg-card)', border: '1px solid var(--border)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-muted)',
+            }}
+            whileHover={{
+              color: 'var(--primary-light)',
+              borderColor: 'rgba(37,150,190,0.55)',
+              background: 'rgba(37,150,190,0.10)',
+              boxShadow: '0 0 16px rgba(37,150,190,0.22)',
+              y: -2,
+            }}
+            transition={{ duration: 0.22 }}
+          >
+            <EmailIcon />
+          </motion.a>
+        </div>
+
+        {/* Divider */}
+        <div
+          aria-hidden="true"
+          style={{
+            height: '1px', margin: '0 auto 1rem',
+            maxWidth: '320px',
+            background: 'linear-gradient(90deg, transparent, rgba(37,150,190,0.22), transparent)',
+          }}
+        />
+
+        {/* Copyright */}
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--text-faint)', letterSpacing: '0.03em' }}>
+          © {new Date().getFullYear()} Alex & Flow · {SITE_CONFIG.copyrightSuffix}
+        </p>
       </div>
     </footer>
   );
