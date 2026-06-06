@@ -1,36 +1,66 @@
-/* Navbar: hidden initially, revealed when JS adds .navVisible after preloader-reveal event.
-   CSS transition triggered by classList.add is reliable in all Safari versions. */
+/* Navbar: reveal animation on load */
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 900;
-  padding: 1.1rem 0;
+  /* Pull up behind the OS status bar — covers notch/safe-area content bleed */
+  top: calc(-1 * env(safe-area-inset-top, 0px));
+  left: 0; right: 0;
+  width: 100%;
+  z-index: 9999;
+  padding-top: max(0.85rem, env(safe-area-inset-top, 0px));
+  padding-bottom: 0.85rem;
+  background: rgba(4, 8, 12, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   opacity: 0;
-  transform: translateY(-80px);
-  will-change: opacity, transform;
-  /* Keep transition for scrolled state changes (background, padding, shadow) */
-  transition: background var(--t-slow), padding var(--t-base), box-shadow var(--t-base);
-  animation: navReveal 0.55s cubic-bezier(0.4, 0, 0.2, 1) 1800ms both;
+  transform: translateY(-80px) translateZ(0);
+  will-change: opacity, transform, background, backdrop-filter;
+  pointer-events: none;
+  transition: background 0.4s ease,
+              backdrop-filter 0.4s ease,
+              -webkit-backdrop-filter 0.4s ease,
+              box-shadow 0.4s ease;
+  animation: navReveal 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0ms both;
 }
 
 @keyframes navReveal {
-  from {
-    opacity: 0;
-    transform: translateY(-80px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-80px) translateZ(0); }
+  to   { opacity: 1; transform: translateY(0) translateZ(0); }
 }
 
 .scrolled {
-  background: rgba(6,10,14,0.88);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  padding: 0.7rem 0;
-  box-shadow: 0 1px 0 var(--border), 0 4px 30px rgba(0,0,0,0.4);
+  background: rgba(4, 8, 12, 0.5);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
 }
+
+@media (max-width: 768px) {
+  /* "Bleed trick": pull the navbar 50px above the viewport top so its background
+     physically covers the entire status-bar / notch zone on ALL mobile browsers,
+     even when env(safe-area-inset-top) returns 0. The matching padding-top pushes
+     the logo and hamburger back into the correct visible position. */
+  .nav {
+    top: -100px !important;
+    padding-top: calc(100px + 0.85rem) !important;
+    /* Initialize transparent on mobile */
+    background: rgba(4, 8, 12, 0) !important;
+    backdrop-filter: blur(0px) !important;
+    -webkit-backdrop-filter: blur(0px) !important;
+    /* Upward shadow seals the sub-pixel gap between status bar and navbar */
+    box-shadow: 0 -5px 0 0 rgba(4, 8, 12, 0) !important;
+    transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease !important;
+    will-change: auto;
+  }
+  
+  /* Apply mobile scrolled styles explicitly with !important to override the bleed trick above */
+  .scrolled {
+    background: rgba(4, 8, 12, 0.7) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    box-shadow: 0 -5px 0 0 rgba(4, 8, 12, 0.7), 0 4px 30px rgba(0,0,0,0.5) !important;
+  }
+}
+
 
 .inner {
   max-width: 1200px;
@@ -39,10 +69,14 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  pointer-events: auto;
+  /* Sits above the ::before notch seal so logo/hamburger are never obscured */
+  position: relative;
+  z-index: 2;
 }
 @media (min-width: 768px) { .inner { padding: 0 2rem; } }
 
-/* Logo — Bebas Neue for brutal feel */
+/* ── Logo ────────────────────────────────────────────── */
 .logo {
   display: flex;
   align-items: center;
@@ -53,40 +87,70 @@
   letter-spacing: 0.06em;
   flex-shrink: 0;
   transition: opacity var(--t-fast);
+  pointer-events: auto !important;
+  cursor: pointer;
 }
 .logo:hover { opacity: 0.82; }
-.logoHex {
-  color: var(--primary);
-  font-size: 1.3rem;
-  filter: drop-shadow(0 0 8px var(--primary-glow));
-}
+.logoHex { color: var(--primary); font-size: 1.3rem; filter: drop-shadow(0 0 8px var(--primary-glow)); }
 .logoText { color: var(--text); }
 .logoAmp  { color: var(--primary); margin: 0 2px; }
 
-/* Desktop nav links — DM Sans for readability */
+/* ── Desktop links ───────────────────────────────────── */
 .desktopLinks {
   display: none;
   align-items: center;
   gap: 0.1rem;
   margin-left: auto;
+  position: relative;
 }
 @media (min-width: 768px) { .desktopLinks { display: flex; } }
 
+.desktopLinkItem {
+  position: relative;
+}
+
+.activePill {
+  position: absolute;
+  inset: 3px;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 150, 190, 0.09);
+  border: 1px solid rgba(37, 150, 190, 0.25);
+  box-shadow: 
+    0 2px 8px rgba(37, 150, 190, 0.08), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hoverPill {
+  position: absolute;
+  inset: 3px;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 150, 190, 0.06);
+  border: 1px solid rgba(37, 150, 190, 0.15);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .desktopLink {
-  padding: 0.48rem 0.9rem;
+  position: relative;
+  z-index: 1;
+  padding: 0.46rem 0.9rem;
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
   color: var(--text-muted);
   border-radius: var(--radius-sm);
-  transition: color var(--t-fast), background var(--t-fast);
+  border: 1px solid transparent;
+  transition: color var(--t-fast);
   letter-spacing: 0.01em;
+  pointer-events: auto !important;
+  cursor: pointer;
 }
-.desktopLink:hover, .active {
-  color: var(--text);
-  background: rgba(255,255,255,0.05);
-}
+.desktopLink:hover { color: var(--text); }
+.active { color: var(--primary-light); font-weight: 600; }
 
+/* ── Desktop CTA ─────────────────────────────────────── */
 .desktopCta {
   display: none;
   padding: 0.52rem 1.2rem;
@@ -101,97 +165,126 @@
   margin-left: 0.5rem;
   flex-shrink: 0;
   white-space: nowrap;
+  pointer-events: auto !important;
+  cursor: pointer;
 }
 @media (min-width: 768px) { .desktopCta { display: block; } }
-.desktopCta:hover {
-  background: var(--primary-light);
-  box-shadow: 0 0 20px var(--primary-glow);
-  transform: translateY(-1px);
-}
+.desktopCta:hover { background: var(--primary-light); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-1px); }
 
-/* Hamburger */
+/* ── Hamburger — perfectly square 44×44 ──────────────── */
 .burger {
+  /* Exact 44×44 square so lines are visually centered */
+  width: 44px;
+  height: 44px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 7px;
   margin-left: auto;
   border-radius: var(--radius-sm);
   transition: background var(--t-fast);
+  pointer-events: auto !important;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 @media (min-width: 768px) { .burger { display: none; } }
 .burger:hover { background: rgba(255,255,255,0.06); }
-.burger span {
+
+.burgerLine {
   display: block;
-  width: 23px; height: 2px;
+  width: 22px;
+  height: 2px;
   background: var(--text);
   border-radius: 2px;
-  transition: all var(--t-base);
-  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
 }
-.burgerOpen span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.burgerOpen span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.burgerOpen span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* Backdrop */
+/* Open state — X that's perfectly centered:
+   3 lines of height 2px with gap 5px → total 16px → center at 8px from top of line 1.
+   Line 1 center is 1px from top → needs +7px to reach center → translateY(7px).
+   Line 3 center is 15px from top → needs -7px → translateY(-7px). */
+.burgerOpen .burgerLine:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burgerOpen .burgerLine:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burgerOpen .burgerLine:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Backdrop ─────────────────────────────────────────── */
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6,10,14,0.72);
-  z-index: 910;
-  backdrop-filter: blur(4px);
+  background: rgba(4, 8, 12, 0.65);
+  z-index: 10000;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  pointer-events: auto;
 }
 
-/* Mobile Drawer */
+/* ── Drawer ───────────────────────────────────────────── */
 .drawer {
   position: fixed;
-  top: 0; right: 0;
-  width: min(340px, 88vw);
-  height: 100dvh;
-  background: rgba(8,14,22,0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-left: 1px solid var(--border);
-  z-index: 920;
+  /* Anchor all edges to the true visual viewport — zero bleed on any mobile browser */
+  top: 0;
+  right: 0;
+  /* Bleed trick: extend 100px below the screen to seal the gap behind the mobile browser toolbar */
+  bottom: -100px;
+  width: min(360px, 92%);
+  /* Let top and bottom bounds define the size */
+  height: auto;
+  /* Glassmorphism: semi-transparent dark + blur */
+  background: rgba(7, 12, 20, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(37, 150, 190, 0.18);
+  border-bottom: 1px solid transparent;
+  /* Subtle left-edge glow */
+  box-shadow: -4px 0 40px rgba(0, 0, 0, 0.6), -1px 0 0 rgba(37, 150, 190, 0.08);
+  z-index: 10010;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* ── Drawer header ────────────────────────────────────── */
 .drawerHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 1.4rem;
-  border-bottom: 1px solid var(--border);
+  /* Top padding absorbs the safe-area we pulled the drawer up into */
+  padding: max(1.15rem, env(safe-area-inset-top, 0px)) 1.4rem 1.15rem;
+  border-bottom: 1px solid rgba(37, 150, 190, 0.1);
   flex-shrink: 0;
 }
 
 .closeBtn {
-  width: 38px; height: 38px;
+  width: 40px; height: 40px;
   border-radius: 50%;
-  background: rgba(37,150,190,0.1);
-  border: 1px solid var(--border-hover);
+  background: rgba(37, 150, 190, 0.07);
+  border: 1px solid rgba(37, 150, 190, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  transition: all var(--t-base);
+  transition: all 0.22s ease;
   flex-shrink: 0;
 }
 @media (hover: hover) {
   .closeBtn:hover {
-    background: rgba(37,150,190,0.2);
+    background: rgba(37, 150, 190, 0.16);
+    border-color: rgba(37, 150, 190, 0.4);
     color: var(--text);
     transform: rotate(90deg);
   }
 }
 
+/* ── Nav links list ───────────────────────────────────── */
 .drawerLinks {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.75rem 0.85rem;
   gap: 0.2rem;
   flex: 1;
 }
@@ -199,57 +292,109 @@
 .drawerLink {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.95rem 1rem;
+  gap: 1rem;
+  padding: 0.85rem 0.85rem;
   border-radius: var(--radius);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.01em;
-  transition: all var(--t-base);
+  transition: color 0.2s ease, background 0.2s ease;
+  /* Ensure min 44px touch target */
+  min-height: 58px;
+  position: relative;
 }
+
+/* Left accent bar on hover/active */
+.drawerLink::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(to bottom, var(--primary-light), var(--primary));
+  border-radius: 0 3px 3px 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 @media (hover: hover) {
   .drawerLink:hover {
     color: var(--text);
-    background: rgba(37,150,190,0.08);
-    transform: translateX(4px);
+    background: rgba(37, 150, 190, 0.07);
   }
+  .drawerLink:hover::before { transform: translateY(-50%) scaleY(1); }
+  .drawerLink:hover .drawerIcon {
+    background: rgba(37, 150, 190, 0.18);
+    border-color: rgba(37, 150, 190, 0.45);
+    box-shadow: 0 0 14px rgba(37, 150, 190, 0.2);
+    color: var(--primary-light);
+  }
+  .drawerLink:hover .drawerArrow { opacity: 1; transform: translateX(0); }
 }
 
+.drawerLinkActive {
+  color: var(--text);
+  background: rgba(37, 150, 190, 0.08);
+}
+.drawerLinkActive::before { transform: translateY(-50%) scaleY(1); }
+.drawerLinkActive .drawerIcon {
+  background: rgba(37, 150, 190, 0.16);
+  border-color: rgba(37, 150, 190, 0.4);
+  color: var(--primary-light);
+}
+
+/* ── Icon box ─────────────────────────────────────────── */
 .drawerIcon {
-  width: 36px; height: 36px;
+  width: 44px; height: 44px;
   border-radius: var(--radius-sm);
-  background: var(--primary-subtle);
-  border: 1px solid var(--border);
+  background: rgba(37, 150, 190, 0.07);
+  border: 1px solid rgba(37, 150, 190, 0.16);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-light);
+  color: var(--primary);
   flex-shrink: 0;
-  transition: background var(--t-base), border-color var(--t-base);
-}
-@media (hover: hover) {
-  .drawerLink:hover .drawerIcon {
-    background: rgba(37,150,190,0.18);
-    border-color: var(--primary);
-  }
+  transition: background 0.2s ease, border-color 0.2s ease,
+              box-shadow 0.2s ease, color 0.2s ease;
 }
 
+.drawerLinkLabel {
+  flex: 1;
+}
+
+/* Subtle arrow — hidden by default, slides in on hover */
+.drawerArrow {
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* ── CTA area ─────────────────────────────────────────── */
 .drawerCta {
-  padding: 1.2rem 1.4rem;
-  border-top: 1px solid var(--border);
+  padding: 1.1rem 1.4rem;
+  border-top: 1px solid rgba(37, 150, 190, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
   flex-shrink: 0;
+  /* Push CTA to bottom of drawer even when links don't fill full height */
+  margin-top: auto;
+  /* Compensate for the 100px bottom bleed, pushing buttons back up above the browser UI */
+  padding-bottom: calc(100px + max(1.1rem, env(safe-area-inset-bottom, 0px)));
+  /* Downward shadow seals any remaining sub-pixel gap */
+  box-shadow: 0 5px 0 0 rgba(7, 12, 20, 0.96);
 }
 
 .drawerCtaBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   padding: 0.95rem;
   background: linear-gradient(135deg, var(--primary-light), var(--primary));
   color: #fff;
@@ -258,15 +403,16 @@
   font-size: 0.97rem;
   font-weight: 600;
   letter-spacing: 0.03em;
-  box-shadow: 0 4px 20px var(--primary-glow);
-  transition: filter var(--t-base), transform var(--t-base), box-shadow var(--t-base);
+  box-shadow: 0 4px 22px rgba(37, 150, 190, 0.3);
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  min-height: 52px;
 }
-
 @media (hover: hover) {
   .drawerCtaBtn:hover {
     filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(37, 150, 190, 0.5);
+    box-shadow: 0 6px 28px rgba(37, 150, 190, 0.45);
   }
 }
 
@@ -275,20 +421,33 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.7rem;
-  border: 1px solid var(--border);
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   font-family: var(--font-body);
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-muted);
-  transition: all var(--t-base);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  min-height: 48px;
 }
-
 @media (hover: hover) {
   .drawerInsta:hover {
     color: var(--text);
-    border-color: #bc2a8d;
-    background: rgba(188, 42, 141, 0.08);
+    border-color: rgba(188, 42, 141, 0.5);
+    background: rgba(188, 42, 141, 0.07);
+  }
+}
+
+.langToggleWrapper {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .langToggleWrapper {
+    margin-left: 0.5rem;
   }
 }
