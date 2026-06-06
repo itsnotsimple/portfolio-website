@@ -1,62 +1,86 @@
 /* ═══════════════════════════════════════════════════════
    HERO — Hero.module.css
+   Layout: mobile = centered column · desktop ≥920px = split grid
    REVEAL RULE: CSS transitions triggered by JS class add.
-   NO animation-delay. NO will-change before reveal.
-   NO overflow:hidden on .hero.
 ═══════════════════════════════════════════════════════ */
 
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: 100svh; /* static small viewport — safe fallback */
+  min-height: 100dvh; /* dynamic — expands when address bar hides */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 7rem 1.25rem 5rem;
   background: transparent;
-  /* IMPORTANT: no overflow:hidden — creates scroll container on iOS Safari */
 }
 
-/* ── Hero item reveal ────────────────────────────────── */
-/* All items start invisible. When isLoaded prop becomes true,
-   React adds .visible class. CSS transition does the reveal.
-   transition-delay creates the stagger (not animation-delay).
-   Transitions fire from property changes — cannot be deferred
-   by the browser like animation timers can. */
-
+/* ── Reveal animation ────────────────────────────────── */
 .item {
   opacity: 0;
   transform: translateY(20px);
   transition:
-    opacity  0.6s cubic-bezier(0.25, 1, 0.5, 1),
-    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    opacity  0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .item.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Scroll hint has translateX(-50%) for centering — preserve it */
-.scrollHint.item {
-  transform: translateX(-50%) translateY(20px);
-}
-.scrollHint.item.visible {
-  transform: translateX(-50%) translateY(0);
-}
+.scrollHint.item        { transform: translateX(-50%) translateY(20px); }
+.scrollHint.item.visible{ transform: translateX(-50%) translateY(0); }
 
-/* ── Layout ──────────────────────────────────────────── */
+/* ── Outer content container ─────────────────────────── */
 .content {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto;
 }
 
+/* ── Inner grid — single column mobile, split on desktop */
 .inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3rem;
+}
+
+@media (min-width: 920px) {
+  .inner {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 0 5rem;
+    align-items: center;
+  }
+}
+
+/* ── Left column ─────────────────────────────────────── */
+.left {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 1.5rem;
+}
+@media (min-width: 920px) {
+  .left {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ── Right column — hidden on mobile ─────────────────── */
+.right {
+  display: none;
+}
+@media (min-width: 920px) {
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 /* ── Badge ───────────────────────────────────────────── */
@@ -66,12 +90,13 @@
   gap: 0.5rem;
   padding: 0.4rem 1.1rem;
   border-radius: 100px;
-  background: rgba(37, 150, 190, 0.1);
-  border: 1px solid rgba(37, 150, 190, 0.3);
+  background: linear-gradient(135deg, rgba(37,150,190,0.14) 0%, rgba(131,80,232,0.07) 100%);
+  border: 1px solid rgba(37, 150, 190, 0.35);
   color: #3ab8e2;
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.04em;
+  box-shadow: 0 0 20px rgba(37,150,190,0.08), inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
 .dot {
@@ -92,52 +117,94 @@
 .heading {
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
-  font-size: clamp(3.2rem, 12vw, 7.5rem);
+  font-size: clamp(3.2rem, 12vw, 7rem);
   line-height: 0.92;
   letter-spacing: -0.02em;
   color: #f0f6fb;
   text-transform: uppercase;
 }
+/* Tighten size in split layout so it fits the left column */
+@media (min-width: 920px) {
+  .heading { font-size: clamp(3rem, 5.2vw, 5.6rem); }
+}
 
 .preText {
   display: block;
-  font-size: clamp(0.9rem, 3vw, 1.4rem);
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
   font-weight: 400;
   letter-spacing: 0.18em;
   color: #8aacbf;
   text-transform: uppercase;
-  margin-bottom: 0.2em;
+  margin-bottom: 0.25em;
 }
 
 .storyLine {
   display: block;
-  background: linear-gradient(135deg, #f0f6fb 30%, #3ab8e2 100%);
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #8acdeb 25%,
+    #0dd3f0 50%,
+    #8acdeb 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.3)) drop-shadow(0 0 30px rgba(37, 150, 190, 0.2));
+  animation: gradientFlow 12s linear infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* ── Typewriter line ─────────────────────────────────── */
 .typeLine {
   display: block;
-  font-size: clamp(1.4rem, 5vw, 3rem);
+  font-size: clamp(1.4rem, 4.5vw, 2.8rem);
   color: #0dd3f0;
   letter-spacing: -0.01em;
   min-height: 1.2em;
 }
+@media (min-width: 920px) {
+  .typeLine { font-size: clamp(1.4rem, 2.6vw, 2.6rem); }
+}
 
-.typeText { }
+.typeText {
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #8acdeb 25%,
+    #0dd3f0 50%,
+    #8acdeb 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.25)) drop-shadow(0 0 20px rgba(37, 150, 190, 0.15));
+  animation: gradientFlow 12s linear infinite;
+}
 
 .cursor {
   display: inline-block;
   color: #0dd3f0;
   margin-left: 2px;
 }
-
 .cursorBlink {
   animation: blink 1.1s step-end infinite;
 }
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -145,10 +212,10 @@
 
 /* ── Subtitle ────────────────────────────────────────── */
 .subtitle {
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
   color: #8aacbf;
-  max-width: 520px;
-  line-height: 1.7;
+  max-width: 500px;
+  line-height: 1.75;
 }
 
 /* ── CTA Row ─────────────────────────────────────────── */
@@ -158,6 +225,9 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+@media (min-width: 920px) {
+  .ctaRow { justify-content: flex-start; }
+}
 
 /* ── Stats ───────────────────────────────────────────── */
 .stats {
@@ -166,6 +236,22 @@
   justify-content: center;
   flex-wrap: wrap;
   padding-top: 0.5rem;
+  position: relative;
+}
+@media (min-width: 920px) {
+  .stats {
+    justify-content: flex-start;
+    padding-top: 1.75rem;
+  }
+  /* Gradient line above stats on desktop split layout */
+  .stats::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37,150,190,0.5) 0%, rgba(131,80,232,0.25) 60%, transparent 100%);
+  }
 }
 
 .statDivider {
@@ -175,9 +261,9 @@
   align-self: center;
 }
 
-.stat {
-  text-align: center;
-  min-width: 80px;
+.stat { text-align: center; min-width: 80px; }
+@media (min-width: 920px) {
+  .stat { text-align: left; }
 }
 
 .statNum {
@@ -191,11 +277,11 @@
   color: #f0f6fb;
   line-height: 1;
 }
-
-.statSuffix {
-  font-size: 0.65em;
-  color: #0dd3f0;
+@media (min-width: 920px) {
+  .statNum { justify-content: flex-start; }
 }
+
+.statSuffix { font-size: 0.65em; color: #0dd3f0; }
 
 .statLabel {
   display: block;
@@ -218,7 +304,6 @@
   cursor: pointer;
   color: #3a5060;
 }
-
 .scrollLabel {
   font-size: 0.65rem;
   letter-spacing: 0.14em;
@@ -226,22 +311,240 @@
   color: #3a5060;
 }
 
-/* ── Digit roller (stats animation) ─────────────────── */
-.digitWrapper {
-  display: inline-flex;
-  overflow: hidden;
-  height: 1.1em;
-  line-height: 1.1;
+/* ── Digit roller ────────────────────────────────────── */
+.digitWrapper { display: inline-flex; overflow: hidden; height: 1.1em; line-height: 1.1; }
+.digitTrack   { display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+.digit        { display: block; height: 1.1em; line-height: 1.1; }
+
+/* ═══════════════════════════════════════════════════════
+   DECORATIVE VISUAL (right column, desktop only)
+═══════════════════════════════════════════════════════ */
+.visualWrap {
+  position: relative;
+  width: 380px;
+  height: 380px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.digitTrack {
+/* Dot-grid, faded with radial mask */
+.visualGrid {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle, rgba(37,150,190,0.35) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle, black 30%, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle, black 30%, transparent 68%);
+  pointer-events: none;
+}
+
+/* Ambient radial glow behind the rings */
+.visualGlow {
+  position: absolute;
+  inset: -30px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(37,150,190,0.13) 0%,
+    rgba(131,80,232,0.06) 48%,
+    transparent 68%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+/* ── Concentric rings — CSS-animated, no JS transform conflict */
+.ring1, .ring2, .ring3 {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+}
+
+.ring1 {
+  width: 340px;
+  height: 340px;
+  border: 1px dashed rgba(37,150,190,0.18);
+  animation: spinCW 55s linear infinite;
+}
+
+.ring2 {
+  width: 248px;
+  height: 248px;
+  border: 1px dashed rgba(131,80,232,0.28);
+  animation: spinCCW 38s linear infinite;
+}
+
+.ring3 {
+  width: 155px;
+  height: 155px;
+  border: 1px solid rgba(37,150,190,0.42);
+  box-shadow: 0 0 22px rgba(37,150,190,0.07) inset;
+  animation: spinCW 22s linear infinite;
+}
+
+@keyframes spinCW  { to { transform: rotate(360deg); } }
+@keyframes spinCCW { to { transform: rotate(-360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ring1, .ring2, .ring3 { animation: none; }
+}
+
+/* ── Center play button */
+.ringCenter {
+  position: relative;
+  z-index: 2;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,150,190,0.22) 0%, rgba(4,8,12,0.96) 100%);
+  border: 1px solid rgba(37,150,190,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* Static outer glow ring */
+  box-shadow:
+    0 0 0 12px rgba(37,150,190,0.04),
+    0 0 0 24px rgba(37,150,190,0.025),
+    0 0 40px rgba(37,150,190,0.15);
+}
+
+/* ── Floating chips — premium two-line widgets */
+.floatChip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.52rem 1rem 0.52rem 0.7rem;
+  background: rgba(5,10,16,0.88);
+  border: 1px solid rgba(37,150,190,0.38);
+  border-radius: 14px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 3;
+  box-shadow: 0 0 22px rgba(37,150,190,0.10), 0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+  /* top gradient line per chip */
+  position: absolute;
+}
+.floatChip::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0.75rem; right: 0.75rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(13,211,240,0.55), transparent);
+  border-radius: 0;
+}
+
+/* Icon box */
+.chipIcon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* Text column */
+.chipTextCol {
   display: flex;
   flex-direction: column;
-  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  gap: 0;
+}
+.chipVal {
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #f0f6fb;
+  line-height: 1.1;
+}
+.chipSub {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 400;
+  color: #8aacbf;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 
-.digit {
-  display: block;
-  height: 1.1em;
+/* Positions */
+.chipTR { top:    4%; right:  2%; }
+.chipBR { bottom: 18%; right: -6%; }
+.chipBL { bottom: 4%;  left:   4%; }
+
+/* ── New premium rectangular stat cards ─────────────────── */
+.statCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.62rem;
+  padding: 0.62rem 0.88rem;
+  background: rgba(5,9,14,0.92);
+  border: 1px solid rgba(37,150,190,0.30);
+  border-radius: 14px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  z-index: 3;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.statCardLine {
+  position: absolute;
+  top: 0; left: 0.65rem; right: 0.65rem;
+  height: 1px;
+  pointer-events: none;
+}
+.statCardIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.statCardValue {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f0f6fb;
   line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.statCardLabel {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: #7aa8be;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+.statCardFloat1 {
+  animation: floatCard1 4.5s ease-in-out infinite;
+}
+.statCardFloat2 {
+  animation: floatCard2 5s ease-in-out infinite;
+}
+.statCardFloat3 {
+  animation: floatCard3 4s ease-in-out infinite;
+}
+
+@keyframes floatCard1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes floatCard2 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+@keyframes floatCard3 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
