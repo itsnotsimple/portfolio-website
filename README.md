@@ -305,8 +305,6 @@ Both gates must pass → Preloader fades → Site is visible.
 
 ## 📬 Contact
 
-**Kristian Djenev** — Developer & Builder
-
 [![GitHub](https://img.shields.io/badge/@itsnotsimple-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/itsnotsimple)
 
 ---
