@@ -197,7 +197,7 @@ export default function About() {
               }}
               initial={{ opacity: 0, rotateY: -32, rotateX: 14, scale: 0.78, y: 90 }}
               whileInView={{ opacity: 1, rotateY: 0, rotateX: 0, scale: 1, y: 0 }}
-              viewport={{ once: false, margin: '-8%' }}
+              viewport={{ once: true, margin: '-8%' }}
               transition={{ type: 'spring', damping: 18, stiffness: 55, mass: 1.1, opacity: { duration: 0.4, ease: 'easeOut' } }}
             >
               {/* Card ambient glow */}

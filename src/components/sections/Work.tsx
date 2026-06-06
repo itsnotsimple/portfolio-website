@@ -389,7 +389,7 @@ export default function Work() {
               aria-label={`Filter by ${cat.label}`}
               initial={{ opacity: 0, y: 40, scale: 0.88 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: false, margin: '-20px' }}
+              viewport={{ once: true, margin: '-20px' }}
               transition={{ duration: 0.55, delay: catIndex * 0.09, ease: [0.215, 0.61, 0.355, 1] }}
             >
               {inner}
