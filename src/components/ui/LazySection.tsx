@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 
 interface LazySectionProps {
-  children: React.ReactNode;
+  children: React.ReactNode | (() => React.ReactNode);
   height?: string; // Estimated height to reserve scroll space and prevent layout shifts
+  id?: string;     // Anchor id — placed on the outer wrapper so the target exists before lazy-mount
 }
 
-export default function LazySection({ children, height = '80vh' }: LazySectionProps) {
+export default function LazySection({ children, height = '80vh', id }: LazySectionProps) {
   const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -35,16 +36,24 @@ export default function LazySection({ children, height = '80vh' }: LazySectionPr
     return () => observer.disconnect();
   }, []);
 
+  const renderChildren = () => {
+    if (typeof children === 'function') {
+      return children();
+    }
+    return children;
+  };
+
   return (
     <div
+      id={id}
       ref={containerRef}
       style={{
-        minHeight: isMounted ? 'auto' : height,
+        minHeight: isMounted ? 'auto' : (height || '200px'),
         width: '100%',
-        display: 'contents', // Let parent grid/flex layout apply directly to children if needed
+        display: 'block',
       }}
     >
-      {isMounted ? children : <div style={{ height }} aria-hidden="true" />}
+      {isMounted ? renderChildren() : <div style={{ height: height || '200px' }} aria-hidden="true" />}
     </div>
   );
 }

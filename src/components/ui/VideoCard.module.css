@@ -85,7 +85,6 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 30px var(--primary-glow);
-  backdrop-filter: blur(4px);
   pointer-events: none;
 }
 
@@ -93,8 +92,7 @@
   position: absolute;
   top: 0.85rem;
   right: 0.85rem;
-  background: rgba(6,10,14,0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(6,10,14,0.85);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 0.7rem;
