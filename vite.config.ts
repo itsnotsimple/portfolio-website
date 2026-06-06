@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     // javascriptObfuscator is disabled to prevent 2-3 second startup freeze and massive bundle bloat.
     // Built-in Terser minification/mangling below is more than enough for production performance and security.
@@ -14,6 +16,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    modulePreload: false,
     sourcemap: false,       // no source maps in production
     minify: 'terser',
     terserOptions: {
