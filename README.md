@@ -30,7 +30,7 @@
 
 ---
 
-A fully custom portfolio site I built for a video editor client — no templates, no page builders, no shortcuts.
+A fully custom portfolio site I built for a video editor client.
 
 The goal was simple: make the site feel as premium as the work it showcases. That meant writing a custom WebGL plasma shader, building a 3D draggable card deck for testimonials, animating every section entrance with spring physics, and shipping a bilingual experience (EN/BG) with a live toggle — all while keeping load times fast through code splitting and lazy loading.
 
