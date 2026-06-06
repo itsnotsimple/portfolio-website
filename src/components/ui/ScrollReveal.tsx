@@ -12,28 +12,17 @@ interface ScrollRevealProps {
   blurStrength?: number;
   containerClassName?: string;
   textClassName?: string;
-  /** Fraction of element visible before triggering (0–1). Default 0.15 */
   threshold?: number;
-  /** Stagger delay between words in seconds. Default 0.045 */
   stagger?: number;
-  /** Forward reveal duration per word in seconds. Default 0.6 */
   duration?: number;
   style?: React.CSSProperties;
 }
 
-// Forward: staggered smooth reveal
 const makeVisibleTransition = (wordIndex: number, stagger: number, duration: number) => ({
   delay: wordIndex * stagger,
   duration,
-  ease: [0.16, 1, 0.3, 1] as [number, number, number, number], // expo-out — fast start, silky finish
+  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
 });
-
-// Backward: all words fade out together quickly, no stagger
-const hiddenTransition = {
-  delay: 0,
-  duration: 0.28,
-  ease: 'easeIn' as const,
-};
 
 const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
@@ -47,74 +36,69 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   duration = 0.6,
   style,
 }) => {
+  // ref ALWAYS attached to the rendered div so useInView observer is set up correctly
   const ref = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(true); // Default to static text during initial hydration
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
+    const check = () =>
       setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
 
-  // once: false  → re-triggers every time element enters/leaves viewport
-  const isInView = useInView(ref, { once: false, amount: threshold });
+  // once: true — fires the first time element enters viewport, then observer is removed
+  const isInView = useInView(ref, { once: true, amount: threshold });
 
   const words = useMemo(() => {
     const text = typeof children === 'string' ? children : '';
     return text.split(/(\s+)/);
   }, [children]);
 
-  if (isMobile) {
-    return (
-      <div className={`scroll-reveal ${containerClassName}`} style={style}>
-        <p className={`scroll-reveal-text ${textClassName}`}>
-          {children}
-        </p>
-      </div>
-    );
-  }
-
-  // Count actual (non-space) words for stagger index
   let wordCount = 0;
 
   return (
+    // ref always attached here — fixes the race condition where isMobile starts true
+    // and the observer was set up with ref.current = null
     <div ref={ref} className={`scroll-reveal ${containerClassName}`} style={style}>
       <p className={`scroll-reveal-text ${textClassName}`}>
-        {words.map((chunk, i) => {
-          if (chunk.match(/^\s+$/)) return chunk;
-          const idx = wordCount++;
-          return (
-            <motion.span
-              key={i}
-              className="word"
-              initial={{
-                opacity: baseOpacity,
-                filter: enableBlur ? `blur(${blurStrength}px)` : 'none',
-                y: 8,
-              }}
-              animate={
-                isInView
-                  ? {
-                      opacity: 1,
-                      filter: 'blur(0px)',
-                      y: 0,
-                      transition: makeVisibleTransition(idx, stagger, duration),
-                    }
-                  : {
-                      opacity: baseOpacity,
-                      filter: enableBlur ? `blur(${blurStrength}px)` : 'none',
-                      y: 8,
-                      transition: hiddenTransition,
-                    }
-              }
-            >
-              {chunk}
-            </motion.span>
-          );
-        })}
+        {isMobile ? (
+          children
+        ) : (
+          words.map((chunk, i) => {
+            if (chunk.match(/^\s+$/)) return chunk;
+            const idx = wordCount++;
+            return (
+              <motion.span
+                key={i}
+                className="word"
+                initial={{
+                  opacity: isInView ? 1 : baseOpacity,
+                  filter: isInView ? 'blur(0px)' : (enableBlur ? `blur(${blurStrength}px)` : 'none'),
+                  y: isInView ? 0 : 8,
+                }}
+                animate={
+                  isInView
+                    ? {
+                        opacity: 1,
+                        filter: 'blur(0px)',
+                        y: 0,
+                        transition: makeVisibleTransition(idx, stagger, duration),
+                      }
+                    : {
+                        opacity: baseOpacity,
+                        filter: enableBlur ? `blur(${blurStrength}px)` : 'none',
+                        y: 8,
+                        transition: { delay: 0, duration: 0.28, ease: 'easeIn' },
+                      }
+                }
+              >
+                {chunk}
+              </motion.span>
+            );
+          })
+        )}
       </p>
     </div>
   );

@@ -21,7 +21,7 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: false,       // keep console logs for mobile debugging
+        drop_console: true,
         drop_debugger: true,      // remove debugger statements
         passes: 3,                // multiple compression passes
         unsafe: false,
