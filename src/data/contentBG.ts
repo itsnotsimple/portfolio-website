@@ -90,7 +90,7 @@ export const REVIEWS_SECTION = {
   tag: 'Отзиви',
   heading: 'Какво казват',
   headingAccent: 'клиентите',
-  subtitle: 'Истински думи от истински хора, с които сме работили заедно.',
+  subtitle: 'Обратна връзка от клиентите, брандовете и авторите, с които сме работили.',
   clientReviewsLabel: 'Отзиви на клиенти',
   avgRating: 'Средна оценка',
   happyClients: 'Доволни клиенти',

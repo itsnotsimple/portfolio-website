@@ -91,7 +91,7 @@ export const REVIEWS_SECTION = {
   tag: 'Testimonials',
   heading: 'What clients',
   headingAccent: 'say',
-  subtitle: "Real words from real people I've worked with.",
+  subtitle: "Feedback from the clients, brands, and creators I've worked with.",
   clientReviewsLabel: 'Client Reviews',
   avgRating: 'Average rating',
   happyClients: 'Happy clients',
