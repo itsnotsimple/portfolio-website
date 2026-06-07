@@ -1,8 +1,17 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as EN from '../data/content';
 import * as BG from '../data/contentBG';
 
 type Language = 'en' | 'bg';
+
+// Compile-time guard: EN and BG must export the same set of keys, so a forgotten
+// translation fails `bun run build` instead of silently breaking at runtime.
+type _AssertSameContentKeys =
+  [keyof typeof EN] extends [keyof typeof BG]
+    ? ([keyof typeof BG] extends [keyof typeof EN] ? true : never)
+    : never;
+const _contentKeysMatch: _AssertSameContentKeys = true;
+void _contentKeysMatch;
 
 interface LanguageContextType {
   language: Language;
@@ -23,6 +32,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Select the appropriate content package
   const content = language === 'en' ? EN : (BG as unknown as typeof EN);
+
+  // Keep <html lang> and the document title in sync with the active language —
+  // matters for screen readers and search/social snippets.
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = content.SITE_CONFIG.metaTitle;
+  }, [language, content]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, content }}>

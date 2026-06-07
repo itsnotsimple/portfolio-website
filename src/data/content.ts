@@ -17,6 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
   copyrightSuffix: 'All rights reserved.',
+  metaTitle: 'Alex & Flow — Video Editor Portfolio',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
@@ -451,13 +452,13 @@ export const RESULTS: ClientResult[] = [
 
 // ── Before / After (color grading) ────────────────────────
 export const BEFORE_AFTER = {
-  tag: 'Color Grading',
+  tag: 'Color Grading & Correction',
   heading: 'See the',
   headingAccent: 'difference',
-  subtitle: 'Drag the handle to compare raw footage with the final graded look.',
+  subtitle: 'A side-by-side comparison of the raw footage and the final graded look.',
   beforeLabel: 'Before',
   afterLabel: 'After',
-  hint: 'Drag to compare',
+  hint: 'Compare looks',
   beforeVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/before.mp4?v=2',
   afterVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/after.mp4?v=2',
 } as const;

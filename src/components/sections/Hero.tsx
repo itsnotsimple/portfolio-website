@@ -5,6 +5,7 @@ import { useTypewriter } from '../../hooks/useTypewriter';
 import CountUp from '../ui/primitives/CountUp';
 import ScrollParallax from '../ui/effects/ScrollParallax';
 import styles from './Hero.module.css';
+import { isMobileDevice as detectMobile } from '../../lib/device';
 
 
 const STAGGER = [0, 0, 0, 0, 0, 0] as const;
@@ -28,7 +29,7 @@ const ChevronDown = () => (
   </svg>
 );
 
-const isMobileDevice = typeof window !== 'undefined' && (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
+const isMobileDevice = detectMobile();
 
 function TypewriterText() {
   const { content } = useLanguage();

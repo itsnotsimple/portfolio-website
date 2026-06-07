@@ -254,10 +254,6 @@ ul, ol     { list-style: none; }
   0%   { transform: scale(1);   opacity: 0.85; }
   100% { transform: scale(3.0); opacity: 0; }
 }
-@keyframes chipFloat {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-9px); }
-}
 @keyframes twinkle {
   0%, 100% { opacity: 0.12; transform: scale(0.75); }
   50%       { opacity: 1;    transform: scale(1.25); }

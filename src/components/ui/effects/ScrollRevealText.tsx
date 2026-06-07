@@ -46,7 +46,7 @@ function ActiveScrollRevealText({ text, className }: ScrollRevealTextProps) {
   const totalWords = words.length;
 
   return (
-    <p ref={containerRef} className={className} style={{ display: 'inline-flex', flexWrap: 'wrap' }}>
+    <p key={text} ref={containerRef} className={className} style={{ display: 'inline-flex', flexWrap: 'wrap' }}>
       {words.map((word, i) => {
         // Calculate the progressive activation range for each word
         const start = i / totalWords;

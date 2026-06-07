@@ -7,13 +7,16 @@ import ScrollParallax from '../ui/effects/ScrollParallax';
 import Folder from '../ui/cards/Folder';
 import CustomVideoPlayer from '../ui/media/CustomVideoPlayer';
 import type { CustomVideoPlayerRef } from '../ui/media/CustomVideoPlayer';
+import { isMobileDevice } from '../../lib/device';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 
-const isMobile = typeof window !== 'undefined' &&
-  (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+const isMobile = isMobileDevice();
 
 function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
   const videoRef = useRef<CustomVideoPlayerRef>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, onClose);
 
   useEffect(() => {
     const originalHtmlOverflow = document.documentElement.style.overflow;
@@ -34,6 +37,8 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
 
   return (
     <motion.div
+      ref={modalRef}
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

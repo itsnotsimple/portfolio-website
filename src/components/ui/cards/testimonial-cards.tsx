@@ -7,6 +7,8 @@ import ScrollReveal from '../effects/ScrollReveal';
 import ScrollParallax from '../effects/ScrollParallax';
 import CustomVideoPlayer from '../media/CustomVideoPlayer';
 import type { CustomVideoPlayerRef } from '../media/CustomVideoPlayer';
+import { isMobileDevice } from '../../../lib/device';
+import { useFocusTrap } from '../../../hooks/useFocusTrap';
 
 
 /* ── Animated twinkling star ─────────────────────────────── */
@@ -55,8 +57,10 @@ function AnimatedStar({ index, size = 14, fillPercent = 100 }: { index: number; 
 
 /* ── Reviews Video Modal ─────────────────────────────────── */
 function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: string; name: string; onClose: () => void }) {
-  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
+  const [isMobile] = useState(() => isMobileDevice());
   const videoRef = useRef<CustomVideoPlayerRef>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, onClose);
 
   useEffect(() => {
     // Disable scrolling
@@ -78,6 +82,8 @@ function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: string; name
 
   return (
     <motion.div
+      ref={modalRef}
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -1078,7 +1084,7 @@ export default function ShuffleCards() {
                 const position = posMap[orderIndex] ?? 'back';
                 return (
                   <TestimonialCard
-                    key={review.id}
+                    key={`${language}-${review.id}`}
                     handleShuffle={shuffle}
                     text={review.text}
                     position={position}
@@ -1168,7 +1174,7 @@ export default function ShuffleCards() {
             }}>
               {content.VIDEO_TESTIMONIALS.map((vt) => (
                 <VideoTestimonialCard
-                  key={vt.id}
+                  key={`${language}-${vt.id}`}
                   name={vt.name}
                   role={vt.role}
                   videoUrl={vt.videoUrl}

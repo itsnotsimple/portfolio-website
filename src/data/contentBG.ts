@@ -17,6 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Свободен за проекти',
   responseTime: 'Обикновено отговарям до 24 часа',
   copyrightSuffix: 'Всички права запазени.',
+  metaTitle: 'Alex & Flow — Портфолио на видео редактор',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
@@ -294,7 +295,7 @@ export const REVIEWS: Review[] = [
   },
   {
     id: 'review-corbinsylk',
-    name: 'Corbin Sylk',
+    name: 'Корбин Силк',
     initials: 'CS',
     role: 'Предприемач и бизнес коуч',
     company: '@corbinsylk',
@@ -309,7 +310,7 @@ export const REVIEWS: Review[] = [
   },
   {
     id: 'review-coach-westfit',
-    name: 'Westly Harrison',
+    name: 'Уестли Харисън',
     initials: 'WH',
     role: 'Онлайн фитнес треньор',
     company: '@coach_westfit',
@@ -399,14 +400,14 @@ export const FAQ_ITEMS: FAQItem[] = [
 export const VIDEO_TESTIMONIALS: VideoTestimonial[] = [
   {
     id: 'vt-westfit',
-    name: 'Westly Harrison',
+    name: 'Уестли Харисън',
     role: 'Онлайн фитнес треньор',
     thumb: '',
     videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Westly.mp4?v=2',
   },
   {
     id: 'vt-corbin',
-    name: 'Corbin Sylk',
+    name: 'Корбин Силк',
     role: 'Предприемач и бизнес коуч',
     thumb: '',
     videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Corbin.mp4?v=2',
@@ -444,13 +445,13 @@ export const RESULTS: ClientResult[] = [
 
 // ── Before / After (color grading) ────────────────────────
 export const BEFORE_AFTER = {
-  tag: 'Цветови корекции',
+  tag: 'Цветови корекции и грейдинг',
   heading: 'Виж',
   headingAccent: 'разликата',
-  subtitle: 'Плъзни дръжката, за да сравниш суровия кадър с финалния грейд.',
+  subtitle: 'Сравнение едно до друго на суровия кадър с финалния грейд.',
   beforeLabel: 'Преди',
   afterLabel: 'След',
-  hint: 'Плъзни за сравнение',
+  hint: 'Сравни цветовете',
   beforeVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/before.mp4?v=2',
   afterVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/after.mp4?v=2',
 } as const;

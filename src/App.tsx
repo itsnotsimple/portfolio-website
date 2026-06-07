@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
 import MainApp from './MainApp';
 import Preloader from './components/ui/primitives/Preloader';
 import { LanguageProvider } from './context/LanguageContext';
@@ -21,12 +22,14 @@ export default function App() {
   const isAppFullyCooked = isLayoutFinished && isPlasmaReady && isFontsReady;
 
   return (
-    <LanguageProvider>
-      <MainApp
-        onLayoutFinished={() => setIsLayoutFinished(true)}
-        onPlasmaReady={() => setIsPlasmaReady(true)}
-      />
-      <Preloader ready={isAppFullyCooked} />
-    </LanguageProvider>
+    <MotionConfig reducedMotion="user">
+      <LanguageProvider>
+        <MainApp
+          onLayoutFinished={() => setIsLayoutFinished(true)}
+          onPlasmaReady={() => setIsPlasmaReady(true)}
+        />
+        <Preloader ready={isAppFullyCooked} />
+      </LanguageProvider>
+    </MotionConfig>
   );
 }

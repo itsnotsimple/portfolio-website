@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
+import { isMobileDevice } from '../../../lib/device';
 
 interface ScrollParallaxProps {
   children: React.ReactNode;
@@ -17,11 +18,12 @@ export default function ScrollParallax({
   style,
 }: ScrollParallaxProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const [isMobile, setIsMobile] = useState(true); // Default to static element during initial hydration
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
+      setIsMobile(isMobileDevice(1024));
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -47,7 +49,8 @@ export default function ScrollParallax({
     mass: 0.15,
   });
 
-  if (isMobile) {
+  // Static (no parallax) on mobile or when the user asks for reduced motion.
+  if (isMobile || prefersReducedMotion) {
     return (
       <div className={className} style={style}>
         {children}

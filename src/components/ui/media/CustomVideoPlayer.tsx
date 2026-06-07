@@ -220,7 +220,7 @@ const CustomVideoPlayer = forwardRef<CustomVideoPlayerRef, CustomVideoPlayerProp
 
     const toggleFullscreen = () => {
       const container = containerRef.current;
-      const video = videoRef.current as any;
+      const video = videoRef.current as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
       if (!container || !video) return;
 
       if (video.webkitEnterFullscreen) {

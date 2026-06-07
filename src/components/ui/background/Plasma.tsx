@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
+import { useReducedMotion } from 'framer-motion';
+import { isMobileDevice } from '../../../lib/device';
 import './Plasma.css';
 
 interface PlasmaProps {
@@ -112,6 +114,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
   isLoaded = false
 }) => {
   const [isCompiled, setIsCompiled] = React.useState(false);
+  const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mousePos = useRef({ x: 0, y: 0 });
   const onReadyRef = useRef(onReady);
@@ -127,6 +130,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
     if (!isLoaded) return;
     if (!containerRef.current) return;
     const containerEl = containerRef.current;
+    const reduceMotion = !!prefersReducedMotion;
 
     // Cancelled flag so cleanup works even before idle callback fires
     let cancelled = false;
@@ -226,7 +230,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
         const height = Math.max(1, Math.floor(rect.height));
 
         // On mobile, ignore small height changes (address bar toggle) but allow initial setup and major resizes
-        const isMobileResize = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
+        const isMobileResize = isMobileDevice(768);
         const heightDiff = Math.abs(height - prevHeight);
         if (isMobileResize) {
           if (width === prevWidth && heightDiff < 150 && prevHeight !== 0) return;
@@ -263,7 +267,8 @@ export const Plasma: React.FC<PlasmaProps> = ({
 
       const loop = (t: number) => {
         if (contextLost || !isVisible) return;
-        const timeValue = (t - t0) * 0.001;
+        // Reduced motion: hold a fixed, pleasant frame instead of flowing time.
+        const timeValue = reduceMotion ? 6.0 : (t - t0) * 0.001;
         if (direction === 'pingpong') {
           const pingpongDuration = 10;
           const segmentTime = timeValue % pingpongDuration;
@@ -288,6 +293,8 @@ export const Plasma: React.FC<PlasmaProps> = ({
           }
         }
 
+        // Reduced motion: one static frame is enough — stop the rAF to save CPU/GPU.
+        if (reduceMotion && isFullyFlushed) return;
         raf = requestAnimationFrame(loop);
       };
 
@@ -337,7 +344,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
         containerEl.removeEventListener('mousemove', mouseMoveHandlerRef.current);
       }
     };
-  }, [color, speed, direction, scale, opacity, mouseInteractive, isLoaded]);
+  }, [color, speed, direction, scale, opacity, mouseInteractive, isLoaded, prefersReducedMotion]);
 
 
   return (

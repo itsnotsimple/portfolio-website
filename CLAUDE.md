@@ -13,6 +13,13 @@ bun run lint      # ESLint
 bun run preview   # preview the production build locally
 ```
 
+Asset helpers (run directly; need the `sharp` dev dependency):
+
+```bash
+bun run scripts/generate-assets.mjs   # og-image.jpg + favicon PNGs ← public/*.svg templates
+bun run scripts/optimize-images.mjs   # preview heavy-image re-compression (add --apply to write)
+```
+
 ## Architecture
 
 Single-page portfolio for a video editor. React 19 + TypeScript + Vite, styled with CSS Modules, animated with Framer Motion.
@@ -54,7 +61,7 @@ The site utilizes a unified, spring-smoothed momentum scroll parallax system (`S
 
 ### Sections and lazy loading
 
-Page sections in render order: `Hero` → `Work` → `About` → `Reviews` → `FAQ` → `Contact` → `Footer`
+Page sections in render order: `Hero` → `Work` → `BeforeAfter` → `About` → `Reviews` → `Results` → `FAQ` → `Contact` → `Footer`
 
 `Reviews`, `FAQ`, and `Contact` are code-split (`React.lazy`) and wrapped in `LazySection` (IntersectionObserver-based) + `Suspense`. They only load when near the viewport.
 
@@ -69,8 +76,8 @@ Design tokens (set as CSS custom properties):
 | Primary | `#2596be` | Cyan — buttons, links, accents |
 | Accent | `#8350e8` | Electric purple — active states, glows |
 | Surface | `#0d0d0d` | Near-black — backgrounds |
-| `--font-head` | Syne | Display headings |
-| `--font-display` | Bebas Neue | Large decorative text |
+| `--font-head` | Outfit (DM Sans fallback) | Display headings |
+| `--font-display` | Bebas Neue (Outfit fallback) | Large decorative text |
 | `--font-body` | Inter | Body copy and UI |
 
 ### Deployment

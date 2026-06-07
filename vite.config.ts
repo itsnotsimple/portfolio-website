@@ -45,8 +45,14 @@ export default defineConfig({
         chunkFileNames: 'assets/[hash].js',
         entryFileNames: 'assets/[hash].js',
         assetFileNames: 'assets/[hash].[ext]',
-        // Split chunks to make reverse-engineering harder
-        manualChunks: undefined,
+        // Vendor splitting: frameworks rarely change, so isolating them lets
+        // visitors keep long-lived cache hits across app-code deploys.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils')) return 'vendor-motion';
+          if (id.includes('/ogl/')) return 'vendor-gl';
+          if (id.includes('/react') || id.includes('/scheduler/')) return 'vendor-react';
+        },
       },
     },
   },

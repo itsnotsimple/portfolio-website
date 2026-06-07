@@ -1,8 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../../../context/LanguageContext';
 import ScrollReveal from '../effects/ScrollReveal';
 import ScrollParallax from '../effects/ScrollParallax';
+
+// If the two videos drift further apart than this (seconds), resync them.
+const VIDEO_SYNC_THRESHOLD_S = 0.08;
 
 // Cinematic graded look (shown until /images/grading/after.webp is added)
 const AFTER_GRADIENT =
@@ -59,6 +62,7 @@ function CompareLayer({ src, alt, gradient, filter, label, side }: CompareLayerP
 export default function BeforeAfter() {
   const { content } = useLanguage();
   const { BEFORE_AFTER } = content;
+  const prefersReducedMotion = useReducedMotion();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const beforeVideoRef = useRef<HTMLVideoElement>(null);
@@ -69,8 +73,47 @@ export default function BeforeAfter() {
   const [afterReady, setAfterReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
+  // Slider position: 0 = fully "before", 100 = fully "after". Starts centered.
+  const [position, setPosition] = useState(50);
+  const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
+
   const hasVideoUrls = !!(BEFORE_AFTER.beforeVideoUrl && BEFORE_AFTER.afterVideoUrl);
   const useVideo = hasVideoUrls && beforeReady && afterReady && !videoError;
+
+  // ── Drag interaction (pointer = mouse + touch + pen) ──────────────────
+  const updateFromClientX = (clientX: number) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const pct = ((clientX - rect.left) / rect.width) * 100;
+    setPosition(Math.min(100, Math.max(0, pct)));
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    draggingRef.current = true;
+    setDragging(true);
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    updateFromClientX(e.clientX);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    updateFromClientX(e.clientX);
+  };
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    draggingRef.current = false;
+    setDragging(false);
+    e.currentTarget.releasePointerCapture?.(e.pointerId);
+  };
+
+  // ── Keyboard interaction (slider role) ────────────────────────────────
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const step = e.shiftKey ? 10 : 2;
+    if (e.key === 'ArrowLeft') { setPosition((p) => Math.max(0, p - step)); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { setPosition((p) => Math.min(100, p + step)); e.preventDefault(); }
+    else if (e.key === 'Home') { setPosition(0); e.preventDefault(); }
+    else if (e.key === 'End') { setPosition(100); e.preventDefault(); }
+  };
 
   // Synchronize play/pause, time, and handle IntersectionObserver for CPU saving
   useEffect(() => {
@@ -94,8 +137,16 @@ export default function BeforeAfter() {
 
     // Frame/time synchronization to prevent audio-less drift
     const handleTimeUpdate = () => {
+      if (vBefore.seeking) return; // skip if slave video is currently seeking to prevent browser lock-ups
+
+      // If the master video is playing but the slave is paused, force play
+      if (!vAfter.paused && vBefore.paused) {
+        vBefore.play().catch(() => {});
+        return;
+      }
+
       const diff = Math.abs(vBefore.currentTime - vAfter.currentTime);
-      if (diff > 0.08) {
+      if (diff > VIDEO_SYNC_THRESHOLD_S) {
         vBefore.currentTime = vAfter.currentTime;
       }
       if (vBefore.playbackRate !== vAfter.playbackRate) {
@@ -138,6 +189,12 @@ export default function BeforeAfter() {
     };
   }, [useVideo]);
 
+  // Dynamic clip for the BEFORE layer + smooth transition (except while dragging / reduced motion)
+  const beforeClip = `inset(0 ${100 - position}% 0 0)`;
+  const animateSlider = !dragging && !prefersReducedMotion;
+  const clipTransition = animateSlider ? 'clip-path 0.12s ease-out' : 'none';
+  const handleTransition = animateSlider ? 'left 0.12s ease-out' : 'none';
+
   return (
     <section
       aria-label={BEFORE_AFTER.tag}
@@ -171,7 +228,7 @@ export default function BeforeAfter() {
           </ScrollReveal>
         </motion.div>
 
-        {/* Slider Container (Fixed 50/50 Split) */}
+        {/* Draggable comparison slider */}
         <ScrollParallax speed={10}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -182,12 +239,19 @@ export default function BeforeAfter() {
           >
             <div
               ref={containerRef}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
               style={{
                 position: 'relative', width: '100%', aspectRatio: '16 / 9',
                 borderRadius: 'var(--radius-lg)', overflow: 'hidden',
                 border: '1px solid rgba(37,150,190,0.3)',
                 boxShadow: '0 24px 60px rgba(0,0,0,0.5), 0 0 50px rgba(37,150,190,0.1)',
                 userSelect: 'none',
+                cursor: dragging ? 'grabbing' : 'ew-resize',
+                // pan-y lets the page still scroll vertically over the slider on touch
+                touchAction: 'pan-y',
               }}
             >
               {/* VIDEO VERSION */}
@@ -217,12 +281,13 @@ export default function BeforeAfter() {
                     )}
                   </div>
 
-                  {/* BEFORE Video (overlay, clipped to 50%) */}
+                  {/* BEFORE Video (overlay, clipped to slider position) */}
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      clipPath: 'inset(0 50% 0 0)',
-                      WebkitClipPath: 'inset(0 50% 0 0)',
+                      clipPath: beforeClip,
+                      WebkitClipPath: beforeClip,
+                      transition: clipTransition,
                       zIndex: 2,
                     }}
                   >
@@ -264,12 +329,13 @@ export default function BeforeAfter() {
                     />
                   </div>
 
-                  {/* BEFORE (overlay, clipped to 50%) */}
+                  {/* BEFORE (overlay, clipped to slider position) */}
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      clipPath: 'inset(0 50% 0 0)',
-                      WebkitClipPath: 'inset(0 50% 0 0)',
+                      clipPath: beforeClip,
+                      WebkitClipPath: beforeClip,
+                      transition: clipTransition,
                     }}
                   >
                     <CompareLayer
@@ -284,17 +350,52 @@ export default function BeforeAfter() {
                 </>
               )}
 
-              {/* Fixed Center Divider Line */}
+              {/* Draggable handle + divider (keyboard-accessible slider) */}
               <div
-                aria-hidden="true"
+                role="slider"
+                tabIndex={0}
+                aria-label={`${BEFORE_AFTER.beforeLabel} / ${BEFORE_AFTER.afterLabel}`}
+                aria-orientation="horizontal"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(position)}
+                onKeyDown={onKeyDown}
                 style={{
-                  position: 'absolute', top: 0, bottom: 0, left: '50%',
-                  transform: 'translateX(-50%)', width: '2px', zIndex: 3,
-                  pointerEvents: 'none',
-                  background: 'rgba(255,255,255,0.9)',
-                  boxShadow: '0 0 12px rgba(37,150,190,0.85)',
+                  position: 'absolute', top: 0, bottom: 0, left: `${position}%`,
+                  transform: 'translateX(-50%)', width: '44px', zIndex: 4,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: dragging ? 'grabbing' : 'ew-resize',
+                  transition: handleTransition,
                 }}
-              />
+              >
+                {/* Vertical line */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: 'absolute', top: 0, bottom: 0, left: '50%',
+                    transform: 'translateX(-50%)', width: '2px', pointerEvents: 'none',
+                    background: 'rgba(255,255,255,0.9)',
+                    boxShadow: '0 0 12px rgba(37,150,190,0.85)',
+                  }}
+                />
+                {/* Grabber knob */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    width: '34px', height: '34px', borderRadius: '50%',
+                    background: 'rgba(4,8,12,0.72)', border: '2px solid rgba(255,255,255,0.92)',
+                    backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.5), 0 0 16px rgba(37,150,190,0.5)',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="10 8 6 12 10 16" />
+                    <polyline points="14 8 18 12 14 16" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </motion.div>
         </ScrollParallax>

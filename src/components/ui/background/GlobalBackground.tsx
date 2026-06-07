@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
+import { isMobileDevice } from '../../../lib/device';
 import Plasma from './Plasma';
 import styles from './GlobalBackground.module.css';
 
@@ -11,11 +12,12 @@ export default function GlobalBackground({
   onPlasmaReady?: () => void;
 }) {
   const { scrollY } = useScroll();
+  const prefersReducedMotion = useReducedMotion();
   const [isMobile, setIsMobile] = useState(true); // Default to static blobs during initial hydration
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
+      setIsMobile(isMobileDevice(1024));
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -25,9 +27,11 @@ export default function GlobalBackground({
   // Smooth scroll translation with spring physics
   const smoothScrollY = useSpring(scrollY, { stiffness: 80, damping: 25, mass: 0.15 });
 
-  const yBlob1 = useTransform(smoothScrollY, (y) => isMobile ? 0 : -y * 0.18);
-  const yBlob2 = useTransform(smoothScrollY, (y) => isMobile ? 0 : -y * 0.26);
-  const yBlob3 = useTransform(smoothScrollY, (y) => isMobile ? 0 : -y * 0.10);
+  // Treat reduced-motion users like mobile: no scroll-driven blob parallax.
+  const staticBg = isMobile || !!prefersReducedMotion;
+  const yBlob1 = useTransform(smoothScrollY, (y) => staticBg ? 0 : -y * 0.18);
+  const yBlob2 = useTransform(smoothScrollY, (y) => staticBg ? 0 : -y * 0.26);
+  const yBlob3 = useTransform(smoothScrollY, (y) => staticBg ? 0 : -y * 0.10);
 
   return (
     <div className={styles.root} aria-hidden="true">
@@ -51,8 +55,8 @@ export default function GlobalBackground({
         onReady={onPlasmaReady}
       />
 
-      {/* Nebula blobs — static on mobile, spring-smoothed parallax on desktop */}
-      {isMobile ? (
+      {/* Nebula blobs — static on mobile / reduced-motion, spring parallax on desktop */}
+      {staticBg ? (
         <>
           <div className={`${styles.blob} ${styles.blob1}`} />
           <div className={`${styles.blob} ${styles.blob2}`} />

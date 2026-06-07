@@ -4,6 +4,7 @@ import GlobalBackground from './components/ui/background/GlobalBackground';
 import Navbar   from './components/layout/Navbar';
 import Hero     from './components/sections/Hero';
 import LazySection from './components/ui/primitives/LazySection';
+import ErrorBoundary from './components/ui/primitives/ErrorBoundary';
 import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 
@@ -77,40 +78,40 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProp
         <div id="nav-sentinel" style={{ position: 'absolute', top: 0, left: 0, height: '60px', width: '100%', pointerEvents: 'none', zIndex: -1 }} />
 
         <Navbar />
-        <main
-          id="main-content"
-        >
-          <Hero />
+        <main id="main-content">
+          <ErrorBoundary>
+            <Hero />
 
-          <Work />
-          <BeforeAfter />
-          <About />
+            <Work />
+            <BeforeAfter />
+            <About />
 
-          <LazySection id="reviews" height="70vh">
-            {() => (
-              <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
-                <Reviews />
-              </Suspense>
-            )}
-          </LazySection>
+            <LazySection id="reviews" height="70vh">
+              {() => (
+                <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
+                  <Reviews />
+                </Suspense>
+              )}
+            </LazySection>
 
-          <Results />
+            <Results />
 
-          <LazySection id="faq" height="60vh">
-            {() => (
-              <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
-                <FAQ />
-              </Suspense>
-            )}
-          </LazySection>
+            <LazySection id="faq" height="60vh">
+              {() => (
+                <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                  <FAQ />
+                </Suspense>
+              )}
+            </LazySection>
 
-          <LazySection id="contact" height="60vh">
-            {() => (
-              <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
-                <Contact />
-              </Suspense>
-            )}
-          </LazySection>
+            <LazySection id="contact" height="60vh">
+              {() => (
+                <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                  <Contact />
+                </Suspense>
+              )}
+            </LazySection>
+          </ErrorBoundary>
         </main>
         <Footer />
       </div>

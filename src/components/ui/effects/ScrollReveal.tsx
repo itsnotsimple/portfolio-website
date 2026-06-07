@@ -57,12 +57,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   }, [children]);
 
   let wordCount = 0;
+  const textKey = typeof children === 'string' ? children : undefined;
 
   return (
     // ref always attached here — fixes the race condition where isMobile starts true
     // and the observer was set up with ref.current = null
     <div ref={ref} className={`scroll-reveal ${containerClassName}`} style={style}>
-      <p className={`scroll-reveal-text ${textClassName}`}>
+      <p key={textKey} className={`scroll-reveal-text ${textClassName}`}>
         {isMobile ? (
           children
         ) : (
