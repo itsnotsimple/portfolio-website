@@ -2,9 +2,11 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion';
 import type { TargetAndTransition } from 'framer-motion';
-import { useLanguage } from '../../context/LanguageContext';
-import ScrollReveal from './ScrollReveal';
-import ScrollParallax from './ScrollParallax';
+import { useLanguage } from '../../../context/LanguageContext';
+import ScrollReveal from '../effects/ScrollReveal';
+import ScrollParallax from '../effects/ScrollParallax';
+import CustomVideoPlayer from '../media/CustomVideoPlayer';
+import type { CustomVideoPlayerRef } from '../media/CustomVideoPlayer';
 
 
 /* ── Animated twinkling star ─────────────────────────────── */
@@ -38,14 +40,14 @@ function AnimatedStar({ index, size = 14, fillPercent = 100 }: { index: number; 
       {fillPercent < 100 && (
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset={`${fillPercent}%`} stopColor="#f5c842" />
-            <stop offset={`${fillPercent}%`} stopColor="rgba(255, 255, 255, 0.15)" />
+            <stop offset={`${fillPercent}%`} stopColor="#F5C842" />
+            <stop offset={`${fillPercent}%`} stopColor="rgba(255,255,255,0.15)" />
           </linearGradient>
         </defs>
       )}
       <path
-        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"
-        fill={fillPercent < 100 ? `url(#${gradientId})` : "#f5c842"}
+        d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.787 1.4 8.168L12 18.896l-7.333 3.857 1.4-8.168L.133 9.209l8.2-1.191L12 .587z"
+        fill={fillPercent < 100 ? `url(#${gradientId})` : "#F5C842"}
       />
     </motion.svg>
   );
@@ -53,12 +55,10 @@ function AnimatedStar({ index, size = 14, fillPercent = 100 }: { index: number; 
 
 /* ── Reviews Video Modal ─────────────────────────────────── */
 function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: string; name: string; onClose: () => void }) {
-  const [isMobile, setIsMobile] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
+  const videoRef = useRef<CustomVideoPlayerRef>(null);
 
   useEffect(() => {
-    setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
-
     // Disable scrolling
     const originalHtmlOverflow = document.documentElement.style.overflow;
     const originalBodyOverflow = document.body.style.overflow;
@@ -66,18 +66,13 @@ function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: string; name
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
+    const currentVideo = videoRef.current;
     return () => {
       document.documentElement.style.overflow = originalHtmlOverflow;
       document.body.style.overflow = originalBodyOverflow;
 
-      // Hard-stop the video on unmount — prevents audio playing during exit animation
-      // or lingering in browser memory after the modal closes
-      const vid = videoRef.current;
-      if (vid) {
-        vid.pause();
-        vid.src = '';
-        vid.load();
-      }
+      // Hard-stop the video on unmount
+      currentVideo?.pause();
     };
   }, []);
 
@@ -174,20 +169,13 @@ function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: string; name
           transformStyle: 'preserve-3d',
         }}
       >
-        <video
+        <CustomVideoPlayer
           ref={videoRef}
           src={videoUrl}
-          controls
-          autoPlay
-          playsInline
-          controlsList="nodownload"
-          onContextMenu={e => e.preventDefault()}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-          }}
+          objectFit="cover"
+          autoPlay={true}
+          playsInline={true}
+          muted={false}
         />
       </motion.div>
     </motion.div>
@@ -373,11 +361,7 @@ function TestimonialCard({
   const dragRef = useRef(0);
   const isFront = position === 'front';
   const [isDragging, setIsDragging] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
-  }, []);
+  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
 
   const positionStyles: Record<string, TargetAndTransition> = {
     front:  { zIndex: 3, rotate: '-3deg', x: '0%' },
@@ -623,6 +607,7 @@ function AnimatedStatValue({ value }: { value: string }) {
 
     const match = value.match(/^([\d.]+)(.*)$/);
     if (!match) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayValue(value);
       return;
     }
@@ -990,7 +975,7 @@ export default function ShuffleCards() {
       }} />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 } as any}>
+      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span aria-hidden="true" style={{
           fontFamily: 'var(--font-display)', fontSize: 'clamp(7rem, 18vw, 13rem)',
           fontWeight: 400, color: 'var(--primary)', opacity: 0.06,
@@ -1080,7 +1065,7 @@ export default function ShuffleCards() {
           transition={{ duration: 0.6, delay: 0.15 }}
         >
           {/* Card column */}
-          <ScrollParallax speed={12} className="reviews-card-col" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' } as any}>
+          <ScrollParallax speed={12} className="reviews-card-col" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Card stack — visible overflow so drag gesture isn't clipped */}
             <div style={{
               position: 'relative',

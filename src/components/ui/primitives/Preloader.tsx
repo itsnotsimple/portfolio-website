@@ -10,6 +10,7 @@ export default function Preloader({ ready }: PreloaderProps) {
 
   useEffect(() => {
     if (ready) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase('exit');
     }
   }, [ready]);

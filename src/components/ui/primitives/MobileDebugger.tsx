@@ -41,6 +41,7 @@ export default function MobileDebugger() {
   const [items, setItems] = useState<ItemState[]>(LABELS.map(empty));
   const [logs, setLogs] = useState<string[]>([]);
   const [elapsed, setElapsed] = useState(0);
+  // eslint-disable-next-line react-hooks/purity
   const startRef = useRef(performance.now());
   const cleanupRef = useRef<(() => void)[]>([]);
   const animStartedRef = useRef<boolean[]>(new Array(6).fill(false));

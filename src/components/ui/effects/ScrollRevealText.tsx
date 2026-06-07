@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion, MotionValue, useScroll, useTransform } from 'framer-motion';
 
 interface WordRevealProps {
@@ -65,11 +65,7 @@ function ActiveScrollRevealText({ text, className }: ScrollRevealTextProps) {
 }
 
 export default function ScrollRevealText(props: ScrollRevealTextProps) {
-  const [isMobile, setIsMobile] = useState(true); // Default to static text during initial hydration
-
-  useEffect(() => {
-    setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
-  }, []);
+  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
 
   if (isMobile) {
     return <p className={props.className}>{props.text}</p>;

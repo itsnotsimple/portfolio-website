@@ -124,10 +124,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
   }, [onReady]);
 
   useEffect(() => {
-    if (!isLoaded) {
-      setIsCompiled(false);
-      return;
-    }
+    if (!isLoaded) return;
     if (!containerRef.current) return;
     const containerEl = containerRef.current;
 
@@ -180,14 +177,12 @@ export const Plasma: React.FC<PlasmaProps> = ({
       canvas.style.pointerEvents = 'none';
       containerEl.appendChild(canvas);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const geometry = new Triangle(gl) as any;
+      const geometry = new Triangle(gl);
 
       // Use the desktop 3D raymarched shader on all devices to ensure identical high quality and animations.
       const finalFragment = fragment.replace('i < 60', 'i < 30');
 
       // ── THIS is the synchronous shader compile — safely deferred now ──
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const program = new Program(gl, {
         vertex: vertex,
         fragment: finalFragment,
@@ -203,10 +198,9 @@ export const Plasma: React.FC<PlasmaProps> = ({
           uMouse: { value: new Float32Array([0, 0]) },
           uMouseInteractive: { value: mouseInteractive ? 1.0 : 0.0 }
         }
-      }) as any;
+      });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mesh = new Mesh(gl, { geometry, program }) as any;
+      const mesh = new Mesh(gl, { geometry, program });
 
       const handleMouseMove = (e: MouseEvent) => {
         if (!mouseInteractive) return;
@@ -258,15 +252,18 @@ export const Plasma: React.FC<PlasmaProps> = ({
       setSize();
 
       let contextLost = false;
-      let isVisible = true;
+      const isVisible = true;
       const t0 = performance.now();
       let frameCount = 0;
       let isFullyFlushed = false;
       const pixel = new Uint8Array(4);
 
+      type OGLUniforms = Record<string, { value: number | Float32Array }>;
+      const uniforms = program.uniforms as unknown as OGLUniforms;
+
       const loop = (t: number) => {
         if (contextLost || !isVisible) return;
-        let timeValue = (t - t0) * 0.001;
+        const timeValue = (t - t0) * 0.001;
         if (direction === 'pingpong') {
           const pingpongDuration = 10;
           const segmentTime = timeValue % pingpongDuration;
@@ -274,10 +271,10 @@ export const Plasma: React.FC<PlasmaProps> = ({
           const u = segmentTime / pingpongDuration;
           const smooth = u * u * (3 - 2 * u);
           const pingpongTime = isForward ? smooth * pingpongDuration : (1 - smooth) * pingpongDuration;
-          (program.uniforms.uDirection as any).value = 1.0;
-          (program.uniforms.iTime as any).value = pingpongTime;
+          uniforms.uDirection.value = 1.0;
+          uniforms.iTime.value = pingpongTime;
         } else {
-          (program.uniforms.iTime as any).value = timeValue;
+          uniforms.iTime.value = timeValue;
         }
         renderer.render({ scene: mesh });
 
@@ -334,7 +331,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
       if (canvas) {
         canvas.removeEventListener('webglcontextlost', () => {});
         canvas.removeEventListener('webglcontextrestored', () => {});
-        try { containerEl?.removeChild(canvas); } catch {}
+        try { containerEl?.removeChild(canvas); } catch { /* canvas may already be detached */ }
       }
       if (mouseInteractive && containerEl && mouseMoveHandlerRef.current) {
         containerEl.removeEventListener('mousemove', mouseMoveHandlerRef.current);

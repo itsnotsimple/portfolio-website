@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import type { Review } from '../../types';
+import type { MotionStyle } from 'framer-motion';
+import type { Review } from '../../../types';
 import styles from './ReviewCard.module.css';
 
 interface ReviewCardProps { review: Review; index: number; }
@@ -43,7 +44,7 @@ export default function ReviewCard({ review, index }: ReviewCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5, delay: index * 0.07, ease: [0.4, 0, 0.2, 1] }}
-      style={{ ...motionStyle, ['--index' as any]: index, zIndex: index + 1 } as any}
+      style={{ ...motionStyle, '--index': index, zIndex: index + 1 } as unknown as MotionStyle}
       role="listitem"
     >
       <div className={styles.topLine} aria-hidden="true" />

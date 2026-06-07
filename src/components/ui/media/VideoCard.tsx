@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
-import type { Video } from '../../types';
+import type { Video } from '../../../types';
 import styles from './VideoCard.module.css';
 
 interface VideoCardProps {
@@ -17,12 +17,8 @@ const PlayIcon = () => (
 
 export default function VideoCard({ video, index, onClick }: VideoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(true); // Default to mobile static state for safe SSR/hydration
+  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
-
-  useEffect(() => {
-    setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 1024);
-  }, []);
 
   // Lazy-load video src — only start fetching metadata when card scrolls into view.
   // Without this, all 11 portfolio videos issue simultaneous range requests on load,

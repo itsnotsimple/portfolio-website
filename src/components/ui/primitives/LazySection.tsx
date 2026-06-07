@@ -13,6 +13,7 @@ export default function LazySection({ children, height = '80vh', id }: LazySecti
   useEffect(() => {
     // Check support for IntersectionObserver
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsMounted(true);
       return;
     }

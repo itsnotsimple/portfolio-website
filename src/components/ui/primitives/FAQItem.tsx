@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { FAQItem as FAQItemType } from '../../types';
+import type { FAQItem as FAQItemType } from '../../../types';
 
 interface FAQItemProps { item: FAQItemType; index: number; }
 
