@@ -432,7 +432,7 @@ export const RESULTS_SECTION = {
   tag: 'Резултати',
   heading: 'Резултати от',
   headingAccent: 'клиентите',
-  subtitle: 'Реални резултати от реални клиенти.',
+  subtitle: 'Визуално доказателство за растеж, ангажираност и вирусен обхват.',
 } as const;
 
 export const RESULTS: ClientResult[] = [

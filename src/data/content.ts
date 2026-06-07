@@ -439,7 +439,7 @@ export const RESULTS_SECTION = {
   tag: 'Results',
   heading: 'Client',
   headingAccent: 'results',
-  subtitle: 'Real results from real clients.',
+  subtitle: 'Visual proof of growth, audience engagement, and viral reach.',
 } as const;
 
 export const RESULTS: ClientResult[] = [
