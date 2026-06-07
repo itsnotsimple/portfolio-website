@@ -1,10 +1,8 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../../context/LanguageContext';
 import ScrollReveal from '../effects/ScrollReveal';
 import ScrollParallax from '../effects/ScrollParallax';
-
-const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
 // Cinematic graded look (shown until /images/grading/after.webp is added)
 const AFTER_GRADIENT =
@@ -66,9 +64,6 @@ export default function BeforeAfter() {
   const beforeVideoRef = useRef<HTMLVideoElement>(null);
   const afterVideoRef = useRef<HTMLVideoElement>(null);
 
-  const [pos, setPos] = useState(50);
-  const [dragging, setDragging] = useState(false);
-
   // States to track if videos are ready and loaded
   const [beforeReady, setBeforeReady] = useState(false);
   const [afterReady, setAfterReady] = useState(false);
@@ -76,32 +71,6 @@ export default function BeforeAfter() {
 
   const hasVideoUrls = !!(BEFORE_AFTER.beforeVideoUrl && BEFORE_AFTER.afterVideoUrl);
   const useVideo = hasVideoUrls && beforeReady && afterReady && !videoError;
-
-  const updateFromClientX = useCallback((clientX: number) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setPos(clamp(((clientX - rect.left) / rect.width) * 100));
-  }, []);
-
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    setDragging(true);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-    updateFromClientX(e.clientX);
-  };
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (dragging) updateFromClientX(e.clientX);
-  };
-  const endDrag = () => setDragging(false);
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'ArrowLeft') { setPos((p) => clamp(p - 3)); e.preventDefault(); }
-    else if (e.key === 'ArrowRight') { setPos((p) => clamp(p + 3)); e.preventDefault(); }
-    else if (e.key === 'Home') { setPos(0); e.preventDefault(); }
-    else if (e.key === 'End') { setPos(100); e.preventDefault(); }
-  };
-
-  const moveTransition = dragging ? 'none' : 'left 0.18s ease, clip-path 0.18s ease';
 
   // Synchronize play/pause, time, and handle IntersectionObserver for CPU saving
   useEffect(() => {
@@ -202,7 +171,7 @@ export default function BeforeAfter() {
           </ScrollReveal>
         </motion.div>
 
-        {/* Slider */}
+        {/* Slider Container (Fixed 50/50 Split) */}
         <ScrollParallax speed={10}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -213,17 +182,12 @@ export default function BeforeAfter() {
           >
             <div
               ref={containerRef}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
               style={{
                 position: 'relative', width: '100%', aspectRatio: '16 / 9',
                 borderRadius: 'var(--radius-lg)', overflow: 'hidden',
                 border: '1px solid rgba(37,150,190,0.3)',
                 boxShadow: '0 24px 60px rgba(0,0,0,0.5), 0 0 50px rgba(37,150,190,0.1)',
-                cursor: dragging ? 'grabbing' : 'ew-resize',
-                touchAction: 'none', userSelect: 'none',
+                userSelect: 'none',
               }}
             >
               {/* VIDEO VERSION */}
@@ -253,13 +217,12 @@ export default function BeforeAfter() {
                     )}
                   </div>
 
-                  {/* BEFORE Video (overlay, clipped) */}
+                  {/* BEFORE Video (overlay, clipped to 50%) */}
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      clipPath: `inset(0 ${100 - pos}% 0 0)`,
-                      WebkitClipPath: `inset(0 ${100 - pos}% 0 0)`,
-                      transition: moveTransition,
+                      clipPath: 'inset(0 50% 0 0)',
+                      WebkitClipPath: 'inset(0 50% 0 0)',
                       zIndex: 2,
                     }}
                   >
@@ -301,13 +264,12 @@ export default function BeforeAfter() {
                     />
                   </div>
 
-                  {/* BEFORE (overlay, clipped) */}
+                  {/* BEFORE (overlay, clipped to 50%) */}
                   <div
                     style={{
                       position: 'absolute', inset: 0,
-                      clipPath: `inset(0 ${100 - pos}% 0 0)`,
-                      WebkitClipPath: `inset(0 ${100 - pos}% 0 0)`,
-                      transition: moveTransition,
+                      clipPath: 'inset(0 50% 0 0)',
+                      WebkitClipPath: 'inset(0 50% 0 0)',
                     }}
                   >
                     <CompareLayer
@@ -322,21 +284,13 @@ export default function BeforeAfter() {
                 </>
               )}
 
-              {/* Handle */}
+              {/* Fixed Center Divider Line */}
               <div
-                role="slider"
-                tabIndex={0}
-                aria-label={BEFORE_AFTER.hint}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(pos)}
-                onKeyDown={onKeyDown}
                 style={{
-                  position: 'absolute', top: 0, bottom: 0, left: `${pos}%`,
+                  position: 'absolute', top: 0, bottom: 0, left: '50%',
                   transform: 'translateX(-50%)', width: '44px', zIndex: 3,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: dragging ? 'grabbing' : 'ew-resize',
-                  transition: moveTransition, outlineOffset: '4px',
+                  pointerEvents: 'none',
                 }}
               >
                 {/* Vertical divider line */}
@@ -348,7 +302,7 @@ export default function BeforeAfter() {
                     boxShadow: '0 0 12px rgba(37,150,190,0.85)',
                   }}
                 />
-                {/* Grabber knob */}
+                {/* Grabber knob (Fixed visual indicator) */}
                 <div
                   aria-hidden="true"
                   style={{
@@ -364,20 +318,6 @@ export default function BeforeAfter() {
                     <polyline points="11 7 16 12 11 17" />
                   </svg>
                 </div>
-              </div>
-
-              {/* Hint pill */}
-              <div
-                aria-hidden="true"
-                style={{
-                  position: 'absolute', bottom: '0.85rem', left: '50%', transform: 'translateX(-50%)',
-                  zIndex: 4, fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'rgba(255,255,255,0.85)',
-                  padding: '0.3rem 0.8rem', borderRadius: '100px',
-                  background: 'rgba(4,8,12,0.5)', border: '1px solid rgba(255,255,255,0.15)',
-                  backdropFilter: 'blur(6px)', pointerEvents: 'none', whiteSpace: 'nowrap',
-                }}
-              >
-                {BEFORE_AFTER.hint}
               </div>
             </div>
           </motion.div>
