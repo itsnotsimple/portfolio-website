@@ -68,29 +68,36 @@ export default function Results() {
       />
 
       <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 3rem)' }}>
+        <motion.div
+          style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55 }}
+        >
           <span className="section-tag">{RESULTS_SECTION.tag}</span>
-          <ScrollReveal>
-            <h2
-              id="results-heading"
-              className="section-title"
-              style={{ marginTop: '0.6rem' }}
-            >
-              {RESULTS_SECTION.heading}{' '}
-              <span className="text-gradient">{RESULTS_SECTION.headingAccent}</span>
-            </h2>
-          </ScrollReveal>
+          <h2
+            id="results-heading"
+            className="section-title"
+            style={{ marginTop: '0.6rem' }}
+          >
+            {RESULTS_SECTION.heading}{' '}
+            <span className="text-gradient">{RESULTS_SECTION.headingAccent}</span>
+          </h2>
           {RESULTS_SECTION.subtitle && (
-            <ScrollReveal>
-              <p style={{
+            <ScrollReveal
+              baseOpacity={0}
+              enableBlur
+              blurStrength={4}
+              style={{
                 fontFamily: 'var(--font-body)', fontSize: 'clamp(0.9rem, 2vw, 1.05rem)',
                 color: 'var(--text-muted)', marginTop: '0.75rem', maxWidth: '480px', margin: '0.75rem auto 0',
-              }}>
-                {RESULTS_SECTION.subtitle}
-              </p>
+              }}
+            >
+              {RESULTS_SECTION.subtitle}
             </ScrollReveal>
           )}
-        </div>
+        </motion.div>
 
         <div className="results-grid">
           {RESULTS.map((item, i) => (
