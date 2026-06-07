@@ -430,7 +430,7 @@ ul, ol     { list-style: none; }
   .contact-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Client results image gallery — 2 col mobile, 3 col ≥ 720px */
+/* Client results image gallery — 2 col mobile/tablet, 4 col on desktop */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -440,7 +440,12 @@ ul, ol     { list-style: none; }
 }
 @media (min-width: 720px) {
   .results-grid {
-    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+@media (min-width: 990px) {
+  .results-grid {
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
 }
