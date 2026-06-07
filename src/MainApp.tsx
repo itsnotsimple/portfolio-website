@@ -1,9 +1,9 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { useScroll, motion, useMotionValue, useMotionValueEvent } from 'framer-motion';
-import GlobalBackground from './components/ui/GlobalBackground';
+import GlobalBackground from './components/ui/background/GlobalBackground';
 import Navbar   from './components/layout/Navbar';
 import Hero     from './components/sections/Hero';
-import LazySection from './components/ui/LazySection';
+import LazySection from './components/ui/primitives/LazySection';
 import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 

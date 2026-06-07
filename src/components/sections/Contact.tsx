@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, animate } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 
-import ElectricBorder from '../ui/ElectricBorder';
-import ScrollReveal from '../ui/ScrollReveal';
-import ScrollParallax from '../ui/ScrollParallax';
+import ElectricBorder from '../ui/effects/ElectricBorder';
+import ScrollReveal from '../ui/effects/ScrollReveal';
+import ScrollParallax from '../ui/effects/ScrollParallax';
 
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" aria-hidden="true">
@@ -194,7 +194,7 @@ export default function Contact() {
       }} />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 } as any}>
+      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span aria-hidden="true" style={{
           fontFamily: 'var(--font-display)', fontSize: 'clamp(7rem, 18vw, 13rem)',
           fontWeight: 400, color: 'var(--primary)', opacity: 0.06,

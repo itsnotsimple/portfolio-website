@@ -1,16 +1,16 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
-import CountUp from '../ui/CountUp';
-import ProfileCard from '../ui/ProfileCard';
-import ScrollReveal from '../ui/ScrollReveal';
-import ScrollParallax from '../ui/ScrollParallax';
-import alexPhoto from '../assets/453769781_1145851049814387_2954952142584413301_n-removebg-preview.webp';
-import aeLogo from '../assets/aeLogo.webp';
-import psLogo from '../assets/psLogo.webp';
-import prLogo from '../assets/prLogo.webp';
-import ccLogo from '../assets/ccLogo.webp';
-import topazLogo from '../assets/topazLogo.webp';
+import CountUp from '../ui/primitives/CountUp';
+import ProfileCard from '../ui/cards/ProfileCard';
+import ScrollReveal from '../ui/effects/ScrollReveal';
+import ScrollParallax from '../ui/effects/ScrollParallax';
+import alexPhoto from '../../assets/453769781_1145851049814387_2954952142584413301_n-removebg-preview.webp';
+import aeLogo from '../../assets/aeLogo.webp';
+import psLogo from '../../assets/psLogo.webp';
+import prLogo from '../../assets/prLogo.webp';
+import ccLogo from '../../assets/ccLogo.webp';
+import topazLogo from '../../assets/topazLogo.webp';
 
 
 
@@ -145,7 +145,7 @@ export default function About() {
       />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 } as any}>
+      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span
           aria-hidden="true"
           style={{
@@ -187,7 +187,7 @@ export default function About() {
         <div className="about-grid">
 
           {/* Left — ProfileCard with floating achievement chips */}
-          <ScrollParallax speed={15} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' } as any}>
+          <ScrollParallax speed={15} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
             <motion.div
               style={{
                 position: 'relative',
@@ -229,7 +229,7 @@ export default function About() {
           </ScrollParallax>
 
           {/* Right — Text content */}
-          <ScrollParallax speed={-8} style={{ width: '100%' } as any}>
+          <ScrollParallax speed={-8} style={{ width: '100%' }}>
             <motion.div
               className="about-text-side"
               initial={{ opacity: 0, y: 30 }}

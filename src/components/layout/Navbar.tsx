@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
-import LanguageToggle from '../ui/LanguageToggle';
+import LanguageToggle from '../ui/primitives/LanguageToggle';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS_TEMPLATES = [
@@ -60,7 +60,7 @@ export default function Navbar() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   const isClickScrolling = useRef(false);
-  const scrollTimeoutRef = useRef<any>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const sentinel = document.getElementById('nav-sentinel');
@@ -143,7 +143,7 @@ export default function Navbar() {
 
 
   const closeMenu = () => setMenuOpen(false);
-  const handleNavClick = (e: any, href: string) => {
+  const handleNavClick = (e: React.MouseEvent | null, href: string) => {
     if (e && e.preventDefault) e.preventDefault();
     
     if (scrollTimeoutRef.current) {

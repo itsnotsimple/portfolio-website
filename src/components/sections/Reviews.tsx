@@ -1,4 +1,4 @@
-import ShuffleCards from '../ui/testimonial-cards';
+import ShuffleCards from '../ui/cards/testimonial-cards';
 
 export default function Reviews() {
   return <ShuffleCards />;

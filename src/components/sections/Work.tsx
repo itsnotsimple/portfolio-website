@@ -2,16 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import type { Video } from '../../types';
-import ScrollReveal from '../ui/ScrollReveal';
-import ScrollParallax from '../ui/ScrollParallax';
-import Folder from '../ui/Folder';
+import ScrollReveal from '../ui/effects/ScrollReveal';
+import ScrollParallax from '../ui/effects/ScrollParallax';
+import Folder from '../ui/cards/Folder';
+import CustomVideoPlayer from '../ui/media/CustomVideoPlayer';
+import type { CustomVideoPlayerRef } from '../ui/media/CustomVideoPlayer';
 
 
 const isMobile = typeof window !== 'undefined' &&
   (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
 
 function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<CustomVideoPlayerRef>(null);
 
   useEffect(() => {
     const originalHtmlOverflow = document.documentElement.style.overflow;
@@ -20,17 +22,13 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
+    const currentVideo = videoRef.current;
     return () => {
       document.documentElement.style.overflow = originalHtmlOverflow;
       document.body.style.overflow = originalBodyOverflow;
 
       // Hard-stop the video on unmount — prevents audio playing during exit animation
-      const vid = videoRef.current;
-      if (vid) {
-        vid.pause();
-        vid.src = '';
-        vid.load();
-      }
+      currentVideo?.pause();
     };
   }, []);
 
@@ -134,20 +132,13 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
 
         <div style={{ aspectRatio: '16/9', width: '100%', background: '#02060c', position: 'relative' }}>
           {video.videoUrl ? (
-            <video
+            <CustomVideoPlayer
               ref={videoRef}
               src={video.videoUrl}
-              controls
-              autoPlay
-              playsInline
-              controlsList="nodownload"
-              onContextMenu={e => e.preventDefault()}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                display: 'block',
-              }}
+              objectFit="contain"
+              autoPlay={true}
+              playsInline={true}
+              muted={false}
             />
           ) : (
             <div style={{
@@ -449,7 +440,7 @@ export default function Work() {
       />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 } as any}>
+      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span
           aria-hidden="true"
           style={{

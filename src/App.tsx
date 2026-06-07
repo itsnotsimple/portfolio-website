@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import MainApp from './MainApp';
-import Preloader from './components/ui/Preloader';
+import Preloader from './components/ui/primitives/Preloader';
 import { LanguageProvider } from './context/LanguageContext';
 
 export default function App() {

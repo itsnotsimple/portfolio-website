@@ -1,9 +1,9 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import type { MotionValue } from 'framer-motion';
+import type { MotionValue, MotionStyle } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTypewriter } from '../../hooks/useTypewriter';
-import CountUp from '../ui/CountUp';
-import ScrollParallax from '../ui/ScrollParallax';
+import CountUp from '../ui/primitives/CountUp';
+import ScrollParallax from '../ui/effects/ScrollParallax';
 import styles from './Hero.module.css';
 
 
@@ -109,9 +109,9 @@ function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: M
           transformStyle: 'preserve-3d',
         }}
       >
-        <motion.div className={styles.ring1} style={{ x: ring1X, y: ring1Y, z: 15 } as any} />
-        <motion.div className={styles.ring2} style={{ x: ring2X, y: ring2Y, z: -10 } as any} />
-        <motion.div className={styles.ring3} style={{ x: ring3X, y: ring3Y, z: 30 } as any} />
+        <motion.div className={styles.ring1} style={{ x: ring1X, y: ring1Y, z: 15 } as MotionStyle} />
+        <motion.div className={styles.ring2} style={{ x: ring2X, y: ring2Y, z: -10 } as MotionStyle} />
+        <motion.div className={styles.ring3} style={{ x: ring3X, y: ring3Y, z: 30 } as MotionStyle} />
       </motion.div>
 
       {/* Center play button with pulsing glow */}
@@ -121,7 +121,7 @@ function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: M
           x: playBtnX,
           y: playBtnY,
           z: 50,
-        } as any}
+        } as MotionStyle}
         animate={{
           boxShadow: [
             '0 0 18px rgba(37,150,190,0.28), 0 0 50px rgba(37,150,190,0.07)',
@@ -147,7 +147,7 @@ function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: M
           x: card1X,
           y: card1Y,
           z: 70,
-        } as any}
+        } as MotionStyle}
       >
         <div className={`${styles.statCard} ${styles.statCardFloat1}`}>
           <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(13,211,240,0.7), transparent)' }} aria-hidden="true" />
@@ -172,7 +172,7 @@ function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: M
           x: card2X,
           y: card2Y,
           z: 60,
-        } as any}
+        } as MotionStyle}
       >
         <div className={`${styles.statCard} ${styles.statCardFloat2}`}>
           <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(37,150,190,0.7), transparent)' }} aria-hidden="true" />
@@ -197,7 +197,7 @@ function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: M
           x: card3X,
           y: card3Y,
           z: 80,
-        } as any}
+        } as MotionStyle}
       >
         <div className={`${styles.statCard} ${styles.statCardFloat3}`}>
           <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(13,211,240,0.6), transparent)' }} aria-hidden="true" />
@@ -263,7 +263,7 @@ export default function Hero() {
 
           {/* ── LEFT COLUMN — all text content ─────────────────── */}
           <div className={styles.left}>
-            <ScrollParallax speed={-18} style={{ display: 'flex', flexDirection: 'column', alignItems: 'inherit', gap: '1.5rem', width: '100%' } as any}>
+            <ScrollParallax speed={-18} style={{ display: 'flex', flexDirection: 'column', alignItems: 'inherit', gap: '1.5rem', width: '100%' }}>
               {/* 0 — Badge */}
               <div
                 className={item(0, styles.badge)}

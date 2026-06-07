@@ -46,6 +46,7 @@ export function useTypewriter(
         return () => clearTimeout(t);
       }
       // Finished deleting → next word
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWordIdx(i => (i + 1) % words.length);
       setPhase('typing');
     }
