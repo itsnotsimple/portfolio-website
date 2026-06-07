@@ -220,12 +220,24 @@ const CustomVideoPlayer = forwardRef<CustomVideoPlayerRef, CustomVideoPlayerProp
 
     const toggleFullscreen = () => {
       const container = containerRef.current;
-      if (!container) return;
+      const video = videoRef.current as any;
+      if (!container || !video) return;
+
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+        return;
+      }
 
       if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(() => {});
+        if (container.requestFullscreen) {
+          container.requestFullscreen().catch(() => {});
+        } else if (video.requestFullscreen) {
+          video.requestFullscreen().catch(() => {});
+        }
       } else {
-        document.exitFullscreen().catch(() => {});
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
       }
     };
 

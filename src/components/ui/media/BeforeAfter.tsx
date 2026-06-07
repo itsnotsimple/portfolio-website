@@ -286,39 +286,15 @@ export default function BeforeAfter() {
 
               {/* Fixed Center Divider Line */}
               <div
+                aria-hidden="true"
                 style={{
                   position: 'absolute', top: 0, bottom: 0, left: '50%',
-                  transform: 'translateX(-50%)', width: '44px', zIndex: 3,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transform: 'translateX(-50%)', width: '2px', zIndex: 3,
                   pointerEvents: 'none',
+                  background: 'rgba(255,255,255,0.9)',
+                  boxShadow: '0 0 12px rgba(37,150,190,0.85)',
                 }}
-              >
-                {/* Vertical divider line */}
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: 'absolute', top: 0, bottom: 0, left: '50%', width: '2px',
-                    transform: 'translateX(-50%)', background: 'rgba(255,255,255,0.9)',
-                    boxShadow: '0 0 12px rgba(37,150,190,0.85)',
-                  }}
-                />
-                {/* Grabber knob (Fixed visual indicator) */}
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: 'relative', width: '42px', height: '42px', borderRadius: '50%',
-                    background: 'rgba(8,14,22,0.85)', border: '2px solid #fff',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backdropFilter: 'blur(4px)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.5), 0 0 20px rgba(37,150,190,0.55)',
-                  }}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" aria-hidden="true">
-                    <polyline points="13 7 8 12 13 17" />
-                    <polyline points="11 7 16 12 11 17" />
-                  </svg>
-                </div>
-              </div>
+              />
             </div>
           </motion.div>
         </ScrollParallax>
