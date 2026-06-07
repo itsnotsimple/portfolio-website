@@ -59,3 +59,10 @@ export interface VideoTestimonial {
   socialType?: 'youtube' | 'instagram' | 'tiktok';
   socialStats?: string;
 }
+
+export interface ClientResult {
+  /** Path to image, e.g. '/images/results/result-1.webp' */
+  src: string;
+  /** Optional caption displayed below the image */
+  caption?: string;
+}

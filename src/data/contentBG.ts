@@ -3,7 +3,7 @@
 // This mirrors content.ts for the Bulgarian language
 // ═══════════════════════════════════════════════════════════
 
-import type { Video, Review, FAQItem, VideoTestimonial } from '../types';
+import type { Video, Review, FAQItem, VideoTestimonial, ClientResult } from '../types';
 
 // ── Site Config ───────────────────────────────────────────
 export const SITE_CONFIG = {
@@ -23,7 +23,7 @@ export const SITE_CONFIG = {
 export const NAV_LINKS = {
   work: 'Проекти',
   about: 'За мен',
-  reviews: 'Отзиви',
+  reviews: 'Препоръки',
   faq: 'ЧЗВ',
   contact: 'Контакти',
   cta: 'Свържи се',
@@ -426,3 +426,31 @@ export const VIDEO_TESTIMONIALS: VideoTestimonial[] = [
     videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Edward.mp4?v=2',
   },
 ];
+
+// ── Client Results (image gallery) ────────────────────────
+export const RESULTS_SECTION = {
+  tag: 'Резултати',
+  heading: 'Резултати от',
+  headingAccent: 'клиентите',
+  subtitle: 'Реални резултати от реални клиенти.',
+} as const;
+
+export const RESULTS: ClientResult[] = [
+  { src: '/images/results/result-1.webp' },
+  { src: '/images/results/result-2.webp' },
+  { src: '/images/results/result-3.webp' },
+  { src: '/images/results/result-4.webp' },
+];
+
+// ── Before / After (color grading) ────────────────────────
+export const BEFORE_AFTER = {
+  tag: 'Цветови корекции',
+  heading: 'Виж',
+  headingAccent: 'разликата',
+  subtitle: 'Плъзни дръжката, за да сравниш суровия кадър с финалния грейд.',
+  beforeLabel: 'Преди',
+  afterLabel: 'След',
+  hint: 'Плъзни за сравнение',
+  beforeVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/before.mp4?v=2',
+  afterVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/after.mp4?v=2',
+} as const;

@@ -3,7 +3,7 @@
 // This is the single source of truth for all site text/data
 // ═══════════════════════════════════════════════════════════
 
-import type { Video, Review, FAQItem, VideoTestimonial } from '../types';
+import type { Video, Review, FAQItem, VideoTestimonial, ClientResult } from '../types';
 
 // ── Site Config ───────────────────────────────────────────
 export const SITE_CONFIG = {
@@ -23,7 +23,7 @@ export const SITE_CONFIG = {
 export const NAV_LINKS = {
   work: 'Work',
   about: 'About',
-  reviews: 'Reviews',
+  reviews: 'Testimonials',
   faq: 'FAQ',
   contact: 'Contact',
   cta: "Let's Talk",
@@ -431,3 +431,33 @@ export const VIDEO_TESTIMONIALS: VideoTestimonial[] = [
     videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Edward.mp4?v=2',
   },
 ];
+
+// ── Client Results (image gallery) ────────────────────────
+// HOW TO ADD IMAGES: drop files in /public/images/results/ and add entries below.
+// Supported formats: webp, jpg, png. Optional caption shows below each image.
+export const RESULTS_SECTION = {
+  tag: 'Results',
+  heading: 'Client',
+  headingAccent: 'results',
+  subtitle: 'Real results from real clients.',
+} as const;
+
+export const RESULTS: ClientResult[] = [
+  { src: '/images/results/result-1.webp' },
+  { src: '/images/results/result-2.webp' },
+  { src: '/images/results/result-3.webp' },
+  { src: '/images/results/result-4.webp' },
+];
+
+// ── Before / After (color grading) ────────────────────────
+export const BEFORE_AFTER = {
+  tag: 'Color Grading',
+  heading: 'See the',
+  headingAccent: 'difference',
+  subtitle: 'Drag the handle to compare raw footage with the final graded look.',
+  beforeLabel: 'Before',
+  afterLabel: 'After',
+  hint: 'Drag to compare',
+  beforeVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/before.mp4?v=2',
+  afterVideoUrl: 'https://itsnotsimple.github.io/portfolio-media/grading/after.mp4?v=2',
+} as const;

@@ -430,6 +430,21 @@ ul, ol     { list-style: none; }
   .contact-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Client results image gallery — 2 col mobile, 3 col ≥ 720px */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+@media (min-width: 720px) {
+  .results-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
 /* Reviews asymmetric layout */
 .reviews-layout {
   display: flex;

@@ -8,7 +8,9 @@ import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 
 import Work from './components/sections/Work';
+import BeforeAfter from './components/ui/media/BeforeAfter';
 import About from './components/sections/About';
+import Results from './components/sections/Results';
 
 // Dynamic imports for code splitting / lazy loading
 const Reviews = lazy(() => import('./components/sections/Reviews'));
@@ -81,6 +83,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProp
           <Hero />
 
           <Work />
+          <BeforeAfter />
           <About />
 
           <LazySection id="reviews" height="70vh">
@@ -90,6 +93,8 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProp
               </Suspense>
             )}
           </LazySection>
+
+          <Results />
 
           <LazySection id="faq" height="60vh">
             {() => (

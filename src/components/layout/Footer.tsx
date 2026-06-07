@@ -2,11 +2,11 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 
 const NAV_LINKS_TEMPLATES = [
-  { href: '#work',    key: 'work' },
-  { href: '#about',   key: 'about' },
-  { href: '#reviews', key: 'reviews' },
-  { href: '#faq',     key: 'faq' },
-  { href: '#contact', key: 'contact' },
+  { href: '#work',     key: 'work' },
+  { href: '#about',    key: 'about' },
+  { href: '#reviews',  key: 'reviews' },
+  { href: '#faq',      key: 'faq' },
+  { href: '#contact',  key: 'contact' },
 ] as const;
 
 
