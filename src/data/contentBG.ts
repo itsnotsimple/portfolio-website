@@ -136,7 +136,7 @@ export const VIDEOS: Video[] = [
     duration: '0:15',
     featured: true,
     description: 'Сложна моушън графика, 3D проследяване и визуални ефекти, композирани в After Effects.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%201.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%201.mp4?v=2',
   },
   {
     id: 'vid-ae-2',
@@ -147,7 +147,7 @@ export const VIDEOS: Video[] = [
     duration: '0:30',
     featured: false,
     description: 'Динамична текстова анимация и кинетичен текст за рекламни цели.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%202.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%202.mp4?v=2',
   },
   {
     id: 'vid-ae-3',
@@ -158,7 +158,7 @@ export const VIDEOS: Video[] = [
     duration: '0:45',
     featured: false,
     description: 'Сложна 3D симулация на частици и анимация на лого.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%203.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/After%20Effects%20Short%20Clips/Ref%203.mp4?v=2',
   },
   // Brand Promoting
   {
@@ -170,7 +170,7 @@ export const VIDEOS: Video[] = [
     duration: '1:00',
     featured: true,
     description: 'Висококачествено бранд видео, създадено да разкаже историята на марката и да покаже ключови продукти.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%201.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%201.mp4?v=2',
   },
   {
     id: 'vid-brand-2',
@@ -181,7 +181,7 @@ export const VIDEOS: Video[] = [
     duration: '0:45',
     featured: false,
     description: 'Тизър версия за социални мрежи за максимална ангажираност и разпознаваемост на марката.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%202.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%202.mp4?v=2',
   },
   {
     id: 'vid-brand-3',
@@ -192,7 +192,7 @@ export const VIDEOS: Video[] = [
     duration: '1:15',
     featured: false,
     description: 'Кинематографично корпоративно промо видео с вградени текстови графики.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%203.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Brand%20Promoting/Ref%203.mp4?v=2',
   },
   // Food Videos
   {
@@ -204,7 +204,7 @@ export const VIDEOS: Video[] = [
     duration: '0:40',
     featured: false,
     description: 'Динамичен и удовлетворяващ кулинарен монтаж с професионален звуков дизайн.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Food%20Videos/Ref%201.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Food%20Videos/Ref%201.mp4?v=2',
   },
   // Simple Editing
   {
@@ -216,7 +216,7 @@ export const VIDEOS: Video[] = [
     duration: '1:30',
     featured: false,
     description: 'Професионално темпо на видеото, балансиране на цветовете и регулиране на звука с минимални ефекти.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%201.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%201.mp4?v=2',
   },
   {
     id: 'vid-simple-2',
@@ -227,7 +227,7 @@ export const VIDEOS: Video[] = [
     duration: '1:00',
     featured: false,
     description: 'Ритмичен монтаж по музикален фон с плавни преходи и изчистени срязвания.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%202.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%202.mp4?v=2',
   },
   {
     id: 'vid-simple-3',
@@ -238,7 +238,7 @@ export const VIDEOS: Video[] = [
     duration: '1:10',
     featured: false,
     description: 'Фокус върху ритъма на диалога, изчистване на шума в звука и натурални цветове.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%203.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Simple%20Editing/Ref%203.mp4?v=2',
   },
   // YouTube Shorts
   {
@@ -250,7 +250,7 @@ export const VIDEOS: Video[] = [
     duration: '0:50',
     featured: false,
     description: 'Динамично и бързо кратко видео, оптимизирано за мобилно гледане в TikTok, Reels и YouTube Shorts.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/DJ%20and%20is%20dad.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/DJ%20and%20is%20dad.mp4?v=2',
   },
   {
     id: 'vid-shorts-2',
@@ -261,7 +261,7 @@ export const VIDEOS: Video[] = [
     duration: '0:35',
     featured: true,
     description: 'Високоенергиен монтаж със синхронизирани кадри по бийта, приближения, звукови ефекти и текстови субтитри.',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/Stylebender.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/YouTube%20Shorts/Stylebender.mp4?v=2',
   },
 ];
 
@@ -402,27 +402,27 @@ export const VIDEO_TESTIMONIALS: VideoTestimonial[] = [
     name: 'Westly Harrison',
     role: 'Онлайн фитнес треньор',
     thumb: '',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/IMG_8468.mov',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Westly.mp4?v=2',
   },
   {
     id: 'vt-corbin',
     name: 'Corbin Sylk',
     role: 'Предприемач и бизнес коуч',
     thumb: '',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/59624b70-d167-4db5-8c06-fb964faf0d67.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Corbin.mp4?v=2',
   },
   {
     id: 'vt-client-1',
     name: 'Мухамед',
     role: 'Създател на съдържание',
     thumb: '',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/11e44ced-dc1c-44a9-88c3-4198c23d2189.mp4',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Muhammad.mp4?v=2',
   },
   {
     id: 'vt-client-2',
     name: 'Едуард',
     role: 'Собственик на бизнес',
     thumb: '',
-    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/Testimonials/IMG_0724.mov',
+    videoUrl: 'https://itsnotsimple.github.io/portfolio-media/testimonials/Edward.mp4?v=2',
   },
 ];
