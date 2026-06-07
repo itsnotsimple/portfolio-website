@@ -47,6 +47,10 @@
         document.head.appendChild(script);
       }
     </script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "%VITE_CLOUDFLARE_TOKEN%"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
