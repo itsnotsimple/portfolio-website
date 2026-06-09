@@ -1,4 +1,5 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useAnimation } from 'framer-motion';
 import type { MotionValue, MotionStyle } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTypewriter } from '../../hooks/useTypewriter';
@@ -55,163 +56,484 @@ function StatCounter({ value, suffix, label }: { value: number; suffix: string; 
   );
 }
 
+function Timecode() {
+  const [frames, setFrames] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFrames((f) => (f + 1) % 30);
+    }, 33);
+    return () => clearInterval(timer);
+  }, []);
+  const frameStr = frames.toString().padStart(2, '0');
+  return <span className={styles.timecode}>00:18:24:{frameStr}</span>;
+}
+
 // ── Decorative right-column visual (desktop only) ─────────────────────────────
 function HeroVisual({ mouseX, mouseY }: { mouseX: MotionValue<number>; mouseY: MotionValue<number> }) {
-  const { content } = useLanguage();
-  const { HERO_SECTION } = content;
+  const { language } = useLanguage();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const deckControls = useAnimation();
 
-  // Proportional translations for dynamic layering
-  const gridX = useTransform(mouseX, (x) => x * 12);
-  const gridY = useTransform(mouseY, (y) => y * 12);
-  
-  const glowX = useTransform(mouseX, (x) => x * 18);
-  const glowY = useTransform(mouseY, (y) => y * 18);
+  // Floating particle field with mouse attraction and auto-drift
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const W = 520, H = 520;
+    canvas.width = W;
+    canvas.height = H;
 
-  // 3D rotations for concentric rings
-  const ringRotateX = useTransform(mouseY, (y) => y * -12);
-  const ringRotateY = useTransform(mouseX, (x) => x * 12);
+    type P = { x: number; y: number; r: number; vx: number; vy: number; life: number; maxLife: number; hue: number; base: number };
+    const spawn = (): P => ({
+      x: 30 + Math.random() * 460,
+      y: H + 5,
+      r: 0.5 + Math.random() * 2.0,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: -0.4 - Math.random() * 0.8,
+      life: 0,
+      maxLife: 120 + Math.random() * 200,
+      hue: 180 + Math.random() * 45,
+      base: 0.35 + Math.random() * 0.6,
+    });
+    const pts: P[] = Array.from({ length: 55 }, () => {
+      const p = spawn();
+      p.y = Math.random() * H;
+      p.life = Math.random() * p.maxLife;
+      return p;
+    });
 
-  const ring1X = useTransform(mouseX, (x) => x * 8);
-  const ring1Y = useTransform(mouseY, (y) => y * 8);
+    let raf: number;
+    let frame = 0;
+    const tick = () => {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+      
+      // Auto-drift offsets for background dust particles
+      const driftX = Math.sin(frame * 0.008) * 80;
+      const driftY = Math.cos(frame * 0.01) * 80;
 
-  const ring2X = useTransform(mouseX, (x) => x * -14);
-  const ring2Y = useTransform(mouseY, (y) => y * -14);
+      // Base mouse position + auto drift
+      const mx = mouseX.get() * 260 + 260 + driftX;
+      const my = mouseY.get() * 260 + 260 + driftY;
 
-  const ring3X = useTransform(mouseX, (x) => x * 18);
-  const ring3Y = useTransform(mouseY, (y) => y * 18);
+      for (const p of pts) {
+        // Dynamic mouse attraction
+        const dx = mx - p.x;
+        const dy = my - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180) {
+          const force = (1 - dist / 180) * 0.06;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
+        }
 
-  const playBtnX = useTransform(mouseX, (x) => x * 26);
-  const playBtnY = useTransform(mouseY, (y) => y * 26);
+        // Apply friction to keep movement smooth
+        p.vx *= 0.98;
+        p.vy = p.vy * 0.98 - 0.015;
 
-  // Proportional card offsets
-  const card1X = useTransform(mouseX, (x) => x * 36);
-  const card1Y = useTransform(mouseY, (y) => y * 36);
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life++;
 
-  const card2X = useTransform(mouseX, (x) => x * -30);
-  const card2Y = useTransform(mouseY, (y) => y * -30);
+        const t = p.life / p.maxLife;
+        const alpha = p.base * (t < 0.12 ? t / 0.12 : t > 0.82 ? (1 - t) / 0.18 : 1);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue},85%,72%,${alpha.toFixed(3)})`;
+        ctx.shadowColor = `hsla(${p.hue},100%,72%,${(alpha * 0.5).toFixed(3)})`;
+        ctx.shadowBlur = p.r * 5;
+        ctx.fill();
 
-  const card3X = useTransform(mouseX, (x) => x * 44);
-  const card3Y = useTransform(mouseY, (y) => y * 44);
+        if (p.life >= p.maxLife || p.y < -10 || p.x < -10 || p.x > W + 10) {
+          Object.assign(p, spawn());
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [mouseX, mouseY]);
+
+  useEffect(() => {
+    // 3D sequence start controls
+    const runSequence = async () => {
+      // Set initial
+      deckControls.set({
+        opacity: 0,
+        rotateX: 42,
+        rotateY: -48,
+        scale: 0.84,
+        z: -160
+      });
+      
+      // Animate directly to tilted position
+      await deckControls.start({
+        opacity: 1,
+        rotateX: 14,
+        rotateY: -26,
+        scale: 1,
+        z: 0,
+        transition: {
+          duration: 2.6,
+          ease: [0.25, 1, 0.3, 1],
+          delay: 0.3,
+        }
+      });
+      
+      // Phase 2: Loop rotation
+      deckControls.start({
+        rotateX: [14, 16.5, 14, 11.5, 14],
+        rotateY: [-26, -21, -26, -31, -26],
+        transition: {
+          duration: 12,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          times: [0, 0.25, 0.5, 0.75, 1],
+        }
+      });
+    };
+    runSequence();
+  }, [deckControls]);
 
   return (
-    <div className={styles.visualWrap} style={{ perspective: 1200, transformStyle: 'preserve-3d' }} aria-hidden="true">
-      {/* Dot-grid background fading from center */}
-      <motion.div className={styles.visualGrid} style={{ x: gridX, y: gridY }} />
-      {/* Ambient glow */}
-      <motion.div className={styles.visualGlow} style={{ x: glowX, y: glowY }} />
+    <div className={styles.visualWrap} style={{ perspective: 400, transformStyle: 'preserve-3d' }} aria-hidden="true">
+      {/* Particle canvas */}
+      <canvas ref={canvasRef} className={styles.particleCanvas} aria-hidden="true" />
 
-      {/* Concentric rings — 3D tilting container */}
+      {/* 3D Entrance Wrapper */}
       <motion.div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          rotateX: ringRotateX,
-          rotateY: ringRotateY,
-          transformStyle: 'preserve-3d',
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, delay: 0.3 }}
+        style={{ transformStyle: 'preserve-3d', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute' }}
       >
-        <motion.div className={styles.ring1} style={{ x: ring1X, y: ring1Y, z: 15 } as MotionStyle} />
-        <motion.div className={styles.ring2} style={{ x: ring2X, y: ring2Y, z: -10 } as MotionStyle} />
-        <motion.div className={styles.ring3} style={{ x: ring3X, y: ring3Y, z: 30 } as MotionStyle} />
-      </motion.div>
+        {/* Dot-grid background sitting deep */}
+        <motion.div
+          className={styles.visualGrid}
+          animate={{
+            z: [-80, -75, -80],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{
+            z: -80,
+          } as MotionStyle}
+        />
+        {/* Ambient glow */}
+        <motion.div
+          className={styles.visualGlow}
+          animate={{
+            z: [-100, -95, -100],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 0.4,
+          }}
+          style={{
+            z: -100,
+          } as MotionStyle}
+        />
 
-      {/* Center play button with pulsing glow */}
-      <motion.div
-        className={styles.ringCenter}
-        style={{
-          x: playBtnX,
-          y: playBtnY,
-          z: 50,
-        } as MotionStyle}
-        animate={{
-          boxShadow: [
-            '0 0 18px rgba(37,150,190,0.28), 0 0 50px rgba(37,150,190,0.07)',
-            '0 0 38px rgba(37,150,190,0.52), 0 0 90px rgba(37,150,190,0.18)',
-            '0 0 18px rgba(37,150,190,0.28), 0 0 50px rgba(37,150,190,0.07)',
-          ],
-        }}
-        transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-          <path d="M5 3l14 9-14 9V3z" fill="#2596be" />
-        </svg>
-      </motion.div>
+        {/* Main Timeline Deck */}
+        <motion.div
+          className={styles.timelineDeck}
+          animate={deckControls}
+          initial={{ opacity: 0, rotateX: 42, rotateY: -48, scale: 0.84, z: -160 }}
+          whileHover={{ scale: 1.03 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+          style={{
+            transformStyle: 'preserve-3d',
+            z: 10,
+          } as MotionStyle}
+        >
+          {/* Holographic surface overlay */}
+          <div className={styles.holoOverlay} aria-hidden="true" />
+          {/* CRT scanlines */}
+          <div className={styles.scanlines} aria-hidden="true" />
 
-      {/* Floating stat cards — premium rectangular design */}
+          {/* Timeline Header / Timecode */}
+          <div className={styles.timelineHeader}>
+            <div className={styles.timecodeContainer}>
+              <div className={styles.statusDot} />
+              <Timecode />
+            </div>
+            <div className={styles.timelineTitle}>Timeline_v1.prproj</div>
+            <div className={styles.timelineControls}>
+              <div className={styles.controlBtn}><span className={styles.playIcon} /></div>
+              <div className={styles.controlSeparator} />
+              <div className={styles.activeToolIndicator}>{language === 'bg' ? 'Рязане [C]' : 'Razor [C]'}</div>
+            </div>
+          </div>
 
-      {/* Top-right: Projects */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '4%',
-          right: '2%',
-          x: card1X,
-          y: card1Y,
-          z: 70,
-        } as MotionStyle}
-      >
-        <div className={`${styles.statCard} ${styles.statCardFloat1}`}>
-          <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(13,211,240,0.7), transparent)' }} aria-hidden="true" />
-          <div className={styles.statCardIcon} style={{ color: '#0dd3f0', background: 'rgba(13,211,240,0.1)', border: '1px solid rgba(13,211,240,0.25)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
-            </svg>
-          </div>
-          <div>
-            <div className={styles.statCardValue}>300+</div>
-            <div className={styles.statCardLabel}>{HERO_SECTION.visualProjects}</div>
-          </div>
-        </div>
-      </motion.div>
+          {/* Tracks Grid */}
+          <div className={styles.tracksContainer}>
+            {/* Timeline Ruler */}
+            <div className={styles.timelineRuler}>
+              <div className={styles.rulerTime}>00:00</div>
+              <div className={styles.rulerTime}>05:00</div>
+              <div className={styles.rulerTime}>10:00</div>
+              <div className={styles.rulerTime}>15:00</div>
+              <div className={styles.rulerTime}>20:00</div>
+              <div className={styles.rulerTime}>25:00</div>
+              <div className={styles.rulerTicks}>
+                <div className={styles.rulerMarker} style={{ left: '26%' }} />
+                <div className={styles.rulerMarker} style={{ left: '53%' }} />
+                <div className={styles.rulerMarker} style={{ left: '78%' }} />
+              </div>
+            </div>
 
-      {/* Right-middle: 4K Quality */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '42%',
-          right: '-6%',
-          x: card2X,
-          y: card2Y,
-          z: 60,
-        } as MotionStyle}
-      >
-        <div className={`${styles.statCard} ${styles.statCardFloat2}`}>
-          <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(37,150,190,0.7), transparent)' }} aria-hidden="true" />
-          <div className={styles.statCardIcon} style={{ color: '#2596be', background: 'rgba(37,150,190,0.1)', border: '1px solid rgba(37,150,190,0.25)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
-            </svg>
-          </div>
-          <div>
-            <div className={styles.statCardValue}>4K</div>
-            <div className={styles.statCardLabel}>{HERO_SECTION.visualQuality}</div>
-          </div>
-        </div>
-      </motion.div>
+            {/* V2 Track */}
+            <div className={styles.trackRow}>
+              <div className={styles.trackHeader}>
+                <span className={styles.trackLabel}>V2</span>
+                <div className={styles.trackHeaderControls}>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </div>
+              </div>
+              <div className={styles.trackTimeline}>
+                <div className={`${styles.clip} ${styles.clipGrade}`} style={{ left: '15%', width: '70%' }}>
+                  <span className={styles.clipText}>{language === 'bg' ? 'Цветови корекции / LUTs' : 'Grade / LUTS'}</span>
+                </div>
+              </div>
+            </div>
 
-      {/* Bottom-left: Tools */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          bottom: '4%',
-          left: '4%',
-          x: card3X,
-          y: card3Y,
-          z: 80,
-        } as MotionStyle}
-      >
-        <div className={`${styles.statCard} ${styles.statCardFloat3}`}>
-          <div className={styles.statCardLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(13,211,240,0.6), transparent)' }} aria-hidden="true" />
-          <div className={styles.statCardIcon} style={{ color: '#0dd3f0', background: 'rgba(13,211,240,0.08)', border: '1px solid rgba(13,211,240,0.22)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-            </svg>
+            {/* V1 Track */}
+            <div className={styles.trackRow}>
+              <div className={styles.trackHeader}>
+                <span className={styles.trackLabel}>V1</span>
+                <div className={styles.trackHeaderControls}>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </div>
+              </div>
+              <div className={styles.trackTimeline}>
+                <div className={`${styles.clip} ${styles.clipVfx}`} style={{ left: '5%', width: '30%' }}>
+                  <span className={styles.clipText}>VFX_Intro.mp4</span>
+                </div>
+                <div className={`${styles.clip} ${styles.clipVideo}`} style={{ left: '38%', width: '45%' }}>
+                  <span className={styles.clipText}>B-Roll_A_Cut.mov</span>
+                </div>
+              </div>
+            </div>
+
+            {/* A1 Track (Audio visualizer) */}
+            <div className={styles.trackRow}>
+              <div className={styles.trackHeader}>
+                <span className={styles.trackLabel}>A1</span>
+                <div className={styles.trackHeaderControls}>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  </svg>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.trackHeaderIcon}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </div>
+              </div>
+              <div className={styles.trackTimeline} style={{ display: 'flex', alignItems: 'center', gap: '2px', paddingLeft: '5%', paddingRight: '5%' }}>
+                <div className={styles.audioWaveContainer}>
+                  {Array.from({ length: 32 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={styles.waveBar}
+                      style={{
+                        height: `${14 + Math.sin(i * 0.5) * 11}px`,
+                        animationDelay: `${i * 0.08}s`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Vertical Playhead line */}
+            <motion.div
+              className={styles.playheadLine}
+              animate={{ left: ['5%', '95%'] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+            >
+              <div className={styles.playheadHeader}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 12h20L12 2z"/>
+                </svg>
+              </div>
+            </motion.div>
           </div>
-          <div>
-            <div className={styles.statCardValue}>Pr · Ae</div>
-            <div className={styles.statCardLabel}>& CC</div>
-          </div>
-        </div>
+
+          {/* Floating 3D Program Monitor Preview Window */}
+          <motion.div
+            className={styles.programMonitor}
+            style={{
+              position: 'absolute',
+              top: '-35%',
+              left: '-8%',
+            } as MotionStyle}
+            animate={{
+              z: [120, 132, 120],
+              y: [0, -4, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.3,
+            }}
+          >
+            <div className={styles.monitorHoverContainer}>
+              <div className={styles.monitorWrapper}>
+                <div className={styles.monitorHeader}>
+                  <div className={styles.monitorRec}>
+                    <span className={styles.recDot} />
+                    <span>REC</span>
+                  </div>
+                  <div className={styles.monitorRes}>4K 60</div>
+                </div>
+                
+                <div className={styles.monitorScreen}>
+                  <div className={styles.screenGrid} />
+                  <div className={styles.screenGlow} />
+                  <div className={styles.screenWave} />
+                  <div className={styles.monitorPlayBtn}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="6 3 20 12 6 21 6 3"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className={styles.monitorFooter}>
+                  <span className={styles.monitorTimecode}>00:18:24:12</span>
+                  <span className={styles.monitorStatus}>PRVW</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Floating 3D widgets nested inside the rotating deck to share rotation and tilt */}
+
+          {/* Transitions Badge (Top Right) */}
+          <motion.div
+            className={styles.toolBadge}
+            style={{
+              position: 'absolute',
+              top: '-12%',
+              right: '-10%',
+            } as MotionStyle}
+            animate={{
+              z: [180, 195, 180],
+              y: [0, -6, 0],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <div className={styles.badgeHoverContainer}>
+              <div className={`${styles.badgeWrapper} ${styles.badgeFloat1}`}>
+                <div className={styles.badgeLine} />
+                <div className={styles.badgeIconWrapper} style={{ color: '#0dd3f0', background: 'rgba(13,211,240,0.1)', border: '1px solid rgba(13,211,240,0.25)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="3" y="3" width="7" height="9" rx="1" />
+                    <rect x="14" y="12" width="7" height="9" rx="1" />
+                    <path d="M10 8h4v8h-4" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
+                  </svg>
+                </div>
+                <div>
+                  <div className={styles.badgeVal}>Transitions</div>
+                  <div className={styles.badgeSub}>{language === 'bg' ? 'Гладки преходи' : 'Smooth Cuts'}</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Speed Ramp Badge (Middle Right) */}
+          <motion.div
+            className={styles.toolBadge}
+            style={{
+              position: 'absolute',
+              top: '42%',
+              right: '-14%',
+            } as MotionStyle}
+            animate={{
+              z: [130, 142, 130],
+              y: [0, 5, 0],
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.5,
+            }}
+          >
+            <div className={styles.badgeHoverContainer}>
+              <div className={`${styles.badgeWrapper} ${styles.badgeFloat2}`}>
+                <div className={styles.badgeLine} style={{ background: 'linear-gradient(90deg, transparent, rgba(37,150,190,0.7), transparent)' }} aria-hidden="true" />
+                <div className={styles.badgeIconWrapper} style={{ color: '#2596be', background: 'rgba(37,150,190,0.1)', border: '1px solid rgba(37,150,190,0.25)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M3 19c6 0 8-14 18-14" />
+                    <circle cx="3" cy="19" r="2" fill="currentColor" />
+                    <circle cx="11" cy="12" r="2" fill="currentColor" />
+                    <circle cx="21" cy="5" r="2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div>
+                  <div className={styles.badgeVal}>Speed Ramp</div>
+                  <div className={styles.badgeSub}>{language === 'bg' ? 'Скоростна крива' : 'Velocity Curve'}</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Sound Design Badge (Bottom Left) */}
+          <motion.div
+            className={styles.toolBadge}
+            style={{
+              position: 'absolute',
+              bottom: '-12%',
+              left: '-10%',
+            } as MotionStyle}
+            animate={{
+              z: [200, 212, 200],
+              y: [0, -5, 0],
+            }}
+            transition={{
+              duration: 6.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.2,
+            }}
+          >
+            <div className={styles.badgeHoverContainer}>
+              <div className={`${styles.badgeWrapper} ${styles.badgeFloat3}`}>
+                <div className={styles.badgeLine} />
+                <div className={styles.badgeIconWrapper} style={{ color: '#0dd3f0', background: 'rgba(13,211,240,0.08)', border: '1px solid rgba(13,211,240,0.22)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
+                </div>
+                <div>
+                  <div className={styles.badgeVal}>Sound Design</div>
+                  <div className={styles.badgeSub}>{language === 'bg' ? 'Звуков дизайн' : 'SFX & Beats'}</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );

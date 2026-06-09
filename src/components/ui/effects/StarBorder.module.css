@@ -1,0 +1,52 @@
+.container {
+  display: inline-block;
+  position: relative;
+  border-radius: 12px; /* matches --radius from globals */
+  overflow: hidden;
+}
+
+.gradientBottom {
+  position: absolute;
+  width: 300%;
+  height: 50%;
+  opacity: 0.65;
+  bottom: -11px;
+  right: -250%;
+  border-radius: 50%;
+  animation: starBottom var(--speed, 5s) linear infinite alternate;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gradientTop {
+  position: absolute;
+  width: 300%;
+  height: 50%;
+  opacity: 0.65;
+  top: -10px;
+  left: -250%;
+  border-radius: 50%;
+  animation: starTop var(--speed, 5s) linear infinite alternate;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes starBottom {
+  0%   { transform: translate(0%, 0%);    opacity: 0.65; }
+  100% { transform: translate(-100%, 0%); opacity: 0; }
+}
+
+@keyframes starTop {
+  0%   { transform: translate(0%, 0%);   opacity: 0.65; }
+  100% { transform: translate(100%, 0%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradientBottom,
+  .gradientTop { animation: none; opacity: 0; }
+}
