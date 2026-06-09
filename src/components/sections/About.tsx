@@ -145,7 +145,7 @@ export default function About() {
       />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
+      <ScrollParallax speed={-55} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span
           aria-hidden="true"
           style={{
@@ -187,7 +187,7 @@ export default function About() {
         <div className="about-grid">
 
           {/* Left — ProfileCard with floating achievement chips */}
-          <ScrollParallax speed={15} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <ScrollParallax speed={35} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
             <motion.div
               style={{
                 position: 'relative',
@@ -229,7 +229,7 @@ export default function About() {
           </ScrollParallax>
 
           {/* Right — Text content */}
-          <ScrollParallax speed={-8} style={{ width: '100%' }}>
+          <ScrollParallax speed={-25} style={{ width: '100%' }}>
             <motion.div
               className="about-text-side"
               initial={{ opacity: 0, y: 30 }}

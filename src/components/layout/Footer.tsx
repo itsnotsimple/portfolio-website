@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
+import ScrollParallax from '../ui/effects/ScrollParallax';
 
 const NAV_LINKS_TEMPLATES = [
   { href: '#work',     key: 'work' },
@@ -83,6 +84,7 @@ export default function Footer() {
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
 
         {/* Brand */}
+        <ScrollParallax speed={25}>
         <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.25rem' }}>
           <motion.div
             style={{
@@ -110,7 +112,9 @@ export default function Footer() {
             </span>
           </motion.div>
         </div>
+        </ScrollParallax>
 
+        <ScrollParallax speed={15}>
         {/* Nav links */}
         <nav
           aria-label="Footer navigation"
@@ -189,6 +193,7 @@ export default function Footer() {
             <EmailIcon />
           </motion.a>
         </div>
+        </ScrollParallax>
 
         {/* Divider */}
         <div

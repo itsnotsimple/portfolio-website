@@ -106,7 +106,7 @@ export default function FAQ() {
       }} />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
+      <ScrollParallax speed={-55} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span aria-hidden="true" style={{
           fontFamily: 'var(--font-display)', fontSize: 'clamp(7rem, 18vw, 13rem)',
           fontWeight: 400, color: 'var(--primary)', opacity: 0.06,
@@ -159,13 +159,13 @@ export default function FAQ() {
             </ScrollReveal>
 
             {/* Mini decorative radar — hidden on mobile */}
-            <ScrollParallax speed={10}>
+            <ScrollParallax speed={28}>
               <MiniRadar />
             </ScrollParallax>
           </motion.div>
 
           {/* RIGHT — Accordion */}
-          <ScrollParallax speed={6} style={{ width: '100%' }}>
+          <ScrollParallax speed={18} style={{ width: '100%' }}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

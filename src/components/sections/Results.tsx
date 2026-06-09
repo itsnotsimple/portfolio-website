@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import ScrollReveal from '../ui/effects/ScrollReveal';
+import ScrollParallax from '../ui/effects/ScrollParallax';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -68,42 +69,46 @@ export default function Results() {
       />
 
       <div className="container">
-        <motion.div
-          style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55 }}
-        >
-          <span className="section-tag">{RESULTS_SECTION.tag}</span>
-          <h2
-            id="results-heading"
-            className="section-title"
-            style={{ marginTop: '0.6rem' }}
+        <ScrollParallax speed={22}>
+          <motion.div
+            style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.55 }}
           >
-            {RESULTS_SECTION.heading}{' '}
-            <span className="text-gradient">{RESULTS_SECTION.headingAccent}</span>
-          </h2>
-          {RESULTS_SECTION.subtitle && (
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur
-              blurStrength={4}
-              style={{
-                fontFamily: 'var(--font-body)', fontSize: 'clamp(0.9rem, 2vw, 1.05rem)',
-                color: 'var(--text-muted)', marginTop: '0.75rem', maxWidth: '480px', margin: '0.75rem auto 0',
-              }}
+            <span className="section-tag">{RESULTS_SECTION.tag}</span>
+            <h2
+              id="results-heading"
+              className="section-title"
+              style={{ marginTop: '0.6rem' }}
             >
-              {RESULTS_SECTION.subtitle}
-            </ScrollReveal>
-          )}
-        </motion.div>
+              {RESULTS_SECTION.heading}{' '}
+              <span className="text-gradient">{RESULTS_SECTION.headingAccent}</span>
+            </h2>
+            {RESULTS_SECTION.subtitle && (
+              <ScrollReveal
+                baseOpacity={0}
+                enableBlur
+                blurStrength={4}
+                style={{
+                  fontFamily: 'var(--font-body)', fontSize: 'clamp(0.9rem, 2vw, 1.05rem)',
+                  color: 'var(--text-muted)', marginTop: '0.75rem', maxWidth: '480px', margin: '0.75rem auto 0',
+                }}
+              >
+                {RESULTS_SECTION.subtitle}
+              </ScrollReveal>
+            )}
+          </motion.div>
+        </ScrollParallax>
 
-        <div className="results-grid">
-          {RESULTS.map((item, i) => (
-            <ResultImage key={item.src} src={item.src} caption={item.caption} index={i} />
-          ))}
-        </div>
+        <ScrollParallax speed={-22}>
+          <div className="results-grid">
+            {RESULTS.map((item, i) => (
+              <ResultImage key={item.src} src={item.src} caption={item.caption} index={i} />
+            ))}
+          </div>
+        </ScrollParallax>
       </div>
     </section>
   );

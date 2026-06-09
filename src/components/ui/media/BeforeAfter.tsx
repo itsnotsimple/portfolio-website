@@ -229,7 +229,7 @@ export default function BeforeAfter() {
         </motion.div>
 
         {/* Draggable comparison slider */}
-        <ScrollParallax speed={10}>
+        <ScrollParallax speed={28}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
