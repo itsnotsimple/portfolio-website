@@ -27,6 +27,7 @@ export default function App() {
         <MainApp
           onLayoutFinished={() => setIsLayoutFinished(true)}
           onPlasmaReady={() => setIsPlasmaReady(true)}
+          isReady={isAppFullyCooked}
         />
         <Preloader ready={isAppFullyCooked} />
       </LanguageProvider>

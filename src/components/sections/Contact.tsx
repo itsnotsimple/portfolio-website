@@ -194,7 +194,7 @@ export default function Contact() {
       }} />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
+      <ScrollParallax speed={-55} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span aria-hidden="true" style={{
           fontFamily: 'var(--font-display)', fontSize: 'clamp(7rem, 18vw, 13rem)',
           fontWeight: 400, color: 'var(--primary)', opacity: 0.06,
@@ -268,7 +268,7 @@ export default function Contact() {
             viewport={{ once: true, margin: '-45px' }}
           >
             {/* Instagram card */}
-            <ScrollParallax speed={-8}>
+            <ScrollParallax speed={-25}>
               <ElectricBorder color="#bc2a8d" speed={0.9} chaos={0.01} borderRadius={20} noGlow>
                 <TiltCard
                   href={SITE_CONFIG.instagramUrl}
@@ -293,7 +293,7 @@ export default function Contact() {
             </ScrollParallax>
 
             {/* Email card */}
-            <ScrollParallax speed={8}>
+            <ScrollParallax speed={25}>
               <ElectricBorder color="#2596be" speed={0.9} chaos={0.01} borderRadius={20} noGlow>
                 <TiltCard
                   href={`mailto:${SITE_CONFIG.email}`}
@@ -319,26 +319,41 @@ export default function Contact() {
           </motion.div>
 
           {/* Response time badge */}
-          <p style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', fontSize: '0.83rem' }}>
-            <span
-              aria-hidden="true"
-              style={{
-                width: '8px', height: '8px', borderRadius: '50%',
-                background: '#2ecc71', position: 'relative', flexShrink: 0,
-                boxShadow: '0 0 8px rgba(46,204,113,0.6)',
-              }}
-            >
-              <span
-                aria-hidden="true"
-                style={{
-                  position: 'absolute', inset: 0, borderRadius: '50%',
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.85rem',
+            padding: '0.55rem 1.1rem 0.55rem 0.85rem',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, rgba(46,204,113,0.07) 0%, rgba(4,9,18,0.82) 60%)',
+            border: '1px solid rgba(46,204,113,0.18)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: '0 2px 16px rgba(46,204,113,0.07), inset 0 1px 0 rgba(46,204,113,0.07)',
+          }}>
+            {/* Animated signal bars */}
+            <div aria-hidden="true" style={{ display: 'flex', alignItems: 'flex-end', gap: '2.5px', height: '14px', flexShrink: 0 }}>
+              {([5, 8, 11, 14] as const).map((h, i) => (
+                <div key={i} style={{
+                  width: '3px',
+                  height: `${h}px`,
+                  borderRadius: '1.5px',
                   background: '#2ecc71',
-                  animation: 'liveRadarPulse 2s cubic-bezier(0.25,0.46,0.45,0.94) infinite',
-                }}
-              />
+                  boxShadow: '0 0 4px rgba(46,204,113,0.5)',
+                  animation: `signalBar 1.5s ease-in-out ${i * 0.18}s infinite`,
+                }} />
+              ))}
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              color: 'rgba(200, 235, 210, 0.8)',
+              letterSpacing: '0.02em',
+            }}>
+              {SITE_CONFIG.responseTime}
             </span>
-            {SITE_CONFIG.responseTime}
-          </p>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -263,6 +263,18 @@ ul, ol     { list-style: none; }
   100% { transform: translateX(150%) skewX(-25deg); }
 }
 
+/* ── Signal bars (Contact response-time badge) ───────── */
+@keyframes signalBar {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 1; }
+}
+
+/* ── Accent bar glow (Reviews available badge) ───────── */
+@keyframes accentBarGlow {
+  0%, 100% { opacity: 0.35; transform: scaleY(0.7); }
+  50%       { opacity: 1;    transform: scaleY(1); }
+}
+
 /* ── Section Shared ──────────────────────────────────── */
 .section-tag {
   display: inline-flex;

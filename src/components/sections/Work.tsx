@@ -47,13 +47,12 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
       aria-modal="true"
       aria-label={`Video: ${video.title}`}
       style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
+        position: 'fixed', inset: 0, zIndex: 99999,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '1rem',
         background: 'rgba(4,8,12,0.7)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        perspective: 1200,
       }}
     >
       {/* Dot-grid texture */}
@@ -76,7 +75,7 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
           position: 'absolute',
           top: isMobile ? '1.25rem' : '2.5rem',
           right: isMobile ? '1.25rem' : '2.5rem',
-          zIndex: 10000,
+          zIndex: 100000,
           width: '46px',
           height: '46px',
           borderRadius: '50%',
@@ -121,8 +120,6 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
           border: '1px solid rgba(37,150,190,0.45)',
           borderRadius: '24px', overflow: 'hidden',
           boxShadow: '0 0 0 1px rgba(37,150,190,0.06) inset, 0 50px 100px rgba(0,0,0,0.8), 0 0 80px rgba(37,150,190,0.14)',
-          backdropFilter: 'blur(24px)',
-          transformStyle: 'preserve-3d',
         }}
       >
         {/* Top cyan gradient line */}
@@ -226,7 +223,21 @@ function VideoPaper({ video }: { video: Video }) {
   const labelSize = isMobile ? '9px' : '6px';
   const titleSize = isMobile ? '8px' : '6px';
   const paperRef = useRef<HTMLDivElement>(null);
+  const spotRef = useRef<HTMLDivElement>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+
+  const handleSpotMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = spotRef.current;
+    const container = paperRef.current;
+    if (!el || !container) return;
+    const rect = container.getBoundingClientRect();
+    el.style.background = `radial-gradient(circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, rgba(13,211,240,0.11), transparent 70%)`;
+    el.style.opacity = '1';
+  };
+
+  const handleSpotLeave = () => {
+    if (spotRef.current) spotRef.current.style.opacity = '0';
+  };
 
   // Lazy-load: only fetch video metadata when the folder paper enters the viewport
   useEffect(() => {
@@ -241,7 +252,7 @@ function VideoPaper({ video }: { video: Video }) {
   }, [video.videoUrl]);
 
   return (
-    <div ref={paperRef} style={{
+    <div ref={paperRef} onMouseMove={handleSpotMove} onMouseLeave={handleSpotLeave} style={{
       position: 'relative',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', width: '100%', height: '100%',
@@ -249,6 +260,12 @@ function VideoPaper({ video }: { video: Video }) {
       borderRadius: '8px', overflow: 'hidden', userSelect: 'none',
       background: '#040a14',
     }}>
+      {/* Spotlight overlay */}
+      <div ref={spotRef} style={{
+        position: 'absolute', inset: 0, zIndex: 2,
+        opacity: 0, transition: 'opacity 0.35s ease',
+        pointerEvents: 'none', borderRadius: 'inherit',
+      }} />
       {/* Background Video Preview — lazy-loaded via IntersectionObserver */}
       {videoSrc ? (
         <video
@@ -445,7 +462,7 @@ export default function Work() {
       />
 
       {/* Section number watermark */}
-      <ScrollParallax speed={-20} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
+      <ScrollParallax speed={-55} style={{ position: 'absolute', right: '-0.05em', top: '-0.1em', pointerEvents: 'none', zIndex: 0 }}>
         <span
           aria-hidden="true"
           style={{

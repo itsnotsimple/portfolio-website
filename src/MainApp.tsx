@@ -21,9 +21,10 @@ const Contact = lazy(() => import('./components/sections/Contact'));
 interface MainAppProps {
   onLayoutFinished: () => void;
   onPlasmaReady: () => void;
+  isReady?: boolean;
 }
 
-export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProps) {
+export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = false }: MainAppProps) {
   const { scrollYProgress } = useScroll();
   const progressVal = useMotionValue(0);
 
@@ -78,42 +79,50 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady }: MainAppProp
         <div id="nav-sentinel" style={{ position: 'absolute', top: 0, left: 0, height: '60px', width: '100%', pointerEvents: 'none', zIndex: -1 }} />
 
         <Navbar />
-        <main id="main-content">
-          <ErrorBoundary>
-            <Hero />
 
-            <Work />
-            <BeforeAfter />
-            <About />
+        {/* ── Intro — page fades/scales in after preloader ── */}
+        <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 24 }}
+            animate={isReady ? { opacity: 1, scale: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          >
+            <main id="main-content">
+              <ErrorBoundary>
+                <Hero />
 
-            <LazySection id="reviews" height="70vh">
-              {() => (
-                <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
-                  <Reviews />
-                </Suspense>
-              )}
-            </LazySection>
+                <Work />
+                <BeforeAfter />
+                <About />
 
-            <Results />
+                <LazySection id="reviews" height="70vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
+                      <Reviews />
+                    </Suspense>
+                  )}
+                </LazySection>
 
-            <LazySection id="faq" height="60vh">
-              {() => (
-                <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
-                  <FAQ />
-                </Suspense>
-              )}
-            </LazySection>
+                <Results />
 
-            <LazySection id="contact" height="60vh">
-              {() => (
-                <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
-                  <Contact />
-                </Suspense>
-              )}
-            </LazySection>
-          </ErrorBoundary>
-        </main>
-        <Footer />
+                <LazySection id="faq" height="60vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                      <FAQ />
+                    </Suspense>
+                  )}
+                </LazySection>
+
+                <LazySection id="contact" height="60vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                      <Contact />
+                    </Suspense>
+                  )}
+                </LazySection>
+              </ErrorBoundary>
+            </main>
+            <Footer />
+          </motion.div>
       </div>
     </>
   );
