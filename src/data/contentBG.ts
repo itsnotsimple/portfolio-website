@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Свободен за проекти',
   responseTime: 'Обикновено отговарям до 24 часа',
   copyrightSuffix: 'Всички права запазени.',
-  metaTitle: 'AP Media — Портфолио на видео редактор',
+  metaTitle: 'AP Media',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────

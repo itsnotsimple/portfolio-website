@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
   copyrightSuffix: 'All rights reserved.',
-  metaTitle: 'AP Media — Video Editor Portfolio',
+  metaTitle: 'AP Media',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
