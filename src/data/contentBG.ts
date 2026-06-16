@@ -7,7 +7,7 @@ import type { Video, Review, FAQItem, VideoTestimonial, ClientResult } from '../
 
 // ── Site Config ───────────────────────────────────────────
 export const SITE_CONFIG = {
-  brandName: 'Alex & Flow',
+  brandName: 'AP Media',
   tagline: 'Давам движение на твоята история.',
   subTagline: 'Видео редактор, специализиран в рекламни кампании и вайръл съдържание за социални медии.',
   instagramUrl: 'https://www.instagram.com/alex.cc077/',
@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Свободен за проекти',
   responseTime: 'Обикновено отговарям до 24 часа',
   copyrightSuffix: 'Всички права запазени.',
-  metaTitle: 'Alex & Flow — Портфолио на видео редактор',
+  metaTitle: 'AP Media — Портфолио на видео редактор',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
@@ -441,6 +441,7 @@ export const RESULTS: ClientResult[] = [
   { src: '/images/results/result-2.webp' },
   { src: '/images/results/result-3.webp' },
   { src: '/images/results/result-4.webp' },
+  { src: '/images/results/result-5.webp' },
 ];
 
 // ── Before / After (color grading) ────────────────────────

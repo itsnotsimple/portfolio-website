@@ -88,28 +88,10 @@ export default function Footer() {
         <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.25rem' }}>
           <motion.div
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-              fontFamily: 'var(--font-display)', fontSize: '1.15rem',
-              fontWeight: 400, letterSpacing: '0.07em', position: 'relative', zIndex: 1,
+              display: 'inline-flex', alignItems: 'center', position: 'relative', zIndex: 1,
             }}
           >
-            {/* Hex icon */}
-            <motion.span
-              aria-hidden="true"
-              style={{ color: 'var(--primary)', fontSize: '0.95rem', filter: 'drop-shadow(0 0 6px var(--primary-glow))' }}
-              animate={{ opacity: [0.75, 1, 0.75] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-            >⬡</motion.span>
-            <span style={{
-              background: 'linear-gradient(135deg, #f0f6fb 20%, #3ab8e2 60%, #0dd3f0 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              ALEX
-              <span style={{ WebkitTextFillColor: 'var(--primary)', color: 'var(--primary)', margin: '0 1px' }}>&</span>
-              FLOW
-            </span>
+            <img src="/APMEDIA.png" alt="AP Media Logo" style={{ height: '26px', width: 'auto', display: 'block', filter: 'drop-shadow(0 0 8px rgba(13, 211, 240, 0.45))' }} />
           </motion.div>
         </div>
         </ScrollParallax>
@@ -207,7 +189,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--text-faint)', letterSpacing: '0.03em' }}>
-          © {new Date().getFullYear()} Alex & Flow · {SITE_CONFIG.copyrightSuffix}
+          © {new Date().getFullYear()} AP Media · {SITE_CONFIG.copyrightSuffix}
         </p>
       </div>
     </footer>

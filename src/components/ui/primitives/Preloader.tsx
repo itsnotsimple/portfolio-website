@@ -60,9 +60,7 @@ export default function Preloader({ ready }: PreloaderProps) {
         </div>
 
         <div className={styles.wordmark}>
-          <span className={styles.wordmarkName}>Alex</span>
-          <span className={styles.wordmarkAmp}>&amp;</span>
-          <span className={styles.wordmarkFlow}>Flow</span>
+          <img src="/APMEDIA.png" alt="AP Media Logo" className={styles.wordmarkImg} />
         </div>
 
         <p className={styles.tagline}>I make your story move.</p>

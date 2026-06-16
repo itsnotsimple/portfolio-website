@@ -102,34 +102,18 @@
   100% { transform: scale(1.4);  opacity: 0;   }
 }
 
-/* ── Wordmark ─────────────────────────────────────────── */
 .wordmark {
   display: flex;
-  align-items: baseline;
-  gap: 0.3rem;
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(1.6rem, 5vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
 }
 
-.wordmarkName {
-  color: #f0f6fb;
-}
-
-.wordmarkAmp {
-  color: #2596be;
-  font-weight: 400;
-  font-size: 0.75em;
-  margin: 0 0.15em;
-}
-
-.wordmarkFlow {
-  background: linear-gradient(135deg, #2596be 0%, #0dd3f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.wordmarkImg {
+  height: clamp(36px, 8vw, 50px);
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(13, 211, 240, 0.45));
 }
 
 /* ── Tagline ─────────────────────────────────────────── */

@@ -76,24 +76,29 @@
 }
 @media (min-width: 768px) { .inner { padding: 0 2rem; } }
 
-/* ── Logo ────────────────────────────────────────────── */
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.45rem;
-  letter-spacing: 0.06em;
   flex-shrink: 0;
-  transition: opacity var(--t-fast);
   pointer-events: auto !important;
   cursor: pointer;
 }
-.logo:hover { opacity: 0.82; }
-.logoHex { color: var(--primary); font-size: 1.3rem; filter: drop-shadow(0 0 8px var(--primary-glow)); }
-.logoText { color: var(--text); }
-.logoAmp  { color: var(--primary); margin: 0 2px; }
+.logoImg {
+  height: 28px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 0 0px transparent);
+  transition: filter var(--t-base), transform var(--t-base);
+}
+@media (max-width: 480px) {
+  .logoImg {
+    height: 22px;
+  }
+}
+.logo:hover .logoImg {
+  filter: drop-shadow(0 0 8px #0dd3f0);
+  transform: scale(1.02);
+}
 
 /* ── Desktop links ───────────────────────────────────── */
 .desktopLinks {

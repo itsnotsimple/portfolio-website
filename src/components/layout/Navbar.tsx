@@ -182,10 +182,7 @@ export default function Navbar() {
         <div className={styles.inner}>
           {/* Logo */}
           <a href="#hero" className={styles.logo} id="nav-logo" onClick={(e) => handleNavClick(e, '#hero')}>
-            <span className={styles.logoHex} aria-hidden="true">⬡</span>
-            <span className={styles.logoText}>
-              ALEX<span className={styles.logoAmp}>&</span>FLOW
-            </span>
+            <img src="/APMEDIA.png" alt="AP Media Logo" className={styles.logoImg} />
           </a>
 
           {/* Desktop links */}
@@ -314,10 +311,7 @@ export default function Navbar() {
             {/* Drawer header */}
             <div className={styles.drawerHeader}>
               <a href="#hero" className={styles.logo} onClick={(e) => handleNavClick(e, '#hero')}>
-                <span className={styles.logoHex} aria-hidden="true">⬡</span>
-                <span className={styles.logoText}>
-                  ALEX<span className={styles.logoAmp}>&</span>FLOW
-                </span>
+                <img src="/APMEDIA.png" alt="AP Media Logo" className={styles.logoImg} />
               </a>
               <button
                 className={styles.closeBtn}

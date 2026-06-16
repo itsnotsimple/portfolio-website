@@ -7,7 +7,7 @@ import type { Video, Review, FAQItem, VideoTestimonial, ClientResult } from '../
 
 // ── Site Config ───────────────────────────────────────────
 export const SITE_CONFIG = {
-  brandName: 'Alex & Flow',
+  brandName: 'AP Media',
   tagline: 'I make your story move.',
   subTagline: 'Video editor specializing in commercial campaigns and viral social media content.',
   instagramUrl: 'https://www.instagram.com/alex.cc077/',
@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
   copyrightSuffix: 'All rights reserved.',
-  metaTitle: 'Alex & Flow — Video Editor Portfolio',
+  metaTitle: 'AP Media — Video Editor Portfolio',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
@@ -448,6 +448,7 @@ export const RESULTS: ClientResult[] = [
   { src: '/images/results/result-2.webp' },
   { src: '/images/results/result-3.webp' },
   { src: '/images/results/result-4.webp' },
+  { src: '/images/results/result-5.webp' },
 ];
 
 // ── Before / After (color grading) ────────────────────────
