@@ -126,13 +126,22 @@ export default defineConfig({
         assetFileNames: 'assets/[hash].[ext]',
         // Vendor splitting: frameworks rarely change, so isolating them lets
         // visitors keep long-lived cache hits across app-code deploys.
+        // OGL is excluded — it is dynamically imported inside Plasma.tsx and
+        // gets its own auto-split chunk without needing a manual entry here.
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
           if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils')) return 'vendor-motion';
-          if (id.includes('/ogl/')) return 'vendor-gl';
           if (id.includes('/react') || id.includes('/scheduler/')) return 'vendor-react';
         },
       },
     },
+    // ── cssCodeSplit: false ─────────────────────────────────────────────────
+    // With lazy() component splitting, Vite generates a separate CSS file for
+    // each component chunk and injects them dynamically as <link rel="stylesheet">
+    // AFTER the JS chunk executes. This creates a long blocking request chain:
+    //   vendor-react → Hero.css → Navbar.css → Work.css → ...
+    // Setting cssCodeSplit:false consolidates ALL CSS into one file that is
+    // already served non-blocking via our nonBlockingCssPlugin in index.html.
+    cssCodeSplit: false,
   },
 });

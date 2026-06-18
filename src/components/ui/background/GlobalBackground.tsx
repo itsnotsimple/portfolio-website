@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import { isMobileDevice } from '../../../lib/device';
-import Plasma from './Plasma';
 import styles from './GlobalBackground.module.css';
 
 export default function GlobalBackground({
@@ -13,21 +12,25 @@ export default function GlobalBackground({
 }) {
   const { scrollY } = useScroll();
   const prefersReducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(true); // Default to static blobs during initial hydration
+  const [isMobile, setIsMobile] = useState(true); // Default true during SSR/hydration
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(isMobileDevice(1024));
-    };
+    const handleResize = () => setIsMobile(isMobileDevice(1024));
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Smooth scroll translation with spring physics
-  const smoothScrollY = useSpring(scrollY, { stiffness: 80, damping: 25, mass: 0.15 });
+  // ── On mobile: fire onPlasmaReady immediately (no WebGL to wait for) ─────
+  // On desktop this is called by Plasma after 3 GPU-flushed frames.
+  useEffect(() => {
+    if (!isMobile) return;
+    if (!isLoaded) return;
+    onPlasmaReady?.();
+  }, [isMobile, isLoaded, onPlasmaReady]);
 
-  // Treat reduced-motion users like mobile: no scroll-driven blob parallax.
+  // Smooth scroll spring — only meaningful on desktop where blobs move
+  const smoothScrollY = useSpring(scrollY, { stiffness: 80, damping: 25, mass: 0.15 });
   const staticBg = isMobile || !!prefersReducedMotion;
   const yBlob1 = useTransform(smoothScrollY, (y) => staticBg ? 0 : -y * 0.18);
   const yBlob2 = useTransform(smoothScrollY, (y) => staticBg ? 0 : -y * 0.26);
@@ -36,24 +39,17 @@ export default function GlobalBackground({
   return (
     <div className={styles.root} aria-hidden="true">
       {/*
-        WebGL Plasma on ALL devices.
-        Plasma.tsx auto-detects mobile and:
-          - uses mobileFragment (zero loops, 2D sine waves — compiles 20× faster)
-          - renders at 50% drawing-buffer resolution (stretched via CSS)
-          - fires onReady after 3 GPU-flushed frames, same as desktop
-        This produces smooth fluid colors identical in quality to the desktop
-        version, vs CSS gradients which look pixelated on mobile GPUs.
+        Mobile: NO WebGL/OGL/Plasma — just a static dark background with CSS blobs.
+        Saves 42 KB (OGL) + shader compilation time + GPU usage on battery-constrained devices.
+        Desktop: full Plasma WebGL effect as before.
       */}
-      <Plasma
-        color="#2596be"
-        speed={0.45}
-        direction="forward"
-        scale={1}
-        opacity={0.62}
-        mouseInteractive={false}
-        isLoaded={isLoaded}
-        onReady={onPlasmaReady}
-      />
+      {!isMobile && (
+        // Dynamic import keeps Plasma + OGL off the mobile JS bundle entirely
+        <PlasmaLoader
+          isLoaded={isLoaded}
+          onPlasmaReady={onPlasmaReady}
+        />
+      )}
 
       {/* Nebula blobs — static on mobile / reduced-motion, spring parallax on desktop */}
       {staticBg ? (
@@ -70,5 +66,34 @@ export default function GlobalBackground({
         </>
       )}
     </div>
+  );
+}
+
+// ── Plasma loader (desktop-only) ─────────────────────────────────────────────
+// Rendered only when isMobile === false, so the import() + OGL never touch
+// the mobile JS bundle.
+import { lazy, Suspense } from 'react';
+const Plasma = lazy(() => import('./Plasma'));
+
+function PlasmaLoader({
+  isLoaded,
+  onPlasmaReady,
+}: {
+  isLoaded: boolean;
+  onPlasmaReady?: () => void;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <Plasma
+        color="#2596be"
+        speed={0.45}
+        direction="forward"
+        scale={1}
+        opacity={0.62}
+        mouseInteractive={false}
+        isLoaded={isLoaded}
+        onReady={onPlasmaReady}
+      />
+    </Suspense>
   );
 }

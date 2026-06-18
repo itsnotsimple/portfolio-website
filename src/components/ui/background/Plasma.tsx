@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
+// OGL is dynamically imported inside initWebGL so it stays off the critical path.
 import { useReducedMotion } from 'framer-motion';
 import { isMobileDevice } from '../../../lib/device';
 import './Plasma.css';
@@ -177,8 +177,13 @@ export const Plasma: React.FC<PlasmaProps> = ({
     // new Program() compiles the GLSL shader synchronously on the main thread
     // (~300–700ms on mobile). Running it in rIC keeps it completely off any
     // visible paint frame, eliminating the freeze.
-    const initWebGL = () => {
+    const initWebGL = async () => {
       if (cancelled) return;
+
+      // Dynamic import keeps OGL's 42 KB off the critical dependency chain.
+      // It only downloads after the 50ms setTimeout fires — well after React mounts.
+      const { Renderer, Program, Mesh, Triangle } = await import('ogl');
+      if (cancelled) return; // Re-check after async gap
 
       const useCustomColor = color ? 1.0 : 0.0;
       const customColorRgb = color ? hexToRgb(color) : [1, 1, 1];
@@ -187,7 +192,9 @@ export const Plasma: React.FC<PlasmaProps> = ({
       // Hardcode DPR to 1 to reduce resolution overhead and improve rendering speed
       const dpr = 1;
 
-      let renderer: Renderer;
+      // Infer Renderer type from the dynamic import so we don't need a top-level OGL import
+      type OGLRenderer = InstanceType<Awaited<typeof import('ogl')>['Renderer']>;
+      let renderer: OGLRenderer;
       try {
         renderer = new Renderer({
           webgl: 2,

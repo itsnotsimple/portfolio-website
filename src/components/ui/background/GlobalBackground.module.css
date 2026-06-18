@@ -118,6 +118,20 @@
 }
 
 
+@media (max-width: 1023px) {
+  /* On mobile: no Plasma WebGL — use a rich static dark background instead.
+     The blobs still provide color depth without any JS or GPU cost. */
+  .root {
+    background: #04080c;
+  }
+
+  /* Make blobs slightly brighter on mobile to compensate for no Plasma */
+  .blob {
+    opacity: 0.22;
+    filter: blur(100px); /* Slightly less blur for better visibility on small screens */
+  }
+}
+
 @media (max-width: 768px) {
   .root :global(.grainient-container) {
     display: none !important;
