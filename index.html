@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" style="background:#04080c">
   <head>
+    <script>
+      if (window.location.hostname === 'apmedia.pages.dev') {
+        window.location.replace('https://apmedia.my' + window.location.pathname + window.location.search + window.location.hash);
+      }
+    </script>
     <meta charset="UTF-8" />
     <!-- viewport-fit=cover: proper display on notched iPhones -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
