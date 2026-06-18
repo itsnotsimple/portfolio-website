@@ -7,7 +7,7 @@ import LazySection from './components/ui/primitives/LazySection';
 import ErrorBoundary from './components/ui/primitives/ErrorBoundary';
 import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
-import { isMobileDevice } from './lib/device';
+
 
 // All below-the-fold sections are lazily loaded to minimise initial parse/execute time on mobile
 const Work       = lazy(() => import('./components/sections/Work'));
@@ -47,11 +47,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
     // Double requestAnimationFrame ensures React mounting AND browser painting are 100% finished
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // A tiny extra cushion for thread stabilization (50ms on mobile, 0ms on desktop)
-        const delay = isMobileDevice() ? 50 : 0;
-        setTimeout(() => {
-          onLayoutFinished();
-        }, delay);
+        onLayoutFinished();
       });
     });
   }, [onLayoutFinished]);
