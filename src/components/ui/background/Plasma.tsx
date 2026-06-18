@@ -101,6 +101,41 @@ void main() {
   fragColor = vec4(finalColor, alpha);
 }`;
 
+const fragment2D = `#version 300 es
+precision mediump float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform vec3 uCustomColor;
+uniform float uUseCustomColor;
+uniform float uSpeed;
+uniform float uDirection;
+uniform float uScale;
+uniform float uOpacity;
+uniform vec2 uMouse;
+uniform float uMouseInteractive;
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / iResolution.xy;
+  float t = iTime * uSpeed * uDirection;
+  
+  // Simple 2D sine wave plasma simulation (0 loops, compiles in <5ms)
+  float w1 = sin(uv.x * 2.5 + t) * 0.5 + 0.5;
+  float w2 = cos(uv.y * 3.0 - t * 1.2) * 0.5 + 0.5;
+  float w3 = sin((uv.x + uv.y) * 2.0 + t * 0.8) * 0.5 + 0.5;
+  
+  vec3 color1 = vec3(0.02, 0.04, 0.07); // Dark backdrop
+  vec3 color2 = mix(uCustomColor, vec3(0.08, 0.58, 0.74), 0.5); // Blended cyan
+  vec3 color3 = vec3(0.51, 0.31, 0.91); // Purple accent (#8350e8)
+  
+  vec3 finalColor = mix(color1, color2, w1 * 0.5);
+  finalColor = mix(finalColor, color3, w2 * 0.45);
+  finalColor += w3 * 0.06 * color2;
+  
+  fragColor = vec4(finalColor, uOpacity * (length(finalColor) * 1.1));
+}
+`;
+
 
 
 export const Plasma: React.FC<PlasmaProps> = ({
@@ -183,8 +218,9 @@ export const Plasma: React.FC<PlasmaProps> = ({
 
       const geometry = new Triangle(gl);
 
-      // Use the desktop 3D raymarched shader on all devices to ensure identical high quality and animations.
-      const finalFragment = fragment.replace('i < 60', 'i < 30');
+      // Compile a lightweight 2D sine-wave shader on mobile to avoid synchronous compilation thread freezes
+      const isMobile = isMobileDevice(768);
+      const finalFragment = isMobile ? fragment2D : fragment.replace('i < 60', 'i < 30');
 
       // ── THIS is the synchronous shader compile — safely deferred now ──
       const program = new Program(gl, {
