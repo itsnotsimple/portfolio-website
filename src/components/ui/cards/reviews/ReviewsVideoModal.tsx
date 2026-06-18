@@ -59,6 +59,35 @@ export function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: strin
         }}
       />
 
+      {/* Cinematic 3D modal card */}
+      <motion.div
+        initial={{ scale: 0.75, opacity: 0, y: 60, rotateX: 30, rotateY: -20, z: -150 }}
+        animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0, rotateY: 0, z: 0 }}
+        exit={{ scale: 0.82, opacity: 0, y: 40, rotateX: -22, rotateY: 15, z: -100 }}
+        transition={{ type: 'spring', stiffness: 140, damping: 20 }}
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '380px',
+          aspectRatio: '9/16',
+          background: 'rgba(8,14,22,0.97)',
+          border: '1px solid rgba(37,150,190,0.45)',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          boxShadow: '0 0 0 1px rgba(37,150,190,0.06) inset, 0 50px 100px rgba(0,0,0,0.8), 0 0 80px rgba(37,150,190,0.14)',
+        }}
+      >
+        <CustomVideoPlayer
+          ref={videoRef}
+          src={videoUrl}
+          objectFit="cover"
+          autoPlay={true}
+          playsInline={true}
+          muted={false}
+        />
+      </motion.div>
+
       {/* Close button */}
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
@@ -99,35 +128,6 @@ export function ReviewsVideoModal({ videoUrl, name, onClose }: { videoUrl: strin
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       </button>
-
-      {/* Cinematic 3D modal card */}
-      <motion.div
-        initial={{ scale: 0.75, opacity: 0, y: 60, rotateX: 30, rotateY: -20, z: -150 }}
-        animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0, rotateY: 0, z: 0 }}
-        exit={{ scale: 0.82, opacity: 0, y: 40, rotateX: -22, rotateY: 15, z: -100 }}
-        transition={{ type: 'spring', stiffness: 140, damping: 20 }}
-        onClick={e => e.stopPropagation()}
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '380px',
-          aspectRatio: '9/16',
-          background: 'rgba(8,14,22,0.97)',
-          border: '1px solid rgba(37,150,190,0.45)',
-          borderRadius: '24px',
-          overflow: 'hidden',
-          boxShadow: '0 0 0 1px rgba(37,150,190,0.06) inset, 0 50px 100px rgba(0,0,0,0.8), 0 0 80px rgba(37,150,190,0.14)',
-        }}
-      >
-        <CustomVideoPlayer
-          ref={videoRef}
-          src={videoUrl}
-          objectFit="cover"
-          autoPlay={true}
-          playsInline={true}
-          muted={false}
-        />
-      </motion.div>
     </motion.div>,
     document.body
   );

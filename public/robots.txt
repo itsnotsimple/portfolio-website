@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://apmedia.pages.dev/sitemap.xml
+Sitemap: https://apmedia.my/sitemap.xml

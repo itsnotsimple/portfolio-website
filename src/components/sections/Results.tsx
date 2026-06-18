@@ -1,7 +1,9 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import ScrollReveal from '../ui/effects/ScrollReveal';
 import ScrollParallax from '../ui/effects/ScrollParallax';
+import Lightbox from '../ui/media/Lightbox';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -11,7 +13,12 @@ const cardVariants = {
   }),
 };
 
-function ResultImage({ src, caption, index }: { src: string; caption?: string; index: number }) {
+interface ResultItem {
+  src: string;
+  caption?: string;
+}
+
+function ResultImage({ src, caption, index, onClick }: { src: string; caption?: string; index: number; onClick: () => void }) {
   return (
     <motion.div
       custom={index}
@@ -20,6 +27,7 @@ function ResultImage({ src, caption, index }: { src: string; caption?: string; i
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
       whileHover={{ y: -4, boxShadow: '0 0 28px rgba(37,150,190,0.18), var(--shadow-card)', borderColor: 'rgba(37,150,190,0.45)' }}
+      onClick={onClick}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
       style={{
         borderRadius: 'var(--radius-lg)',
@@ -27,6 +35,7 @@ function ResultImage({ src, caption, index }: { src: string; caption?: string; i
         border: '1px solid var(--border)',
         background: 'var(--bg-surface)',
         boxShadow: 'var(--shadow-card)',
+        cursor: 'zoom-in',
       }}
     >
       <img
@@ -51,6 +60,7 @@ function ResultImage({ src, caption, index }: { src: string; caption?: string; i
 export default function Results() {
   const { content } = useLanguage();
   const { RESULTS, RESULTS_SECTION } = content;
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
     <section
@@ -105,11 +115,28 @@ export default function Results() {
         <ScrollParallax speed={-22}>
           <div className="results-grid">
             {RESULTS.map((item, i) => (
-              <ResultImage key={item.src} src={item.src} caption={item.caption} index={i} />
+              <ResultImage
+                key={item.src}
+                src={item.src}
+                caption={item.caption}
+                index={i}
+                onClick={() => setLightboxIndex(i)}
+              />
             ))}
           </div>
         </ScrollParallax>
       </div>
+
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <Lightbox
+            images={RESULTS as ResultItem[]}
+            currentIndex={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+            onNavigate={setLightboxIndex}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

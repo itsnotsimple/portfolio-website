@@ -534,3 +534,29 @@ ul, ol     { list-style: none; }
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* ── Content Protection ────────────────────────────────── */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow text inputs to be selected if any exist */
+input, textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Block dragging for images and videos specifically */
+img, video {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}

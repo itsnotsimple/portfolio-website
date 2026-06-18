@@ -19,6 +19,45 @@ export default function App() {
     return () => clearTimeout(fallback);
   }, []);
 
+  // Global anti-download and inspect blockers
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    const handleDragStart = (e: DragEvent) => {
+      e.preventDefault();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent Cmd+S or Ctrl+S (Save Page)
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+      }
+      // Prevent Inspector shortcuts: F12, Cmd+Opt+I (Mac), Ctrl+Shift+I (Windows), Cmd+Shift+C
+      if (
+        e.key === 'F12' ||
+        ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
+        ((e.metaKey || e.ctrlKey) && e.altKey && (e.key === 'i' || e.key === 'I')) ||
+        ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'c' || e.key === 'C')) ||
+        ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'j' || e.key === 'J')) ||
+        ((e.metaKey || e.ctrlKey) && (e.key === 'u' || e.key === 'U'))
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('contextmenu', handleContextMenu, { capture: true });
+    window.addEventListener('dragstart', handleDragStart, { capture: true });
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+
+    return () => {
+      window.removeEventListener('contextmenu', handleContextMenu, { capture: true });
+      window.removeEventListener('dragstart', handleDragStart, { capture: true });
+      window.removeEventListener('keydown', handleKeyDown, { capture: true });
+    };
+  }, []);
+
   const isAppFullyCooked = isLayoutFinished && isPlasmaReady && isFontsReady;
 
   return (

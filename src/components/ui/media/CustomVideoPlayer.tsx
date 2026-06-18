@@ -383,6 +383,9 @@ const CustomVideoPlayer = forwardRef<CustomVideoPlayerRef, CustomVideoPlayerProp
           onClick={togglePlay}
           className={styles.video}
           style={{ objectFit }}
+          controlsList="nodownload"
+          disablePictureInPicture
+          disableRemotePlayback
         />
 
         {/* Action Ripple Flash Overlays */}

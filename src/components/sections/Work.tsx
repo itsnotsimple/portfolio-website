@@ -67,47 +67,6 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
         }}
       />
 
-      {/* Floating close button — absolute to viewport, avoiding player element overlap */}
-      <button
-        onClick={e => { e.stopPropagation(); onClose(); }}
-        aria-label="Close video"
-        style={{
-          position: 'absolute',
-          top: isMobile ? '1.25rem' : '2.5rem',
-          right: isMobile ? '1.25rem' : '2.5rem',
-          zIndex: 100000,
-          width: '46px',
-          height: '46px',
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.08)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.18)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          cursor: 'pointer',
-          transition: 'all 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
-        }}
-        onMouseOver={e => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
-          e.currentTarget.style.transform = 'scale(1.06)';
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.35)';
-        }}
-        onMouseOut={e => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.18)';
-        }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="20" height="20" aria-hidden="true">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </button>
-
       <motion.div
         initial={{ scale: 0.75, opacity: 0, y: 60, rotateX: 30, rotateY: -20, z: -150 }}
         animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0, rotateY: 0, z: 0 }}
@@ -214,6 +173,47 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
           </div>
         )}
       </motion.div>
+
+      {/* Floating close button — absolute to viewport, avoiding player element overlap */}
+      <button
+        onClick={e => { e.stopPropagation(); onClose(); }}
+        aria-label="Close video"
+        style={{
+          position: 'absolute',
+          top: isMobile ? '1.25rem' : '2.5rem',
+          right: isMobile ? '1.25rem' : '2.5rem',
+          zIndex: 100000,
+          width: '46px',
+          height: '46px',
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.08)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          cursor: 'pointer',
+          transition: 'all 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
+        }}
+        onMouseOver={e => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
+          e.currentTarget.style.transform = 'scale(1.06)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.35)';
+        }}
+        onMouseOut={e => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.18)';
+        }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="20" height="20" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
     </motion.div>
   );
 }
@@ -273,6 +273,9 @@ function VideoPaper({ video }: { video: Video }) {
           preload="metadata"
           playsInline
           muted
+          controlsList="nodownload"
+          disablePictureInPicture
+          disableRemotePlayback
           style={{
             position: 'absolute',
             inset: 0,

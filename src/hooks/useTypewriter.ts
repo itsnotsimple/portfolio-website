@@ -27,13 +27,12 @@ export function useTypewriter(
         );
         return () => clearTimeout(t);
       }
-      // Finished typing → pause
-      const t = setTimeout(() => setPhase('waiting'), pauseMs);
-      return () => clearTimeout(t);
+      // Finished typing → pause immediately by transitioning to waiting
+      setPhase('waiting');
     }
 
     if (phase === 'waiting') {
-      const t = setTimeout(() => setPhase('deleting'), 80);
+      const t = setTimeout(() => setPhase('deleting'), pauseMs);
       return () => clearTimeout(t);
     }
 
@@ -46,7 +45,6 @@ export function useTypewriter(
         return () => clearTimeout(t);
       }
       // Finished deleting → next word
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWordIdx(i => (i + 1) % words.length);
       setPhase('typing');
     }

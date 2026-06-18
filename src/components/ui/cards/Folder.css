@@ -14,19 +14,27 @@
   transform: translateY(0) rotateX(var(--folder-rotate-x, 0deg)) rotateY(var(--folder-rotate-y, 0deg));
 }
 
-.folder:not(.folder--click):hover {
+.folder:not(.open):hover {
   transform: translateY(-8px) rotateX(var(--folder-rotate-x, 12deg)) rotateY(var(--folder-rotate-y, -10deg));
 }
 
-.folder:not(.folder--click):hover .paper {
-  transform: translate(-50%, 0%);
+.folder:not(.open):hover .paper:nth-child(1) {
+  transform: translate(-60%, -18%) rotate(-6deg);
 }
 
-.folder:not(.folder--click):hover .folder__front {
+.folder:not(.open):hover .paper:nth-child(2) {
+  transform: translate(-40%, -18%) rotate(6deg);
+}
+
+.folder:not(.open):hover .paper:nth-child(3) {
+  transform: translate(-50%, -28%) rotate(0deg);
+}
+
+.folder:not(.open):hover .folder__front {
   transform: skew(15deg) scaleY(0.6);
 }
 
-.folder:not(.folder--click):hover .right {
+.folder:not(.open):hover .right {
   transform: skew(-15deg) scaleY(0.6);
 }
 

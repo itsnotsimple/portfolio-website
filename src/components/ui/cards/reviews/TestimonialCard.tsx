@@ -1,17 +1,15 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { TargetAndTransition } from 'framer-motion';
 import { AnimatedStar } from './AnimatedStar';
 
 export interface CardProps {
-  handleShuffle: () => void;
   text: string;
   position: 'front' | 'middle' | 'back';
   author: string;
   role: string;
   initials: string;
   gradient: string;
-  dragLabel: string;
   photo?: string;
   socialLink?: string;
   socialType?: 'youtube' | 'instagram' | 'tiktok';
@@ -19,23 +17,18 @@ export interface CardProps {
 }
 
 export function TestimonialCard({
-  handleShuffle,
   text,
   position,
   author,
   role,
   initials,
   gradient,
-  dragLabel,
   photo,
   socialLink,
   socialType,
   socialStats,
 }: CardProps) {
-  const dragRef = useRef(0);
   const isFront = position === 'front';
-  const [isDragging, setIsDragging] = useState(false);
-  const [isMobile] = useState(() => /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768);
 
   const positionStyles: Record<string, TargetAndTransition> = {
     front:  { zIndex: 3, rotate: '-3deg', x: '0%' },
@@ -43,47 +36,50 @@ export function TestimonialCard({
     back:   { zIndex: 1, rotate: '5deg',  x: '28%' },
   };
 
-  // Disable backdropFilter during drag to boost performance on mobile browsers.
-  // Also reduce backdropFilter on mobile standard state for general scrolling performance.
-  const backdropFilterValue = isDragging
-    ? 'none'
-    : isMobile
-      ? 'blur(8px)'
-      : 'blur(18px)';
+  // Shadow settings for high rendering performance.
+  const shadowValue = isFront
+    ? '0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 150, 190, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.06)'
+    : '0 6px 16px rgba(0, 0, 0, 0.4)';
 
-  // Simplify shadows when dragging to bypass complex GPU shadow rasterization costs.
-  const shadowValue = isDragging
-    ? '0 16px 36px rgba(0,0,0,0.55)'
-    : isFront
-      ? '0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(37,150,190,0.1), inset 0 1px 0 rgba(255,255,255,0.07)'
-      : '0 8px 24px rgba(0,0,0,0.4)';
+  // Track position changes to trigger high-end swipe animation when moving from front to back
+  const prevPositionRef = useRef(position);
+  const [animationState, setAnimationState] = useState<'normal' | 'shuffling'>('normal');
+
+  useEffect(() => {
+    if (position === 'back' && prevPositionRef.current === 'front') {
+      setAnimationState('shuffling');
+      const t = setTimeout(() => {
+        setAnimationState('normal');
+      }, 650);
+      return () => clearTimeout(t);
+    }
+    prevPositionRef.current = position;
+  }, [position]);
+
+  const isShufflingToBack = animationState === 'shuffling';
+  const flyOutX = '-110%';
+  const flyOutRotate = -15;
 
   return (
     <motion.div
-      animate={positionStyles[position]}
-      drag={isFront}
-      dragElastic={0.35}
-      dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-      onDragStart={(_e, info) => {
-        dragRef.current = info.point.x;
-        setIsDragging(true);
-      }}
-      onDragEnd={(_e, info) => {
-        if (dragRef.current - info.point.x > 120) handleShuffle();
-        dragRef.current = 0;
-        setIsDragging(false);
-      }}
-      transition={{ duration: 0.35, type: 'spring', stiffness: 200, damping: 22 }}
+      animate={
+        isShufflingToBack
+          ? { zIndex: [3, 1, 1], rotate: ['-3deg', `${flyOutRotate}deg`, '5deg'], x: ['0%', flyOutX, '28%'] }
+          : positionStyles[position]
+      }
+      transition={
+        isShufflingToBack
+          ? { duration: 0.65, ease: [0.25, 1, 0.5, 1], times: [0, 0.35, 1] }
+          : { duration: 0.35, type: 'spring', stiffness: 200, damping: 22 }
+      }
       style={{
         ...(isFront
           ? { position: 'relative', width: '100%', height: '425px' }
           : { position: 'absolute', left: 0, top: 0, width: '100%', height: '425px' }),
-        cursor: isFront ? (isDragging ? 'grabbing' : 'grab') : 'default',
+        cursor: 'default',
         userSelect: 'none', borderRadius: '20px',
-        background: 'rgba(8, 14, 26, 0.92)',
-        border: `1px solid ${isFront ? 'rgba(37,150,190,0.38)' : 'rgba(37,150,190,0.18)'}`,
-        backdropFilter: backdropFilterValue,
-        WebkitBackdropFilter: backdropFilterValue,
+        background: 'rgba(8, 14, 26, 0.96)', // slightly more opaque to compensate for removing backdrop-filter
+        border: `1px solid ${isFront ? 'rgba(37,150,190,0.32)' : 'rgba(37,150,190,0.12)'}`,
         boxShadow: shadowValue,
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         justifyContent: 'flex-start', padding: '2.25rem 1.75rem 1.25rem',
@@ -247,22 +243,7 @@ export function TestimonialCard({
         </p>
       </div>
 
-      {/* Drag hint — always in DOM, visibility-toggled to avoid remount on language change */}
-      <div style={{
-        position: 'absolute', bottom: '0.85rem', left: 0, right: 0,
-        fontSize: '0.64rem', color: 'rgba(37,150,190,0.5)',
-        letterSpacing: '0.08em', textTransform: 'uppercase',
-        fontFamily: 'var(--font-body)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
-        whiteSpace: 'nowrap',
-        visibility: isFront ? 'visible' : 'hidden',
-        pointerEvents: 'none',
-      }}>
-        <span>{dragLabel}</span>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </div>
+
     </motion.div>
   );
 }

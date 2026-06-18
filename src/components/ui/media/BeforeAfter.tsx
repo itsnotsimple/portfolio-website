@@ -268,6 +268,9 @@ export default function BeforeAfter() {
                       autoPlay
                       onCanPlay={() => setAfterReady(true)}
                       onError={() => setVideoError(true)}
+                      controlsList="nodownload"
+                      disablePictureInPicture
+                      disableRemotePlayback
                       style={{
                         position: 'absolute', inset: 0, width: '100%', height: '100%',
                         objectFit: 'cover', display: 'block', pointerEvents: 'none',
@@ -300,6 +303,9 @@ export default function BeforeAfter() {
                       autoPlay
                       onCanPlay={() => setBeforeReady(true)}
                       onError={() => setVideoError(true)}
+                      controlsList="nodownload"
+                      disablePictureInPicture
+                      disableRemotePlayback
                       style={{
                         position: 'absolute', inset: 0, width: '100%', height: '100%',
                         objectFit: 'cover', display: 'block', pointerEvents: 'none',

@@ -9,7 +9,7 @@ import type { Video, Review, FAQItem, VideoTestimonial, ClientResult } from '../
 export const SITE_CONFIG = {
   brandName: 'AP Media',
   tagline: 'I make your story move.',
-  subTagline: 'Video editor specializing in commercial campaigns and viral social media content.',
+  subTagline: 'AP Media (Alex | Video Editor) — professional video editing services specializing in commercial campaigns, branding, and viral social media clips.',
   instagramUrl: 'https://www.instagram.com/alex.cc077/',
   instagramHandle: '@alex.cc077',
   email: 'alexperchinkov77@gmail.com',
@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
   copyrightSuffix: 'All rights reserved.',
-  metaTitle: 'AP Media',
+  metaTitle: 'AP Media - Video Editor Portfolio',
 } as const;
 
 // ── Navigation Links ──────────────────────────────────────
@@ -65,8 +65,8 @@ export const ABOUT = {
   heading: 'I turn raw footage into',
   headingAccent: 'emotion.',
   paragraphs: [
-    'Video editor with 3+ years of experience crafting content that engages, inspires, and converts. I specialize in visual storytelling — from high-budget commercial campaigns to viral social clips.',
-    "I've worked with brands, influencers, and agencies across Europe. Every project gets my full creative energy and relentless attention to detail.",
+    'AP Media (Alex | Video Editor) is a premium post-production hub with over 3 years of expertise. I craft visually striking clips that engage audiences, inspire action, and generate viral results.',
+    "As APMEDIA, I collaborate with brands, creators, and agencies worldwide. Every project receives my complete creative energy and obsessive attention to detail.",
   ],
   tools: [
     'Premiere Pro',
@@ -368,37 +368,37 @@ export const FAQ_ITEMS: FAQItem[] = [
   {
     id: 'faq-1',
     question: 'What types of videos do you edit?',
-    answer: "I specialize in commercial campaigns, music videos, social media content (Reels, TikTok, Shorts), corporate brand videos, travel documentaries, and product advertisements. If you have a unique project, let's talk — I love creative challenges.",
+    answer: "At AP Media, I specialize in commercial campaigns, music videos, social media content (Reels, TikTok, Shorts), corporate brand videos, travel documentaries, and product advertisements. If you have a unique project, let's talk — AP Media (Alex | Video Editor) loves creative challenges.",
   },
   {
     id: 'faq-2',
     question: 'How long does a typical project take?',
-    answer: "Turnaround time depends on the scope. Short social media clips typically take 1–2 business days. For larger projects, we'll agree on a timeline upfront. Rush delivery is available for an additional fee.",
+    answer: "As a professional video editor, turnaround time at AP Media depends on the scope. Short social media clips typically take 1–2 business days. For larger projects, we'll agree on a timeline upfront. Rush delivery is available for an additional fee.",
   },
   {
     id: 'faq-3',
     question: 'What software do you use?',
-    answer: 'My main tools are Adobe Premiere Pro and CapCut. For motion graphics I use After Effects. I also use Photoshop if necessary.',
+    answer: 'The primary tools at AP Media are Adobe Premiere Pro, CapCut, and After Effects for advanced motion graphics, dynamic visual effects, and color grading.',
   },
   {
     id: 'faq-4',
     question: 'How many revisions are included?',
-    answer: 'All projects include 3 rounds of revisions as standard. This covers adjustments to cuts, transitions, music sync, and color. Additional revisions can be arranged. I aim to nail the vision on the first draft, so revisions are rarely needed.',
+    answer: 'All projects handled by AP Media (Alex | Video Editor) include 3 rounds of revisions as standard. This covers adjustments to cuts, transitions, music sync, and color. Additional revisions can be arranged. I aim to nail the vision on the first draft, so revisions are rarely needed.',
   },
   {
     id: 'faq-6',
     question: 'Do you offer retainer packages?',
-    answer: 'Yes! For clients who need ongoing content (e.g., monthly social media packages), I offer retainer plans at discounted rates. This guarantees priority delivery and a consistent editing style across all your content.',
+    answer: 'Yes! For clients who need ongoing content (e.g., monthly social media packages), AP Media offers retainer plans at discounted rates. This guarantees priority delivery and a consistent editing style across all your content.',
   },
   {
     id: 'faq-7',
     question: 'How do I send you my footage?',
-    answer: "You can share files via Google Drive, WeTransfer, Dropbox, or any cloud storage you prefer. For very large projects, we can discuss other transfer options. Just reach out and we'll figure out the easiest workflow for you.",
+    answer: "You can share files via Google Drive, WeTransfer, Dropbox, or any cloud storage you prefer. For very large projects, we can discuss other transfer options. Just reach out to AP Media and we'll figure out the easiest workflow for you.",
   },
   {
     id: 'faq-8',
     question: 'How do I get started?',
-    answer: "Simple — drop me a DM on Instagram or send an email describing your project. Include the type of video, approximate length, deadline, and any reference videos you like. I'll get back to you within 24 hours with a quote and timeline.",
+    answer: "Simple — drop AP Media (Alex | Video Editor / Alex Media) a DM on Instagram or send an email describing your project. Include the type of video, approximate length, deadline, and any reference videos you like. I'll get back to you within 24 hours with a quote and timeline.",
   },
 ];
 

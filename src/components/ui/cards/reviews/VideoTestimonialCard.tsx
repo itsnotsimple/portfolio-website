@@ -66,6 +66,9 @@ export function VideoTestimonialCard({
           loop
           onLoadedData={() => setVideoReady(true)}
           onCanPlay={() => setVideoReady(true)}
+          controlsList="nodownload"
+          disablePictureInPicture
+          disableRemotePlayback
           style={{
             position: 'absolute',
             inset: 0,

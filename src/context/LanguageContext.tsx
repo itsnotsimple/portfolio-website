@@ -23,12 +23,25 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  // English is the default language on every load as requested
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('portfolio-language');
+      if (saved === 'en' || saved === 'bg') return saved;
+      if (navigator.language && navigator.language.startsWith('bg')) {
+        return 'bg';
+      }
+    }
+    return 'en';
+  });
 
   const toggleLanguage = () => {
     setLanguage(prev => (prev === 'en' ? 'bg' : 'en'));
   };
+
+  // Save selected language to localStorage when changed
+  useEffect(() => {
+    localStorage.setItem('portfolio-language', language);
+  }, [language]);
 
   // Select the appropriate content package
   const content = language === 'en' ? EN : (BG as unknown as typeof EN);

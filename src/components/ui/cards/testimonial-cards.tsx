@@ -17,7 +17,7 @@ export default function ShuffleCards() {
   const { REVIEWS, REVIEWS_SECTION } = content;
 
   const [order, setOrder] = useState<ReviewId[]>(
-    REVIEWS.slice(0, 3).map(r => r.id)
+    REVIEWS.map(r => r.id)
   );
   const [pressed, setPressed] = useState(false);
 
@@ -27,13 +27,13 @@ export default function ShuffleCards() {
   const shuffle = () => {
     setOrder(prev => {
       const next = [...prev];
-      const last = next.pop()!;
-      next.unshift(last);
+      const first = next.shift()!;
+      next.push(first);
       return next;
     });
   };
 
-  const displayReviews = REVIEWS.slice(0, 3);
+  const displayReviews = REVIEWS;
 
   return (
     <section
@@ -147,14 +147,12 @@ export default function ShuffleCards() {
                 return (
                   <TestimonialCard
                     key={`${language}-${review.id}`}
-                    handleShuffle={shuffle}
                     text={review.text}
                     position={position}
                     author={review.name}
                     role={review.role}
                     initials={review.initials}
                     gradient={review.avatarGradient}
-                    dragLabel={REVIEWS_SECTION.dragToShuffle}
                     photo={review.photo}
                     socialLink={review.socialLink}
                     socialType={review.socialType}
