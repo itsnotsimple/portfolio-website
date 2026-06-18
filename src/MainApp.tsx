@@ -9,15 +9,14 @@ import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 import { isMobileDevice } from './lib/device';
 
-import Work from './components/sections/Work';
-import BeforeAfter from './components/ui/media/BeforeAfter';
-import About from './components/sections/About';
-import Results from './components/sections/Results';
-
-// Dynamic imports for code splitting / lazy loading
-const Reviews = lazy(() => import('./components/sections/Reviews'));
-const FAQ = lazy(() => import('./components/sections/FAQ'));
-const Contact = lazy(() => import('./components/sections/Contact'));
+// All below-the-fold sections are lazily loaded to minimise initial parse/execute time on mobile
+const Work       = lazy(() => import('./components/sections/Work'));
+const BeforeAfter = lazy(() => import('./components/ui/media/BeforeAfter'));
+const About      = lazy(() => import('./components/sections/About'));
+const Results    = lazy(() => import('./components/sections/Results'));
+const Reviews    = lazy(() => import('./components/sections/Reviews'));
+const FAQ        = lazy(() => import('./components/sections/FAQ'));
+const Contact    = lazy(() => import('./components/sections/Contact'));
 
 interface MainAppProps {
   onLayoutFinished: () => void;
@@ -92,11 +91,29 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
               <ErrorBoundary>
                 <Hero />
 
-                <Work />
-                <LazySection id="before-after" height="60vh">
-                  <BeforeAfter />
+                <LazySection id="work" height="80vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '80vh', width: '100%' }} />}>
+                      <Work />
+                    </Suspense>
+                  )}
                 </LazySection>
-                <About />
+
+                <LazySection id="before-after" height="60vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                      <BeforeAfter />
+                    </Suspense>
+                  )}
+                </LazySection>
+
+                <LazySection id="about" height="70vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
+                      <About />
+                    </Suspense>
+                  )}
+                </LazySection>
 
                 <LazySection id="reviews" height="70vh">
                   {() => (
@@ -106,7 +123,13 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <Results />
+                <LazySection id="results" height="60vh">
+                  {() => (
+                    <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
+                      <Results />
+                    </Suspense>
+                  )}
+                </LazySection>
 
                 <LazySection id="faq" height="60vh">
                   {() => (
