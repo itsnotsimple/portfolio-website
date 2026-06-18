@@ -89,9 +89,154 @@
       <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
     </noscript>
 
+    <style id="preloader-static-style">
+      .preloader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100%;
+        height: 100dvh;
+        z-index: 99999;
+        background: rgba(3, 8, 16, 0.99) !important;
+        pointer-events: all;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+        user-select: none;
+      }
+      .preloader-overlay.exit {
+        animation: preloader-fadeOut 0.3s ease-out forwards;
+      }
+      @keyframes preloader-fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; visibility: hidden; }
+      }
+      .preloader-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        animation: preloader-fadeIn 0.6s ease both;
+      }
+      @keyframes preloader-fadeIn {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .preloader-hexWrap {
+        position: relative;
+        width: 72px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .preloader-hexSvg {
+        width: 72px;
+        height: 80px;
+        animation: preloader-hexRotate 8s linear infinite;
+        filter: drop-shadow(0 0 12px rgba(13, 211, 240, 0.4));
+      }
+      @keyframes preloader-hexRotate {
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .preloader-hexInner {
+        animation: preloader-hexPulse 2.2s ease-in-out infinite;
+      }
+      @keyframes preloader-hexPulse {
+        0%, 100% { opacity: 0.4; }
+        50%       { opacity: 1; }
+      }
+      .preloader-pulseRing {
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(13, 211, 240, 0.25);
+        animation: preloader-ringExpand 2s ease-out infinite;
+      }
+      @keyframes preloader-ringExpand {
+        0%   { transform: scale(0.85); opacity: 0.6; }
+        100% { transform: scale(1.4);  opacity: 0; }
+      }
+      .preloader-wordmark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+      .preloader-wordmarkImg {
+        height: clamp(36px, 8vw, 50px);
+        width: auto;
+        display: block;
+        filter: drop-shadow(0 0 12px rgba(13, 211, 240, 0.45));
+      }
+      .preloader-tagline {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.82rem;
+        font-weight: 400;
+        color: #3a5f74;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        animation: preloader-fadeIn 0.6s 0.2s ease both;
+      }
+      .preloader-progressTrack {
+        position: absolute;
+        bottom: 2.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(280px, 60vw);
+        height: 1px;
+        background: rgba(37, 150, 190, 0.12);
+        border-radius: 1px;
+        overflow: hidden;
+      }
+      .preloader-progressIndeterminate {
+        position: absolute;
+        height: 100%;
+        width: 40%;
+        background: linear-gradient(90deg, transparent, #0dd3f0, transparent);
+        border-radius: 1px;
+        animation: preloader-shimmer 1.4s ease-in-out infinite;
+        box-shadow: 0 0 8px rgba(13, 211, 240, 0.5);
+      }
+      @keyframes preloader-shimmer {
+        0%   { left: -40%; }
+        100% { left: 140%; }
+      }
+    </style>
+
     <title>AP Media — Professional Video Editor Portfolio</title>
   </head>
   <body>
+    <!-- Static preloader for instant first paint (FCP) -->
+    <div id="preloader-static" class="preloader-overlay" aria-hidden="true">
+      <div class="preloader-brand">
+        <div class="preloader-hexWrap">
+          <svg class="preloader-hexSvg" viewBox="0 0 56 64" fill="none">
+            <polygon points="28,2 54,16 54,48 28,62 2,48 2,16" stroke="url(#hexGradStatic)" stroke-width="2.5" fill="none" />
+            <polygon points="28,10 46,20 46,44 28,54 10,44 10,20" stroke="url(#hexGradStatic)" stroke-width="1" fill="rgba(37,150,190,0.06)" class="preloader-hexInner" />
+            <defs>
+              <linearGradient id="hexGradStatic" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0dd3f0" />
+                <stop offset="100%" stop-color="#2596be" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="preloader-pulseRing"></div>
+        </div>
+        <div class="preloader-wordmark">
+          <img src="/APMEDIA.png" alt="AP Media Logo" class="preloader-wordmarkImg" />
+        </div>
+        <p class="preloader-tagline">I make your story move.</p>
+      </div>
+      <div class="preloader-progressTrack">
+        <div class="preloader-progressIndeterminate"></div>
+      </div>
+    </div>
+
     <div id="root"></div>
 
     <!-- ERUDA: Mobile DevTools — активира се само с ?debug=1 в URL-а -->

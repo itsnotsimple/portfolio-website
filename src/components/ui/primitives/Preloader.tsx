@@ -12,6 +12,15 @@ export default function Preloader({ ready }: PreloaderProps) {
     if (ready) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase('exit');
+
+      // Clean up the static preloader rendered by index.html
+      const staticOverlay = document.getElementById('preloader-static');
+      if (staticOverlay) {
+        staticOverlay.classList.add('exit');
+        setTimeout(() => {
+          staticOverlay.remove();
+        }, 300); // matches the 0.3s fade-out duration
+      }
     }
   }, [ready]);
 
