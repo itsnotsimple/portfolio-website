@@ -93,7 +93,9 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                 <Hero />
 
                 <Work />
-                <BeforeAfter />
+                <LazySection id="before-after" height="60vh">
+                  <BeforeAfter />
+                </LazySection>
                 <About />
 
                 <LazySection id="reviews" height="70vh">
