@@ -4,13 +4,17 @@ interface LazySectionProps {
   children: React.ReactNode | (() => React.ReactNode);
   height?: string; // Estimated height to reserve scroll space and prevent layout shifts
   id?: string;     // Anchor id — placed on the outer wrapper so the target exists before lazy-mount
+  active?: boolean;
 }
 
-export default function LazySection({ children, height = '80vh', id }: LazySectionProps) {
+export default function LazySection({ children, height = '80vh', id, active = true }: LazySectionProps) {
   const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!active) return;
+    if (isMounted) return;
+
     // Check support for IntersectionObserver
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -35,7 +39,7 @@ export default function LazySection({ children, height = '80vh', id }: LazySecti
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [active, isMounted]);
 
   const renderChildren = () => {
     if (typeof children === 'function') {

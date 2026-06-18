@@ -53,6 +53,19 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
     });
   }, [onLayoutFinished]);
 
+  // Defer lazy load observation until 1000ms after the page transition finishes.
+  // During page fade-in/scale-in animations, CSS transforms on ancestors confuse
+  // IntersectionObserver, causing all lazy sections to eagerly report intersecting=true.
+  const [canLazyLoad, setCanLazyLoad] = useState(false);
+  useEffect(() => {
+    if (isReady) {
+      const timer = setTimeout(() => {
+        setCanLazyLoad(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady]);
+
   return (
     <>
       {/* Scroll progress bar */}
@@ -90,7 +103,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   <Hero />
                 </Suspense>
 
-                <LazySection id="work" height="80vh">
+                <LazySection id="work" height="80vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '80vh', width: '100%' }} />}>
                       <Work />
@@ -98,7 +111,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="before-after" height="60vh">
+                <LazySection id="before-after" height="60vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
                       <BeforeAfter />
@@ -106,7 +119,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="about" height="70vh">
+                <LazySection id="about" height="70vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
                       <About />
@@ -114,7 +127,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="reviews" height="70vh">
+                <LazySection id="reviews" height="70vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '70vh', width: '100%' }} />}>
                       <Reviews />
@@ -122,7 +135,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="results" height="60vh">
+                <LazySection id="results" height="60vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
                       <Results />
@@ -130,7 +143,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="faq" height="60vh">
+                <LazySection id="faq" height="60vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
                       <FAQ />
@@ -138,7 +151,7 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                   )}
                 </LazySection>
 
-                <LazySection id="contact" height="60vh">
+                <LazySection id="contact" height="60vh" active={canLazyLoad}>
                   {() => (
                     <Suspense fallback={<div style={{ minHeight: '60vh', width: '100%' }} />}>
                       <Contact />

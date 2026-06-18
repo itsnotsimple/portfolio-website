@@ -39,7 +39,6 @@ function selectiveModulePreloadPlugin(
     apply: 'build',
     // We need the chunk manifest to know which hash → chunk name mapping to use
     generateBundle(_opts, bundle) {
-      // Collect the filenames of chunks we want to stop preloading
       const toStrip = new Set<string>();
       for (const [fileName, chunk] of Object.entries(bundle)) {
         if (chunk.type !== 'chunk') continue;
@@ -47,13 +46,11 @@ function selectiveModulePreloadPlugin(
           toStrip.add(fileName);
         }
       }
-      // Store on `this` so transformIndexHtml can read it
       (this as unknown as { _toStrip: Set<string> })._toStrip = toStrip;
     },
     transformIndexHtml: {
       order: 'post',
       handler(html, ctx) {
-        // Fallback: if bundle info not available just return unchanged
         const meta = ctx.bundle;
         if (!meta) return html;
         const toStrip = new Set<string>();
@@ -64,11 +61,12 @@ function selectiveModulePreloadPlugin(
             toStrip.add(fileName);
           }
         }
-        // Remove modulepreload links for the specified chunks
         return html.replace(
           /<link rel="modulepreload" crossorigin href="\/assets\/([^"]+)">\n?/g,
           (full, filename) => {
-            if (toStrip.has(`assets/${filename}`)) return '';
+            if (toStrip.has(`assets/${filename}`)) {
+              return '';
+            }
             return full;
           }
         );
