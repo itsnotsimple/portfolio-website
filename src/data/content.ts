@@ -444,11 +444,11 @@ export const RESULTS_SECTION = {
 } as const;
 
 export const RESULTS: ClientResult[] = [
-  { src: '/images/results/result-1.webp' },
-  { src: '/images/results/result-2.webp' },
-  { src: '/images/results/result-3.webp' },
-  { src: '/images/results/result-4.webp' },
-  { src: '/images/results/result-5.webp' },
+  { src: '/images/results/result-1.webp', width: 562, height: 1000 },
+  { src: '/images/results/result-2.webp', width: 411, height: 530 },
+  { src: '/images/results/result-3.webp', width: 492, height: 1000 },
+  { src: '/images/results/result-4.webp', width: 462, height: 1000 },
+  { src: '/images/results/result-5.webp', width: 900, height: 789 },
 ];
 
 // ── Before / After (color grading) ────────────────────────

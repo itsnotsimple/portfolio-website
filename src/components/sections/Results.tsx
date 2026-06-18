@@ -16,9 +16,11 @@ const cardVariants = {
 interface ResultItem {
   src: string;
   caption?: string;
+  width?: number;
+  height?: number;
 }
 
-function ResultImage({ src, caption, index, onClick }: { src: string; caption?: string; index: number; onClick: () => void }) {
+function ResultImage({ src, caption, index, onClick, width, height }: { src: string; caption?: string; index: number; onClick: () => void; width?: number; height?: number }) {
   return (
     <motion.div
       custom={index}
@@ -41,7 +43,11 @@ function ResultImage({ src, caption, index, onClick }: { src: string; caption?: 
       <img
         src={src}
         alt={caption ?? `Client result ${index + 1}`}
+        width={width}
+        height={height}
         style={{ width: '100%', height: 'auto', display: 'block' }}
+        loading="lazy"
+        decoding="async"
       />
       {caption && (
         <div style={{
@@ -119,6 +125,8 @@ export default function Results() {
                 key={item.src}
                 src={item.src}
                 caption={item.caption}
+                width={item.width}
+                height={item.height}
                 index={i}
                 onClick={() => setLightboxIndex(i)}
               />

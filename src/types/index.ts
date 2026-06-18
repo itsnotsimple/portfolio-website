@@ -65,4 +65,8 @@ export interface ClientResult {
   src: string;
   /** Optional caption displayed below the image */
   caption?: string;
+  /** Intrinsic image width in pixels — used to hint aspect ratio and prevent CLS */
+  width?: number;
+  /** Intrinsic image height in pixels — used to hint aspect ratio and prevent CLS */
+  height?: number;
 }

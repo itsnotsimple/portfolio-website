@@ -1,11 +1,35 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+
+// ── Non-blocking CSS plugin ──────────────────────────────────────────────────
+// Vite injects the main CSS bundle as a synchronous <link rel="stylesheet">,
+// which blocks the browser from rendering ANYTHING until the CSS is downloaded.
+// This plugin converts it to a non-blocking preload (same trick as Google Fonts):
+//   rel="preload" as="style" onload="this.rel='stylesheet'"
+// Lighthouse reports this as saving ~150ms on mobile.
+function nonBlockingCssPlugin(): Plugin {
+  return {
+    name: 'non-blocking-css',
+    apply: 'build',
+    transformIndexHtml(html) {
+      // Match <link rel="stylesheet" crossorigin href="/assets/....css">
+      // and convert to a preload-then-apply pattern
+      return html.replace(
+        /<link rel="stylesheet" crossorigin href="(\/assets\/[^"]+\.css)">/g,
+        (_, href) =>
+          `<link rel="preload" as="style" crossorigin href="${href}" onload="this.onload=null;this.rel='stylesheet'">` +
+          `<noscript><link rel="stylesheet" crossorigin href="${href}"></noscript>`
+      );
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
     react(),
+    nonBlockingCssPlugin(),
     // javascriptObfuscator is disabled to prevent 2-3 second startup freeze and massive bundle bloat.
     // Built-in Terser minification/mangling below is more than enough for production performance and security.
   ],

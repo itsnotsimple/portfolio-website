@@ -260,14 +260,17 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 className="avatar"
                 src={avatarUrl}
                 alt={`${name} avatar`}
+                width={120}
+                height={120}
                 loading="lazy"
+                decoding="async"
                 onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {showUserInfo && (
                 <div className="pc-user-info">
                   <div className="pc-user-details">
                     <div className="pc-mini-avatar">
-                      <img src={miniAvatarUrl || avatarUrl} alt={`${name} mini`} loading="lazy" />
+                      <img src={miniAvatarUrl || avatarUrl} alt={`${name} mini`} width={44} height={44} loading="lazy" decoding="async" />
                     </div>
                     <div className="pc-user-text">
                       <div className="pc-handle">@{handle}</div>

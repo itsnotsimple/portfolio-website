@@ -48,12 +48,15 @@ function ToolLogoTile({ img, label }: typeof TOOL_LOGOS[0]) {
       <img
         src={img}
         alt={label}
+        width={44}
+        height={44}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'contain',
         }}
         loading="lazy"
+        decoding="async"
       />
     </div>
   );
