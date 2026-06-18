@@ -1,12 +1,27 @@
 import { useState, useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import MainApp from './MainApp';
-import Preloader from './components/ui/primitives/Preloader';
 import { LanguageProvider } from './context/LanguageContext';
 
 export default function App() {
   const [isLayoutFinished, setIsLayoutFinished] = useState(false);
   const [isPlasmaReady, setIsPlasmaReady] = useState(false);
+
+  const isAppFullyCooked = isLayoutFinished && isPlasmaReady;
+
+  // Manage static preloader exit directly in App.tsx to avoid component mount overhead
+  useEffect(() => {
+    if (isAppFullyCooked) {
+      const staticOverlay = document.getElementById('preloader-static');
+      if (staticOverlay) {
+        staticOverlay.classList.add('exit');
+        const timer = setTimeout(() => {
+          staticOverlay.remove();
+        }, 300); // matches the 0.3s fade-out transition
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isAppFullyCooked]);
 
   // Global anti-download and inspect blockers
   useEffect(() => {
@@ -47,8 +62,6 @@ export default function App() {
     };
   }, []);
 
-  const isAppFullyCooked = isLayoutFinished && isPlasmaReady;
-
   return (
     <MotionConfig reducedMotion="user">
       <LanguageProvider>
@@ -57,7 +70,6 @@ export default function App() {
           onPlasmaReady={() => setIsPlasmaReady(true)}
           isReady={isAppFullyCooked}
         />
-        <Preloader ready={isAppFullyCooked} />
       </LanguageProvider>
     </MotionConfig>
   );
