@@ -10,13 +10,8 @@ import { bootstrap } from './bootstrap';
 //
 // In debug mode (?debug=1), we skip the timeout since Eruda's synchronous loading
 // already introduces the natural network delay needed for a warm paint.
-// 100ms is enough for the browser to paint the static preloader — any more hurts TTI on mobile
-const delay = typeof window !== 'undefined' && window.location.search.includes('debug=1') ? 0 : 100;
-
-setTimeout(() => {
-  try {
-    bootstrap();
-  } catch (err) {
-    console.error('Failed to run application bootstrap:', err);
-  }
-}, delay);
+try {
+  bootstrap();
+} catch (err) {
+  console.error('Failed to run application bootstrap:', err);
+}

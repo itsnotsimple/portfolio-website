@@ -20,7 +20,7 @@ export default function App() {
         staticOverlay.classList.add('exit');
         const timer = setTimeout(() => {
           staticOverlay.remove();
-        }, 300); // matches the 0.3s fade-out transition
+        }, 200); // matches the 0.2s fade-out transition
         return () => clearTimeout(timer);
       }
     }

@@ -91,11 +91,11 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
 
         <Navbar />
 
-        {/* ── Intro — page fades/scales in after preloader ── */}
+        {/* ── Intro — page fades/scales in after preloader (optimized snappy transition for LCP performance) ── */}
         <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 24 }}
+            initial={{ opacity: 0, scale: 0.97, y: 16 }}
             animate={isReady ? { opacity: 1, scale: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
           >
             <main id="main-content">
               <ErrorBoundary>
