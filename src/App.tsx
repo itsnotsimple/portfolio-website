@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import MainApp from './MainApp';
 import { LanguageProvider } from './context/LanguageContext';
+import { isMobileDevice } from './lib/device';
 
 export default function App() {
   const [isLayoutFinished, setIsLayoutFinished] = useState(false);
   const [isPlasmaReady, setIsPlasmaReady] = useState(false);
 
-  const isAppFullyCooked = isLayoutFinished && isPlasmaReady;
+  // On mobile, bypass WebGL ready check to exit the preloader instantly once layout mounts
+  const isMobile = isMobileDevice(768);
+  const isAppFullyCooked = isLayoutFinished && (isPlasmaReady || isMobile);
 
   // Manage static preloader exit directly in App.tsx to avoid component mount overhead
   useEffect(() => {

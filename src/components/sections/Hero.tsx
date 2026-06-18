@@ -680,11 +680,13 @@ export default function Hero() {
           </div>
 
           {/* ── RIGHT COLUMN — decorative visual, desktop only ─── */}
-          <div className={styles.right}>
-            <ScrollParallax speed={18}>
-              <HeroVisual mouseX={smoothX} mouseY={smoothY} />
-            </ScrollParallax>
-          </div>
+          {!isMobileDevice && (
+            <div className={styles.right}>
+              <ScrollParallax speed={18}>
+                <HeroVisual mouseX={smoothX} mouseY={smoothY} />
+              </ScrollParallax>
+            </div>
+          )}
 
         </div>
       </div>
