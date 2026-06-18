@@ -7,17 +7,6 @@ import { LanguageProvider } from './context/LanguageContext';
 export default function App() {
   const [isLayoutFinished, setIsLayoutFinished] = useState(false);
   const [isPlasmaReady, setIsPlasmaReady] = useState(false);
-  const [isFontsReady, setIsFontsReady] = useState(false);
-
-  useEffect(() => {
-    // 3s max — slow network shouldn't trap users behind the preloader forever
-    const fallback = setTimeout(() => setIsFontsReady(true), 3000);
-    document.fonts.ready.then(() => {
-      clearTimeout(fallback);
-      setIsFontsReady(true);
-    });
-    return () => clearTimeout(fallback);
-  }, []);
 
   // Global anti-download and inspect blockers
   useEffect(() => {
@@ -58,7 +47,7 @@ export default function App() {
     };
   }, []);
 
-  const isAppFullyCooked = isLayoutFinished && isPlasmaReady && isFontsReady;
+  const isAppFullyCooked = isLayoutFinished && isPlasmaReady;
 
   return (
     <MotionConfig reducedMotion="user">

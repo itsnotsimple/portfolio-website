@@ -67,6 +67,9 @@
         }
       ]
     </script>
+    <!-- Preload critical assets to improve LCP -->
+    <link rel="preload" href="/APMEDIA.png" as="image" type="image/png" fetchpriority="high" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Preconnect to GitHub Pages CDN so video metadata requests are faster -->
@@ -78,12 +81,12 @@
          active after our preloader has already finished. -->
     <link
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap"
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
     </noscript>
 
     <title>AP Media — Professional Video Editor Portfolio</title>

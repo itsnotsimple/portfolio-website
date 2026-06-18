@@ -118,7 +118,7 @@
 
 /* ── Tagline ─────────────────────────────────────────── */
 .tagline {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 400;
   color: #3a5f74;

@@ -16,7 +16,6 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    modulePreload: false,
     sourcemap: false,       // no source maps in production
     minify: 'terser',
     terserOptions: {

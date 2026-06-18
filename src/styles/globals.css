@@ -64,7 +64,7 @@
 
   /* Typography system */
   --font-body:    'Inter', system-ui, sans-serif;
-  --font-head:    'Outfit', 'DM Sans', sans-serif;
+  --font-head:    'Outfit', system-ui, sans-serif;
   --font-display: 'Bebas Neue', 'Outfit', sans-serif;
 
   --section-pad: clamp(4rem, 10vw, 7rem);
