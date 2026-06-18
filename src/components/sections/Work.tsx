@@ -218,7 +218,7 @@ function VideoModal({ video, onClose }: { video: Video; onClose: () => void }) {
   );
 }
 
-function VideoPaper({ video }: { video: Video }) {
+function VideoPaper({ video, active }: { video: Video; active: boolean }) {
   const playSize = isMobile ? '18px' : '14px';
   const labelSize = isMobile ? '9px' : '6px';
   const titleSize = isMobile ? '8px' : '6px';
@@ -239,9 +239,12 @@ function VideoPaper({ video }: { video: Video }) {
     if (spotRef.current) spotRef.current.style.opacity = '0';
   };
 
-  // Lazy-load: only fetch video metadata when the folder paper enters the viewport
+  // Lazy-load: only fetch video metadata when the folder is OPEN, we are on desktop, and it enters viewport
   useEffect(() => {
-    if (!video.videoUrl || !paperRef.current) return;
+    if (isMobile || !active || !video.videoUrl || !paperRef.current) {
+      setVideoSrc(null);
+      return;
+    }
     const el = paperRef.current;
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVideoSrc(`${video.videoUrl}#t=0.1`); obs.disconnect(); } },
@@ -249,7 +252,7 @@ function VideoPaper({ video }: { video: Video }) {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [video.videoUrl]);
+  }, [active, video.videoUrl, isMobile]);
 
   return (
     <div ref={paperRef} onMouseMove={handleSpotMove} onMouseLeave={handleSpotLeave} style={{
@@ -361,7 +364,7 @@ export default function Work() {
       {FILTER_CATEGORIES.map((cat, catIndex) => {
         const catVideos = getVideosForCategory(cat.key);
         const isActive = activeFilter === cat.key;
-        const paperItems = catVideos.slice(0, 3).map(v => <VideoPaper key={v.id} video={v} />);
+        const paperItems = catVideos.slice(0, 3).map(v => <VideoPaper key={v.id} video={v} active={isActive} />);
 
         const inner = (
           <>

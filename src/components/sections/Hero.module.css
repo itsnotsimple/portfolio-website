@@ -381,13 +381,13 @@
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
-  color: #3a5060;
+  color: #8aacbf;
 }
 .scrollLabel {
   font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #3a5060;
+  color: #8aacbf;
 }
 
 /* ── Digit roller ────────────────────────────────────── */

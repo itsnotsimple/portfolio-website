@@ -16,7 +16,17 @@
     <meta name="keywords" content="AP Media, APMEDIA, Alex Video Editor, Alex Media, Media Alex, ap media editor, editor ap, ap media, AP Media Editor, video editor, video editing portfolio, commercial video editor, music video editor, CapCut editor, Premiere Pro editor, After Effects motion graphics, viral reels editor, Bulgarian video editor, video editing Bulgaria, video production, video editing, professional video editor" />
     <meta name="author" content="AP Media" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://apmedia.my/" />
+    <link id="canonical-link" rel="canonical" href="https://apmedia.my/" />
+    <script>
+      (function() {
+        var link = document.getElementById('canonical-link');
+        if (link) {
+          var url = window.location.protocol + '//' + window.location.hostname + window.location.pathname;
+          url = url.replace(/(index\.html|index\.htm)$/i, '');
+          link.setAttribute('href', url);
+        }
+      })();
+    </script>
 
     <!-- Open Graph / Facebook / LinkedIn / Discord -->
     <meta property="og:type" content="website" />
@@ -177,7 +187,7 @@
         font-family: 'Inter', system-ui, sans-serif;
         font-size: 0.82rem;
         font-weight: 400;
-        color: #3a5f74;
+        color: #8aacbf;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         animation: preloader-fadeIn 0.6s 0.2s ease both;
