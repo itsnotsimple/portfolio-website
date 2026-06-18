@@ -2,14 +2,15 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { useScroll, motion, useMotionValue, useMotionValueEvent } from 'framer-motion';
 import GlobalBackground from './components/ui/background/GlobalBackground';
 import Navbar   from './components/layout/Navbar';
-import Hero     from './components/sections/Hero';
 import LazySection from './components/ui/primitives/LazySection';
 import ErrorBoundary from './components/ui/primitives/ErrorBoundary';
-import Footer   from './components/layout/Footer';
 import styles   from './App.module.css';
 
-
-// All below-the-fold sections are lazily loaded to minimise initial parse/execute time on mobile
+// All below-the-fold sections are lazily loaded to minimise initial parse/execute time on mobile.
+// Hero and Footer are also lazy: the static preloader covers them during bootstrap, so they
+// do not need to be in the critical-path bundle.
+const Hero       = lazy(() => import('./components/sections/Hero'));
+const Footer     = lazy(() => import('./components/layout/Footer'));
 const Work       = lazy(() => import('./components/sections/Work'));
 const BeforeAfter = lazy(() => import('./components/ui/media/BeforeAfter'));
 const About      = lazy(() => import('./components/sections/About'));
@@ -85,7 +86,9 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
           >
             <main id="main-content">
               <ErrorBoundary>
-                <Hero />
+                <Suspense fallback={<div style={{ minHeight: '100svh', width: '100%' }} />}>
+                  <Hero />
+                </Suspense>
 
                 <LazySection id="work" height="80vh">
                   {() => (
@@ -144,7 +147,9 @@ export default function MainApp({ onLayoutFinished, onPlasmaReady, isReady = fal
                 </LazySection>
               </ErrorBoundary>
             </main>
-            <Footer />
+            <Suspense fallback={<div style={{ minHeight: '200px' }} />}>
+              <Footer />
+            </Suspense>
           </motion.div>
       </div>
     </>

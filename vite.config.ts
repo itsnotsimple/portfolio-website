@@ -25,11 +25,67 @@ function nonBlockingCssPlugin(): Plugin {
   };
 }
 
+// ── Selective modulepreload plugin ───────────────────────────────────────────
+// Vite adds <link rel="modulepreload"> for ALL vendor chunks by default.
+// This forces the browser to eagerly download 181 KB of framer-motion and 42 KB
+// of OGL before they are actually needed — Lighthouse flags this as unused JS.
+// We keep only vendor-react preloaded (needed immediately to mount React).
+// OGL and framer-motion will be fetched on-demand when their dynamic imports run.
+function selectiveModulePreloadPlugin(
+  chunkIdsToRemove: string[]
+): Plugin {
+  return {
+    name: 'selective-modulepreload',
+    apply: 'build',
+    // We need the chunk manifest to know which hash → chunk name mapping to use
+    generateBundle(_opts, bundle) {
+      // Collect the filenames of chunks we want to stop preloading
+      const toStrip = new Set<string>();
+      for (const [fileName, chunk] of Object.entries(bundle)) {
+        if (chunk.type !== 'chunk') continue;
+        if (chunkIdsToRemove.some((id) => chunk.name === id)) {
+          toStrip.add(fileName);
+        }
+      }
+      // Store on `this` so transformIndexHtml can read it
+      (this as unknown as { _toStrip: Set<string> })._toStrip = toStrip;
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        // Fallback: if bundle info not available just return unchanged
+        const meta = ctx.bundle;
+        if (!meta) return html;
+        const toStrip = new Set<string>();
+        for (const [fileName, chunk] of Object.entries(meta)) {
+          if ((chunk as { type: string }).type !== 'chunk') continue;
+          const name = (chunk as { name?: string }).name ?? '';
+          if (chunkIdsToRemove.includes(name)) {
+            toStrip.add(fileName);
+          }
+        }
+        // Remove modulepreload links for the specified chunks
+        return html.replace(
+          /<link rel="modulepreload" crossorigin href="\/assets\/([^"]+)">\n?/g,
+          (full, filename) => {
+            if (toStrip.has(`assets/${filename}`)) return '';
+            return full;
+          }
+        );
+      },
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     tailwindcss(),
     react(),
     nonBlockingCssPlugin(),
+    // Remove eagerly-injected modulepreload for heavy vendor chunks that are not
+    // needed before React mounts. They will still download on-demand.
+    // vendor-react stays preloaded because React itself is needed immediately.
+    selectiveModulePreloadPlugin(['vendor-motion', 'vendor-gl']),
     // javascriptObfuscator is disabled to prevent 2-3 second startup freeze and massive bundle bloat.
     // Built-in Terser minification/mangling below is more than enough for production performance and security.
   ],
