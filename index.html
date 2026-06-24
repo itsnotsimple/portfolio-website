@@ -2,7 +2,7 @@
 <html lang="en" style="background:#04080c">
   <head>
     <script>
-      if (window.location.hostname === 'apmedia.pages.dev') {
+      if (window.location.hostname === 'apmedia.pages.dev' || window.location.hostname === 'www.apmedia.my') {
         window.location.replace('https://apmedia.my' + window.location.pathname + window.location.search + window.location.hash);
       }
     </script>
@@ -21,9 +21,8 @@
       (function() {
         var link = document.getElementById('canonical-link');
         if (link) {
-          var url = window.location.protocol + '//' + window.location.hostname + window.location.pathname;
-          url = url.replace(/(index\.html|index\.htm)$/i, '');
-          link.setAttribute('href', url);
+          var path = window.location.pathname.replace(/(index\.html|index\.htm)$/i, '');
+          link.setAttribute('href', 'https://apmedia.my' + path);
         }
       })();
     </script>

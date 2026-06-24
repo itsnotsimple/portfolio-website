@@ -46,14 +46,20 @@ export function TestimonialCard({
   const [animationState, setAnimationState] = useState<'normal' | 'shuffling'>('normal');
 
   useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
     if (position === 'back' && prevPositionRef.current === 'front') {
       setAnimationState('shuffling');
-      const t = setTimeout(() => {
+      t = setTimeout(() => {
         setAnimationState('normal');
       }, 650);
-      return () => clearTimeout(t);
+    } else {
+      setAnimationState('normal');
     }
     prevPositionRef.current = position;
+
+    return () => {
+      if (t) clearTimeout(t);
+    };
   }, [position]);
 
   const isShufflingToBack = animationState === 'shuffling';
