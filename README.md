@@ -1,194 +1,205 @@
 <div align="center">
 
 ```
- █████╗ ██╗     ███████╗██╗  ██╗     ██╗███████╗    ███████╗██╗      ██████╗ ██╗    ██╗
-██╔══██╗██║     ██╔════╝╚██╗██╔╝    ╚██╗██╔════╝    ██╔════╝██║     ██╔═══██╗██║    ██║
-███████║██║     █████╗   ╚███╔╝      ╚██╗█████╗      █████╗  ██║     ██║   ██║██║ █╗ ██║
-██╔══██║██║     ██╔══╝   ██╔██╗      ██╔╝██╔══╝      ██╔══╝  ██║     ██║   ██║██║███╗██║
-██║  ██║███████╗███████╗██╔╝ ██╗    ██╔╝ ███████╗    ██║     ███████╗╚██████╔╝╚███╔███╔╝
-╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚═╝  ╚══════╝    ╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝
+ █████╗ ██████╗     ███╗   ███╗███████╗██████╗ ██╗ █████╗ 
+██╔══██╗██╔══██╗    ████╗ ████║██╔════╝██╔══██╗██║██╔══██╗
+███████║██████╔╝    ██╔████╔██║█████╗  ██║  ██║██║███████║
+██╔══██║██╔═══╝     ██║╚██╔╝██║██╔══╝  ██║  ██║██║██╔══██║
+██║  ██║██║         ██║ ╚═╝ ██║███████╗██████╔╝██║██║  ██║
+╚═╝  ╚═╝╚═╝         ╚═╝     ╚═╝╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝
 ```
 
 ### *"I make your story move."*
+**AP Media · Alex | Video Editor Portfolio**
 
 <br/>
 
-[![Live Site](https://img.shields.io/badge/🌐_LIVE_SITE-Visit_Portfolio-2596be?style=for-the-badge&labelColor=0d0d0d)](https://www.instagram.com/alex.cc077/)
-[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-Deployed-F38020?style=for-the-badge&logo=cloudflare&logoColor=white&labelColor=0d0d0d)](https://pages.cloudflare.com)
-[![Status](https://img.shields.io/badge/Status-Live_&_Active-00c853?style=for-the-badge&labelColor=0d0d0d)](https://github.com/itsnotsimple/portfolio-website)
+[![Live Site](https://img.shields.io/badge/🌐_LIVE_PORTFOLIO-Visit_Site-2596be?style=for-the-badge&labelColor=04080c)](https://www.instagram.com/alex.cc077/)
+[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-Deployed-F38020?style=for-the-badge&logo=cloudflare&logoColor=white&labelColor=04080c)](https://pages.cloudflare.com)
+[![Status](https://img.shields.io/badge/Status-Live_&_Production_Ready-00c853?style=for-the-badge&labelColor=04080c)](https://github.com/itsnotsimple/portfolio-website)
 
 <br/>
 
-![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript_6-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=flat-square&logo=vite&logoColor=white)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white)
-![Bun](https://img.shields.io/badge/Bun-fbf0df?style=flat-square&logo=bun&logoColor=black)
+![React 19](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript 6](https://img.shields.io/badge/TypeScript_6-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Vite 8](https://img.shields.io/badge/Vite_8-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Framer Motion 12](https://img.shields.io/badge/Framer_Motion_12-0055FF?style=flat-square&logo=framer&logoColor=white)
+![OGL](https://img.shields.io/badge/OGL_WebGL-FF5722?style=flat-square&logo=webgl&logoColor=white)
 
 </div>
 
 ---
 
-A fully custom portfolio site I built for a video editor client.
-
-The goal was simple: make the site feel as premium as the work it showcases. That meant writing a custom WebGL plasma shader, building a 3D draggable card deck for testimonials, animating every section entrance with spring physics, and shipping a bilingual experience (EN/BG) with a live toggle — all while keeping load times fast through code splitting and lazy loading.
+A high-performance, dark-mode showcase built for **AP Media (Alex | Video Editor)**. Designed to deliver an immersive visual experience with custom WebGL shaders, 3D physics-driven micro-interactions, responsive video players, interactive color grading comparisons, and complete bilingual support (English & Bulgarian).
 
 ---
 
-## 🔥 Features
+## 🔥 Features & Architecture
 
-### 🌊 WebGL Plasma Background
-Custom GLSL fragment shader built on [OGL](https://github.com/oframe/ogl). Desktop runs a 60-iteration raymarching shader with 4 animated gradient blobs. Mobile falls back to an optimized 2D sine-wave shader (~20× faster to compile) rendered at 50% resolution and stretched via CSS. Shader compilation is deferred 50ms to never block the first paint frame.
+### 🌊 WebGL Plasma Shader & Cinematic Canvas
+- Custom GLSL raymarching fragment shader powered by **[OGL](https://github.com/oframe/ogl)**.
+- Desktop executes an animated 3D gradient fluid shader with dynamic mouse interaction.
+- Mobile falls back to a high-speed 2D wave shader rendered at half resolution to guarantee 60 FPS on all devices.
+- Non-blocking asynchronous compilation with GPU flush checks.
 
-### 🎬 Cinematic Preloader
-A dual-gate boot system that eliminates all flash-of-unstyled-content:
-- **Gate 1** — layout paint confirmed after 2× `requestAnimationFrame` + 200ms cushion
-- **Gate 2** — GPU flush confirmed via `gl.readPixels` after 10 rendered WebGL frames
+### 🎬 Dual-Gate Preloader
+- Eliminates Flash-of-Unstyled-Content (FOUC):
+  - **Gate 1:** Layout paint confirmed via double `requestAnimationFrame` + safety timer.
+  - **Gate 2:** GPU readiness confirmed via WebGL frame rendering.
 
-Both must pass before the preloader fades out.
+### ⚡ Hero Section
+- Dynamic typewriter keyword rotator (`move.` / `speak.` / `sell.` / `go viral.` / `inspire.`).
+- Smooth spring-animated statistics counters (`300+ Projects`, `3+ Years Exp.`, `98% Happy Clients`).
+- 3D cursor-tracking parallax depth on desktop.
+- Instant CTA triggers for Instagram and direct inquiries.
 
-### 🏠 Hero Section
-- Typewriter word cycle: `move.` / `speak.` / `sell.` / `go viral.` / `inspire.`
-- Staggered motion entrance with custom spring curves
-- Animated stat counters via CountUp component
-- ElectricBorder glow on the CTA button
-- Interactive 3D pointer parallax on desktop (spring-smoothed)
+### 🎥 Selected Work & Custom Video Player
+- Categorized portfolio grid:
+  - **After Effects** (VFX, 3D motion graphics)
+  - **Brand Promoting** (Commercial campaigns & social media cuts)
+  - **Food Videos** (Culinary art & fast-paced commercial editing)
+  - **Simple Editing** (Clean pacing, narrative rhythm, dialogues)
+  - **YouTube Shorts** (High-energy sync edits for TikTok / Reels / Shorts)
+- Interactive category filtering with spring-animated layout transitions.
+- Custom video modal overlay with sound controls, scrub bar, and keyboard navigation (`Esc` to close).
 
-### 📁 Work Section — 3D Folder Cards + Modal
-Interactive 3D Folder component per project category. Clicking one opens a premium modal with a dot-grid overlay, gradient divider, and folder-platform glow. All transitions are driven by Framer Motion layout animations.
+### 🎨 Color Grading (Before & After) Comparator
+- Interactive interactive look comparison displaying raw camera log footage side-by-side with the final color graded output.
 
-### 👤 About Section — Sparkles + Infinite Slider
-Sparkles particle burst behind the profile photo, InfiniteSlider tool logo marquee with ProgressiveBlur fade masks on both edges, a 3D tilt ProfileCard, and floating achievement chips visible on wide viewports.
+### 📈 Client Results Proof Gallery
+- High-resolution visual gallery showcasing verified view counts, audience retention spikes, and viral reach metrics across YouTube and Instagram.
 
-### 🃏 Reviews Section — 3D Shuffle Deck
-Draggable 3D card stack built with spring physics. Users can physically shuffle through testimonials. Includes a star-rating summary badge and real client avatars (WebP).
+### 🃏 Testimonials & 3D Interactive Shuffle Deck
+- **Video Testimonials:** Embedded creator feedback with instant playback.
+- **3D Card Deck:** Physics-based draggable card stack that users can shuffle through interactively.
+- Star rating summary badge and real client avatars.
 
-### ❓ FAQ Section — Split Layout + MiniRadar
-On desktop: a sticky left column with an animated MiniRadar component and spinning decorative rings, paired with a smooth accordion on the right. On mobile: full-width accordion only. FAQItem uses an animated SVG ChevronDown instead of plain text.
+### ❓ FAQ Section
+- Asymmetric split layout with sticky section navigation on desktop.
+- Smooth accordion transitions with custom animated icons.
 
-### 📬 Contact Section
-Staggered Framer Motion card entrance, top gradient accent line per card, and a `liveRadarPulse` CSS keyframe animation. Cards: Email · Instagram · Response Time.
+### 📬 Contact Section & Electric Border
+- Interactive 3D tilt cards featuring **ElectricBorder** — a custom canvas-based lightning contour algorithm that hugs the exact card boundary in real-time.
+- Direct links to Instagram DM and Email inquiries.
+- Live response time badge indicator with animated signal waves.
 
-### 🔤 Bilingual Support — EN / BG
-Full English and Bulgarian site copy managed via React Context. Live toggle with zero page reload. Defaults to English on every load. All copy lives in `src/data/content.ts` (EN) and `src/data/contentBG.ts` (BG).
-
-### 🧭 Navbar — Glass Filter + Active Pill
-SVG GlassFilter backdrop (no `backdrop-filter` artifacts), a sliding purple active indicator pill that follows the current section, and `pointer-events: none` on the outer shell to fix a dead-on-frame-0 blocking bug.
-
-### ⚡ Performance
-- `React.lazy` + `Suspense` for Reviews, FAQ, and Contact
-- `IntersectionObserver` via `LazySection` — sections load only when approaching the viewport
-- Terser with 3 compression passes and toplevel mangling
-- Hash-only filenames, no source maps in production
-- All images converted to WebP (profile photo, tool logos, review avatars)
+### 🌐 Complete Bilingual Support (EN / BG)
+- Seamless real-time switching between English and Bulgarian without page reloads.
+- Managed via `LanguageContext` with persistent `localStorage` user preferences.
+- Type-safe mirrored content architecture: `src/data/content.ts` (EN) and `src/data/contentBG.ts` (BG).
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-| Technology | Purpose |
-|---|---|
-| React 19 + TypeScript 6 | Component framework with full type safety |
-| Vite 8 | Build tool and dev server |
-| Tailwind CSS v4 | Utility-first styling |
-| Framer Motion 12 | Spring animations and layout transitions |
-| GSAP 3 | Timeline-based animation sequences |
-| OGL | Lightweight WebGL — custom plasma shader |
-| tsParticles Slim | Sparkles particle system |
-| Radix UI | Accessible radio group primitive |
-
-### Build & Deployment
-| Technology | Purpose |
-|---|---|
-| Bun | Package manager and script runner |
-| Terser | 3-pass JS minification with toplevel mangling |
-| Sharp | WebP image conversion pipeline |
-| vite-plugin-javascript-obfuscator | Selective JS obfuscation |
-| Cloudflare Pages | Hosting — auto-deploys on every push to `main` |
+| Layer | Technology | Description |
+|---|---|---|
+| **Core Framework** | React 19 | Latest concurrent features and component architecture |
+| **Language** | TypeScript 6 | Full compile-time type safety and interface validation |
+| **Bundler & Tooling** | Vite 8 | Instant HMR and optimized asset pipeline |
+| **Styling** | Tailwind CSS v4 & Vanilla CSS | Modern CSS variables, design tokens, and glassmorphism |
+| **Animations** | Framer Motion 12 | Gesture physics, layout animations, and spring transitions |
+| **WebGL & 3D** | OGL | Lightweight WebGL library for GPU fluid background shaders |
+| **Asset Optimization** | Sharp & Terser | WebP image conversion pipeline and 3-pass script compression |
 
 ---
 
 ## 🎨 Design System
 
-**Colors**
-| Token | Hex | Usage |
-|---|---|---|
-| Primary | `#2596be` | Cyan — buttons, links, accents |
-| Accent | `#8350e8` | Electric purple — active states, glows |
-| Surface | `#0d0d0d` | Near black — backgrounds |
+### Color Palette
+- **Primary Brand (Cyan):** `#2596be` / `#3ab8e2` (`--primary`, `--primary-light`)
+- **Accent (Electric Aqua):** `#0dd3f0` (`--accent`)
+- **Secondary (Purple):** `#8350e8` / `#a97af5` (`--secondary`, `--secondary-light`)
+- **Background:** `#04080c` (Deep Obsidian Void)
+- **Glass Card:** `rgba(10, 18, 28, 0.88)` with `backdrop-filter: blur(10px)`
 
-**Fonts**
-| Variable | Font | Usage |
-|---|---|---|
-| `--font-head` | Syne | Display headings |
-| `--font-display` | Bebas Neue | Large decorative text |
-| `--font-body` | Inter | Body copy and UI |
+### Typography
+- **Headings (`--font-head`):** `Outfit`, system-ui, sans-serif
+- **Display Watermarks (`--font-display`):** `Bebas Neue`, sans-serif
+- **Body Text (`--font-body`):** `Inter`, system-ui, sans-serif
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-src/
-├── components/
-│   ├── layout/          # Navbar, Footer
-│   ├── sections/        # Hero, Work, About, Reviews, FAQ, Contact
-│   └── ui/              # All reusable components
-├── context/
-│   └── LanguageContext.tsx
-├── data/
-│   ├── content.ts       # ← Single source of truth (EN)
-│   └── contentBG.ts     # Bulgarian translations
-├── lib/
-│   └── utils.ts         # cn() helper
-├── styles/
-│   └── globals.css      # Global keyframes + shared layout classes
-└── types/
-    └── index.ts         # TypeScript interfaces
+portfolio-site/
+├── public/
+│   ├── images/          # Results gallery, review avatars
+│   ├── APMEDIA.png      # Brand logo
+│   └── _redirects       # SPA fallback routing rules
+├── src/
+│   ├── components/
+│   │   ├── layout/      # Navbar, Footer
+│   │   ├── sections/    # Hero, Work, BeforeAfter, Results, About, Reviews, FAQ, Contact
+│   │   └── ui/          # ElectricBorder, ScrollParallax, ScrollReveal, VideoModal, etc.
+│   ├── context/
+│   │   └── LanguageContext.tsx   # Bilingual provider (EN/BG)
+│   ├── data/
+│   │   ├── content.ts   # Centralized English content (single source of truth)
+│   │   └── contentBG.ts # Centralized Bulgarian content
+│   ├── lib/             # Device detection and utilities
+│   ├── styles/
+│   │   └── globals.css  # Design tokens, keyframes, layout grid classes
+│   └── types/
+│       └── index.ts     # Shared TypeScript interfaces
+├── package.json
+└── vite.config.ts
 ```
 
-> All site text, stats, work items, reviews, and FAQ entries live in `src/data/content.ts`. Edit there — no component changes needed.
+> **Centralized Content:** All text, video links, reviews, and FAQs are managed in `src/data/content.ts` (EN) and `src/data/contentBG.ts` (BG). Editing these files updates the entire site automatically.
 
 ---
 
 ## 🚀 Getting Started
 
-**Requires:** [Bun](https://bun.sh) · Node 18+
+### Prerequisites
+- [Node.js](https://nodejs.org) (v18+) or [Bun](https://bun.sh)
+
+### Installation & Development
 
 ```bash
-# Clone the repo
+# 1. Clone the repository
 git clone https://github.com/itsnotsimple/portfolio-website.git
 cd portfolio-website
 
-# Install dependencies
+# 2. Install dependencies
+npm install
+# or
 bun install
 
-# Start dev server → http://localhost:5173
-bun run dev
+# 3. Start local development server (http://localhost:5173)
+npm run dev
 
-# Production build
-bun run build
+# 4. Create production build
+npm run build
 
-# Preview production build locally
-bun run preview
+# 5. Preview production build
+npm run preview
 ```
 
 ---
 
 ## ☁️ Deployment
 
-Auto-deploys to **Cloudflare Pages** on every push to `main`.
+Configured for seamless deployment on **Cloudflare Pages**, **Vercel**, or **Netlify**:
 
 | Setting | Value |
 |---|---|
-| Build command | `bun run build` |
-| Output directory | `dist` |
-| Framework preset | None (custom Vite) |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist` |
+| **Node Version** | `18+` / `20+` |
+
+---
+
+## 👨‍💻 Credits & Author
+
+- **Client:** AP Media (Alex | Video Editor) — [@alex.cc077](https://www.instagram.com/alex.cc077/)
+- **Designed & Developed by:** Kristiyan — [@kristiyan.1337](https://www.instagram.com/kristiyan.1337/)
 
 ---
 
 ## 📄 License
 
-MIT © [itsnotsimple](https://github.com/itsnotsimple)
+MIT License © [itsnotsimple](https://github.com/itsnotsimple)
