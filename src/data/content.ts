@@ -17,6 +17,9 @@ export const SITE_CONFIG = {
   availabilityText: 'Available for projects',
   responseTime: 'Usually responds within 24 hours',
   copyrightSuffix: 'All rights reserved.',
+  developerCredit: 'Designed & Developed by',
+  developerName: 'Kristiyan',
+  developerUrl: 'https://www.instagram.com/kristiyan.1337/',
   metaTitle: 'AP Media - Video Editor Portfolio',
 } as const;
 

@@ -188,8 +188,40 @@ export default function Footer() {
         />
 
         {/* Copyright */}
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--text-faint)', letterSpacing: '0.03em' }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--text-faint)', letterSpacing: '0.03em', marginBottom: '0.5rem' }}>
           © {new Date().getFullYear()} AP Media · {SITE_CONFIG.copyrightSuffix}
+        </p>
+
+        {/* Developer Credit */}
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--text-faint)', letterSpacing: '0.02em' }}>
+          {SITE_CONFIG.developerCredit}{' '}
+          <a
+            href={SITE_CONFIG.developerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: 'var(--primary-light)',
+              fontWeight: 600,
+              textDecoration: 'none',
+              transition: 'all 0.2s ease',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.color = 'var(--accent)';
+              (e.currentTarget as HTMLElement).style.textShadow = '0 0 10px rgba(13, 211, 240, 0.6)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.color = 'var(--primary-light)';
+              (e.currentTarget as HTMLElement).style.textShadow = 'none';
+            }}
+          >
+            {SITE_CONFIG.developerName}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="11" height="11" aria-hidden="true" style={{ opacity: 0.85 }}>
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+          </a>
         </p>
       </div>
     </footer>

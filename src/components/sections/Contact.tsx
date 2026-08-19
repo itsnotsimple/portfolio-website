@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, animate } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 
 import ElectricBorder from '../ui/effects/ElectricBorder';
@@ -31,14 +31,15 @@ const containerVariants = {
 } as const;
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50, rotateX: 20, z: -60 },
-  show: { opacity: 1, y: 0, rotateX: 0, z: 0, transition: { type: 'spring', stiffness: 90, damping: 14 } },
+  hidden: { opacity: 0, y: 35, scale: 0.96 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 90, damping: 14 } },
 } as const;
 
 interface TiltCardProps {
   href: string;
   id: string;
   ariaLabel: string;
+  borderColor: string;
   glowGradient: string;
   glowBase: string;
   icon: React.ReactNode;
@@ -48,8 +49,6 @@ interface TiltCardProps {
   actionColor: string;
   variants: typeof cardVariants;
   spotlightGlow: string;
-  delayBob: number;
-  cardBorderColor: string;
   iconBg: string;
   iconShadow: string;
   iconGlowAnimation: { boxShadow: string[] };
@@ -57,10 +56,11 @@ interface TiltCardProps {
 
 function TiltCard({
   href, id, ariaLabel,
+  borderColor,
   glowGradient, glowBase,
   icon, title, desc, actionText, actionColor,
-  variants, spotlightGlow, delayBob,
-  cardBorderColor, iconBg, iconShadow,
+  variants, spotlightGlow,
+  iconBg, iconShadow,
   iconGlowAnimation,
 }: TiltCardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null);
@@ -68,18 +68,10 @@ function TiltCard({
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
   const springConfig = { damping: 22, stiffness: 180, mass: 0.5 };
-  const rotateX = useSpring(useTransform(y, [0, 1], [10, -10]), springConfig);
-  const rotateY = useSpring(useTransform(x, [0, 1], [-10, 10]), springConfig);
-  const spotlightX = useSpring(useTransform(x, [0, 1], [-60, 260]), springConfig);
-  const spotlightY = useSpring(useTransform(y, [0, 1], [-60, 260]), springConfig);
-  const yOffset = useMotionValue(0);
-
-  useEffect(() => {
-    const controls = animate(yOffset, [0, -8, 0], {
-      duration: 5, repeat: Infinity, ease: 'easeInOut', delay: delayBob,
-    });
-    return () => controls.stop();
-  }, [yOffset, delayBob]);
+  const rotateX = useSpring(useTransform(y, [0, 1], [6, -6]), springConfig);
+  const rotateY = useSpring(useTransform(x, [0, 1], [-6, 6]), springConfig);
+  const spotlightX = useSpring(useTransform(x, [0, 1], [-40, 280]), springConfig);
+  const spotlightY = useSpring(useTransform(y, [0, 1], [-40, 280]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const card = cardRef.current;
@@ -92,89 +84,129 @@ function TiltCard({
   const handleMouseLeave = () => { x.set(0.5); y.set(0.5); };
 
   return (
-    <motion.a
-      ref={cardRef}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      id={id}
-      aria-label={ariaLabel}
+    <motion.div
       variants={variants}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       style={{
-        rotateX, rotateY, y: yOffset,
-        transformStyle: 'preserve-3d',
-        position: 'relative',
-        background: 'var(--bg-card)',
-        border: `1px solid ${cardBorderColor}`,
-        borderRadius: 'var(--radius-xl)',
-        padding: '2.2rem 1.7rem',
-        textAlign: 'left',
-        overflow: 'hidden',
-        display: 'block',
-        backdropFilter: 'blur(10px)',
+        height: '100%',
+        width: '100%',
+        display: 'flex',
       }}
-      whileTap={{ scale: 0.94 }}
     >
-      {/* Spotlight cursor-follow */}
-      <motion.div
-        aria-hidden="true"
+      <ElectricBorder
+        color={borderColor}
+        speed={0.85}
+        chaos={0.01}
+        borderRadius={24}
+        noGlow
         style={{
-          position: 'absolute', width: '320px', height: '320px',
-          borderRadius: '50%', pointerEvents: 'none', zIndex: 1,
-          transform: 'translate(-50%, -50%)',
-          left: spotlightX, top: spotlightY,
-          background: spotlightGlow,
+          width: '100%',
+          height: '100%',
+          borderRadius: '24px',
         }}
-      />
-
-      {/* Corner ambient glow */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute', width: '220px', height: '220px',
-          borderRadius: '50%', top: '-70px', right: '-70px',
-          pointerEvents: 'none',
-          background: glowGradient,
-          transition: 'transform 0.55s ease',
-        }}
-      />
-
-      {/* Top gradient line */}
-      <div aria-hidden="true" style={{
-        position: 'absolute', top: 0, left: '1.5rem', right: '1.5rem', height: '1px',
-        background: glowBase,
-      }} />
-
-      {/* Content */}
-      <div style={{ position: 'relative', zIndex: 2, transform: 'translateZ(40px)', transformStyle: 'preserve-3d', pointerEvents: 'none' }}>
-        {/* Icon */}
-        <motion.div
+      >
+        <motion.a
+          ref={cardRef}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          id={id}
+          aria-label={ariaLabel}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
           style={{
-            width: '56px', height: '56px', borderRadius: 'var(--radius)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginBottom: '1.4rem', background: iconBg,
-            boxShadow: iconShadow, color: 'white',
+            rotateX, rotateY,
+            transformStyle: 'preserve-3d',
+            position: 'relative',
+            background: 'var(--bg-card)',
+            borderRadius: '24px',
+            padding: '2.2rem 1.7rem',
+            textAlign: 'left',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '100%',
+            width: '100%',
+            boxSizing: 'border-box',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
           }}
-          animate={iconGlowAnimation}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatType: 'reverse' }}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.97 }}
         >
-          {icon}
-        </motion.div>
+          {/* Spotlight cursor-follow */}
+          <motion.div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', width: '320px', height: '320px',
+              borderRadius: '50%', pointerEvents: 'none', zIndex: 1,
+              transform: 'translate(-50%, -50%)',
+              left: spotlightX, top: spotlightY,
+              background: spotlightGlow,
+            }}
+          />
 
-        <h3 style={{ fontFamily: 'var(--font-head)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.5rem' }}>
-          {title}
-        </h3>
-        <p style={{ fontFamily: 'var(--font-body)', color: '#8fb8cc', fontSize: '0.87rem', lineHeight: 1.68, marginBottom: '1.4rem' }}>
-          {desc}
-        </p>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: 600, color: actionColor }}>
-          <span>{actionText}</span>
-          <ArrowIcon />
-        </span>
-      </div>
-    </motion.a>
+          {/* Corner ambient glow */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', width: '220px', height: '220px',
+              borderRadius: '50%', top: '-70px', right: '-70px',
+              pointerEvents: 'none',
+              background: glowGradient,
+            }}
+          />
+
+          {/* Top gradient line */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', top: 0, left: '1.5rem', right: '1.5rem', height: '1px',
+            background: glowBase,
+          }} />
+
+          {/* Content Top */}
+          <div style={{ position: 'relative', zIndex: 2, transform: 'translateZ(25px)', pointerEvents: 'none' }}>
+            {/* Icon */}
+            <motion.div
+              style={{
+                width: '56px', height: '56px', borderRadius: 'var(--radius)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '1.4rem', background: iconBg,
+                boxShadow: iconShadow, color: 'white',
+              }}
+              animate={iconGlowAnimation}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatType: 'reverse' }}
+            >
+              {icon}
+            </motion.div>
+
+            <h3 style={{ fontFamily: 'var(--font-head)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.5rem' }}>
+              {title}
+            </h3>
+            <p style={{ fontFamily: 'var(--font-body)', color: '#8fb8cc', fontSize: '0.87rem', lineHeight: 1.68, marginBottom: '1.4rem' }}>
+              {desc}
+            </p>
+          </div>
+
+          {/* Action Link Bottom */}
+          <div style={{ position: 'relative', zIndex: 2, transform: 'translateZ(25px)', pointerEvents: 'none', marginTop: 'auto' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.84rem',
+              fontWeight: 600,
+              color: actionColor,
+              maxWidth: '100%',
+              overflow: 'hidden',
+            }}>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{actionText}</span>
+              <ArrowIcon />
+            </span>
+          </div>
+        </motion.a>
+      </ElectricBorder>
+    </motion.div>
   );
 }
 
@@ -260,63 +292,55 @@ export default function Contact() {
             {CONTACT_SECTION.subtitle}
           </ScrollReveal>
 
-          <motion.div
-            className="contact-card-grid"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-45px' }}
-          >
-            {/* Instagram card */}
-            <ScrollParallax speed={-25}>
-              <ElectricBorder color="#bc2a8d" speed={0.9} chaos={0.01} borderRadius={20} noGlow>
-                <TiltCard
-                  href={SITE_CONFIG.instagramUrl}
-                  id="contact-instagram-card"
-                  ariaLabel="Visit Instagram"
-                  glowGradient="radial-gradient(circle, rgba(188,42,141,0.14) 0%, transparent 65%)"
-                  glowBase="linear-gradient(90deg, transparent, rgba(188,42,141,0.55), transparent)"
-                  icon={<InstagramIcon />}
-                  title={CONTACT_SECTION.instaTitle}
-                  desc={CONTACT_SECTION.instaDesc}
-                  actionText={SITE_CONFIG.instagramHandle}
-                  actionColor="var(--primary-light)"
-                  variants={cardVariants}
-                  spotlightGlow="radial-gradient(circle, rgba(188,42,141,0.22) 0%, transparent 70%)"
-                  delayBob={0}
-                  cardBorderColor="var(--border)"
-                  iconBg="linear-gradient(135deg, #f09433, #e6683c, #bc2a8d, #833ab4)"
-                  iconShadow="0 4px 22px rgba(188,42,141,0.28)"
-                  iconGlowAnimation={{ boxShadow: ['0 4px 15px rgba(188,42,141,0.2)', '0 4px 25px rgba(188,42,141,0.65), 0 0 15px rgba(188,42,141,0.3)'] }}
-                />
-              </ElectricBorder>
-            </ScrollParallax>
+          <ScrollParallax speed={15}>
+            <motion.div
+              className="contact-card-grid"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-45px' }}
+            >
+              {/* Instagram card */}
+              <TiltCard
+                href={SITE_CONFIG.instagramUrl}
+                id="contact-instagram-card"
+                ariaLabel="Visit Instagram"
+                borderColor="#bc2a8d"
+                glowGradient="radial-gradient(circle, rgba(188,42,141,0.14) 0%, transparent 65%)"
+                glowBase="linear-gradient(90deg, transparent, rgba(188,42,141,0.55), transparent)"
+                icon={<InstagramIcon />}
+                title={CONTACT_SECTION.instaTitle}
+                desc={CONTACT_SECTION.instaDesc}
+                actionText={SITE_CONFIG.instagramHandle}
+                actionColor="var(--primary-light)"
+                variants={cardVariants}
+                spotlightGlow="radial-gradient(circle, rgba(188,42,141,0.22) 0%, transparent 70%)"
+                iconBg="linear-gradient(135deg, #f09433, #e6683c, #bc2a8d, #833ab4)"
+                iconShadow="0 4px 22px rgba(188,42,141,0.28)"
+                iconGlowAnimation={{ boxShadow: ['0 4px 15px rgba(188,42,141,0.2)', '0 4px 25px rgba(188,42,141,0.65), 0 0 15px rgba(188,42,141,0.3)'] }}
+              />
 
-            {/* Email card */}
-            <ScrollParallax speed={25}>
-              <ElectricBorder color="#2596be" speed={0.9} chaos={0.01} borderRadius={20} noGlow>
-                <TiltCard
-                  href={`mailto:${SITE_CONFIG.email}`}
-                  id="contact-email-card"
-                  ariaLabel="Send email"
-                  glowGradient="radial-gradient(circle, rgba(37,150,190,0.14) 0%, transparent 65%)"
-                  glowBase="linear-gradient(90deg, transparent, rgba(37,150,190,0.55), transparent)"
-                  icon={<EmailIcon />}
-                  title={CONTACT_SECTION.emailTitle}
-                  desc={CONTACT_SECTION.emailDesc}
-                  actionText={SITE_CONFIG.email}
-                  actionColor="var(--primary-light)"
-                  variants={cardVariants}
-                  spotlightGlow="radial-gradient(circle, rgba(37,150,190,0.22) 0%, transparent 70%)"
-                  delayBob={2.5}
-                  cardBorderColor="var(--border)"
-                  iconBg="linear-gradient(135deg, var(--primary-dark), var(--primary-light))"
-                  iconShadow="0 4px 22px var(--primary-glow)"
-                  iconGlowAnimation={{ boxShadow: ['0 4px 15px rgba(37,150,190,0.2)', '0 4px 25px rgba(37,150,190,0.65), 0 0 15px rgba(37,150,190,0.3)'] }}
-                />
-              </ElectricBorder>
-            </ScrollParallax>
-          </motion.div>
+              {/* Email card */}
+              <TiltCard
+                href={`mailto:${SITE_CONFIG.email}`}
+                id="contact-email-card"
+                ariaLabel="Send email"
+                borderColor="#2596be"
+                glowGradient="radial-gradient(circle, rgba(37,150,190,0.14) 0%, transparent 65%)"
+                glowBase="linear-gradient(90deg, transparent, rgba(37,150,190,0.55), transparent)"
+                icon={<EmailIcon />}
+                title={CONTACT_SECTION.emailTitle}
+                desc={CONTACT_SECTION.emailDesc}
+                actionText={SITE_CONFIG.email}
+                actionColor="var(--primary-light)"
+                variants={cardVariants}
+                spotlightGlow="radial-gradient(circle, rgba(37,150,190,0.22) 0%, transparent 70%)"
+                iconBg="linear-gradient(135deg, var(--primary-dark), var(--primary-light))"
+                iconShadow="0 4px 22px var(--primary-glow)"
+                iconGlowAnimation={{ boxShadow: ['0 4px 15px rgba(37,150,190,0.2)', '0 4px 25px rgba(37,150,190,0.65), 0 0 15px rgba(37,150,190,0.3)'] }}
+              />
+            </motion.div>
+          </ScrollParallax>
 
           {/* Response time badge */}
           <div style={{

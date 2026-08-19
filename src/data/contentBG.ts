@@ -17,6 +17,9 @@ export const SITE_CONFIG = {
   availabilityText: 'Свободен за проекти',
   responseTime: 'Обикновено отговарям до 24 часа',
   copyrightSuffix: 'Всички права запазени.',
+  developerCredit: 'Designed & Developed by',
+  developerName: 'Kristiyan',
+  developerUrl: 'https://www.instagram.com/kristiyan.1337/',
   metaTitle: 'AP Media - Портфолио на видео монтажист',
 } as const;
 

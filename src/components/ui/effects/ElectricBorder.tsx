@@ -14,11 +14,18 @@ interface ElectricBorderProps {
   noGlow?: boolean;
 }
 
+interface PointWithNormal {
+  x: number;
+  y: number;
+  nx: number;
+  ny: number;
+}
+
 const ElectricBorder: React.FC<ElectricBorderProps> = ({
   children,
   color = '#5227FF',
   speed = 1,
-  chaos = 0.12,
+  chaos = 0.08,
   borderRadius = 24,
   className,
   style,
@@ -30,8 +37,10 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
   const timeRef = useRef(0);
   const lastFrameTimeRef = useRef(0);
 
+  // Strictly centered in [-1, 1] with zero mean
   const random = useCallback((x: number): number => {
-    return (Math.sin(x * 12.9898) * 43758.5453) % 1;
+    const sin = Math.sin(x * 12.9898 + 78.233) * 43758.5453;
+    return (sin - Math.floor(sin)) * 2 - 1;
   }, []);
 
   const noise2D = useCallback(
@@ -57,90 +66,132 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       octaves: number,
       lacunarity: number,
       gain: number,
-      baseAmplitude: number,
       baseFrequency: number,
       time: number,
-      seed: number,
-      baseFlatness: number
+      seed: number
     ): number => {
       let y = 0;
-      let amplitude = baseAmplitude;
+      let amplitude = 1;
       let frequency = baseFrequency;
+      let maxAmp = 0;
       for (let i = 0; i < octaves; i++) {
-        let octaveAmplitude = amplitude;
-        if (i === 0) octaveAmplitude *= baseFlatness;
-        y += octaveAmplitude * noise2D(frequency * x + seed * 100, time * frequency * 0.3);
+        y += amplitude * noise2D(frequency * x + seed * 100, time * frequency * 0.35);
+        maxAmp += amplitude;
         frequency *= lacunarity;
         amplitude *= gain;
       }
-      return y;
+      return y / maxAmp; // Normalized to [-1, 1]
     },
     [noise2D]
   );
 
-  const getCornerPoint = useCallback(
-    (
-      centerX: number,
-      centerY: number,
-      radius: number,
-      startAngle: number,
-      arcLength: number,
-      progress: number
-    ): { x: number; y: number } => {
-      const angle = startAngle + progress * arcLength;
-      return { x: centerX + radius * Math.cos(angle), y: centerY + radius * Math.sin(angle) };
-    },
-    []
-  );
-
   const getRoundedRectPoint = useCallback(
-    (t: number, left: number, top: number, width: number, height: number, radius: number): { x: number; y: number } => {
-      const straightWidth = width - 2 * radius;
-      const straightHeight = height - 2 * radius;
+    (t: number, left: number, top: number, width: number, height: number, radius: number): PointWithNormal => {
+      const straightWidth = Math.max(0, width - 2 * radius);
+      const straightHeight = Math.max(0, height - 2 * radius);
       const cornerArc = (Math.PI * radius) / 2;
       const totalPerimeter = 2 * straightWidth + 2 * straightHeight + 4 * cornerArc;
       const distance = t * totalPerimeter;
       let accumulated = 0;
 
+      // 1. Top Edge (left + radius -> left + width - radius)
       if (distance <= accumulated + straightWidth) {
-        const progress = (distance - accumulated) / straightWidth;
-        return { x: left + radius + progress * straightWidth, y: top };
+        const progress = straightWidth > 0 ? (distance - accumulated) / straightWidth : 0;
+        return {
+          x: left + radius + progress * straightWidth,
+          y: top,
+          nx: 0,
+          ny: -1,
+        };
       }
       accumulated += straightWidth;
+
+      // 2. Top-Right Corner
       if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, progress);
+        const progress = cornerArc > 0 ? (distance - accumulated) / cornerArc : 0;
+        const angle = -Math.PI / 2 + progress * (Math.PI / 2);
+        return {
+          x: left + width - radius + radius * Math.cos(angle),
+          y: top + radius + radius * Math.sin(angle),
+          nx: Math.cos(angle),
+          ny: Math.sin(angle),
+        };
       }
       accumulated += cornerArc;
+
+      // 3. Right Edge
       if (distance <= accumulated + straightHeight) {
-        const progress = (distance - accumulated) / straightHeight;
-        return { x: left + width, y: top + radius + progress * straightHeight };
+        const progress = straightHeight > 0 ? (distance - accumulated) / straightHeight : 0;
+        return {
+          x: left + width,
+          y: top + radius + progress * straightHeight,
+          nx: 1,
+          ny: 0,
+        };
       }
       accumulated += straightHeight;
+
+      // 4. Bottom-Right Corner
       if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, progress);
+        const progress = cornerArc > 0 ? (distance - accumulated) / cornerArc : 0;
+        const angle = 0 + progress * (Math.PI / 2);
+        return {
+          x: left + width - radius + radius * Math.cos(angle),
+          y: top + height - radius + radius * Math.sin(angle),
+          nx: Math.cos(angle),
+          ny: Math.sin(angle),
+        };
       }
       accumulated += cornerArc;
+
+      // 5. Bottom Edge
       if (distance <= accumulated + straightWidth) {
-        const progress = (distance - accumulated) / straightWidth;
-        return { x: left + width - radius - progress * straightWidth, y: top + height };
+        const progress = straightWidth > 0 ? (distance - accumulated) / straightWidth : 0;
+        return {
+          x: left + width - radius - progress * straightWidth,
+          y: top + height,
+          nx: 0,
+          ny: 1,
+        };
       }
       accumulated += straightWidth;
+
+      // 6. Bottom-Left Corner
       if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, progress);
+        const progress = cornerArc > 0 ? (distance - accumulated) / cornerArc : 0;
+        const angle = Math.PI / 2 + progress * (Math.PI / 2);
+        return {
+          x: left + radius + radius * Math.cos(angle),
+          y: top + height - radius + radius * Math.sin(angle),
+          nx: Math.cos(angle),
+          ny: Math.sin(angle),
+        };
       }
       accumulated += cornerArc;
+
+      // 7. Left Edge
       if (distance <= accumulated + straightHeight) {
-        const progress = (distance - accumulated) / straightHeight;
-        return { x: left, y: top + height - radius - progress * straightHeight };
+        const progress = straightHeight > 0 ? (distance - accumulated) / straightHeight : 0;
+        return {
+          x: left,
+          y: top + height - radius - progress * straightHeight,
+          nx: -1,
+          ny: 0,
+        };
       }
       accumulated += straightHeight;
-      const progress = (distance - accumulated) / cornerArc;
-      return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, progress);
+
+      // 8. Top-Left Corner
+      const progress = cornerArc > 0 ? (distance - accumulated) / cornerArc : 0;
+      const angle = Math.PI + progress * (Math.PI / 2);
+      return {
+        x: left + radius + radius * Math.cos(angle),
+        y: top + radius + radius * Math.sin(angle),
+        nx: Math.cos(angle),
+        ny: Math.sin(angle),
+      };
     },
-    [getCornerPoint]
+    []
   );
 
   useEffect(() => {
@@ -150,40 +201,56 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const octaves = 10;
-    const lacunarity = 1.6;
-    const gain = 0.7;
-    const amplitude = chaos;
-    const frequency = 10;
-    const baseFlatness = 0;
-    const displacement = 60;
-    const borderOffset = 60;
+    const octaves = 5;
+    const lacunarity = 1.8;
+    const gain = 0.6;
+    const baseFrequency = 7;
+    const borderOffset = 30;
 
     const updateSize = () => {
-      const rect = container.getBoundingClientRect();
-      const width = rect.width + borderOffset * 2;
-      const height = rect.height + borderOffset * 2;
+      if (!container || !canvas || !ctx) return { width: 0, height: 0, rectWidth: 0, rectHeight: 0 };
+      const rectWidth = container.offsetWidth || container.getBoundingClientRect().width;
+      const rectHeight = container.offsetHeight || container.getBoundingClientRect().height;
+      if (rectWidth === 0 || rectHeight === 0) return { width: 0, height: 0, rectWidth: 0, rectHeight: 0 };
+
+      const width = rectWidth + borderOffset * 2;
+      const height = rectHeight + borderOffset * 2;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+
+      const targetWidth = Math.round(width * dpr);
+      const targetHeight = Math.round(height * dpr);
+
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+      }
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
-      return { width, height };
+      return { width, height, rectWidth, rectHeight };
     };
 
-    let { width, height } = updateSize();
+    let size = updateSize();
     let lastDpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const drawElectricBorder = (currentTime: number) => {
-      if (!canvas || !ctx) return;
+      if (!canvas || !ctx || !container) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      if (dpr !== lastDpr) {
+      const currentRectWidth = container.offsetWidth;
+      const currentRectHeight = container.offsetHeight;
+
+      if (dpr !== lastDpr || (currentRectWidth > 0 && currentRectWidth !== size.rectWidth) || (currentRectHeight > 0 && currentRectHeight !== size.rectHeight)) {
         lastDpr = dpr;
-        const newSize = updateSize();
-        width = newSize.width;
-        height = newSize.height;
+        size = updateSize();
       }
+
+      if (size.rectWidth === 0 || size.rectHeight === 0) {
+        animationRef.current = requestAnimationFrame(drawElectricBorder);
+        return;
+      }
+
       const deltaTime = (currentTime - lastFrameTimeRef.current) / 1000;
       timeRef.current += deltaTime * speed;
       lastFrameTimeRef.current = currentTime;
@@ -192,41 +259,57 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.scale(dpr, dpr);
 
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      const scale = displacement;
       const left = borderOffset;
       const top = borderOffset;
-      const borderWidth = width - 2 * borderOffset;
-      const borderHeight = height - 2 * borderOffset;
+      const borderWidth = size.rectWidth;
+      const borderHeight = size.rectHeight;
       const maxRadius = Math.min(borderWidth, borderHeight) / 2;
       const radius = Math.min(borderRadius, maxRadius);
       const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
-      const sampleCount = Math.floor(approximatePerimeter / 2);
+      const sampleCount = Math.max(100, Math.floor(approximatePerimeter / 2.5));
+      // Subtle micro-displacement (gentle electric tremor)
+      const maxDisplacement = Math.max(0.6, chaos * 14);
 
-      ctx.beginPath();
+      // Build path points along exact perimeter
+      const points: { x: number; y: number }[] = [];
       for (let i = 0; i <= sampleCount; i++) {
         const progress = i / sampleCount;
-        const point = getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
-        const xNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef.current, 0, baseFlatness);
-        const yNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef.current, 1, baseFlatness);
-        const displacedX = point.x + xNoise * scale;
-        const displacedY = point.y + yNoise * scale;
-        if (i === 0) ctx.moveTo(displacedX, displacedY);
-        else ctx.lineTo(displacedX, displacedY);
+        const pt = getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
+        const noise = octavedNoise(progress * 8, octaves, lacunarity, gain, baseFrequency, timeRef.current, 0);
+        const displacement = noise * maxDisplacement;
+        points.push({
+          x: pt.x + pt.nx * displacement,
+          y: pt.y + pt.ny * displacement,
+        });
+      }
+
+      if (points.length === 0) {
+        animationRef.current = requestAnimationFrame(drawElectricBorder);
+        return;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
       }
       ctx.closePath();
+
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Subtle, sleek, delicate glowing electric outline (just like original)
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 6;
       ctx.stroke();
+
       animationRef.current = requestAnimationFrame(drawElectricBorder);
     };
 
     const resizeObserver = new ResizeObserver(() => {
-      const newSize = updateSize();
-      width = newSize.width;
-      height = newSize.height;
+      size = updateSize();
     });
     resizeObserver.observe(container);
     animationRef.current = requestAnimationFrame(drawElectricBorder);
@@ -244,11 +327,11 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       <div className="eb-canvas-container">
         <canvas ref={canvasRef} className="eb-canvas" />
       </div>
-      <div className="eb-layers">
-        <div className="eb-glow-1" />
-        <div className="eb-glow-2" />
-        {!noGlow && <div className="eb-background-glow" />}
-      </div>
+      {!noGlow && (
+        <div className="eb-layers">
+          <div className="eb-background-glow" />
+        </div>
+      )}
       <div className="eb-content">{children}</div>
     </div>
   );
