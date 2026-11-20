@@ -14,7 +14,7 @@
 
 <br/>
 
-[![Live Site](https://img.shields.io/badge/🌐_LIVE_PORTFOLIO-Visit_Site-2596be?style=for-the-badge&labelColor=04080c)](https://www.instagram.com/alex.cc077/)
+[![Live Site](https://img.shields.io/badge/🌐_LIVE_PORTFOLIO-Visit_Site-2596be?style=for-the-badge&labelColor=04080c)](https://apmedia.my)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-Deployed-F38020?style=for-the-badge&logo=cloudflare&logoColor=white&labelColor=04080c)](https://pages.cloudflare.com)
 [![Status](https://img.shields.io/badge/Status-Live_&_Production_Ready-00c853?style=for-the-badge&labelColor=04080c)](https://github.com/itsnotsimple/portfolio-website)
 
